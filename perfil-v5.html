@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />\n  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />\n  <meta http-equiv="Pragma" content="no-cache" />\n  <meta http-equiv="Expires" content="0" />
   <title>RANKING IKAR8BP</title>
-  <link rel="stylesheet" href="styles-v5.css?v=20260930-private1" />
+  <link rel="stylesheet" href="styles-v5.css?v=20260930-inbox1" />
 </head>
 <body>
   <main class="viewport-shell">
@@ -33,6 +33,10 @@
             <button class="icon-btn activity-btn" id="activityBtn" type="button" aria-label="Actividad general">🌎</button>
             <button class="icon-btn notification-btn" id="notificationBtn" type="button" aria-label="Notificaciones">🔔<span class="notification-badge" id="notificationBadge" hidden>0</span></button>
             <button class="icon-btn settings-btn" id="settingsBtn" type="button" aria-label="Configuración">⚙</button>
+          </div>
+          <div class="inbox-panel" id="inboxPanel" hidden>
+            <div class="notification-panel-head"><strong>BANDEJA DE ENTRADA ✉️</strong><button id="refreshInboxBtn" type="button">Actualizar</button></div>
+            <div class="notification-list" id="inboxList"><div class="notification-empty">No tienes mensajes.</div></div>
           </div>
           <div class="activity-panel" id="activityPanel" hidden>
             <div class="notification-panel-head"><strong>ACTIVIDAD GENERAL 🌎</strong><button id="refreshActivityBtn" type="button">Actualizar</button></div>
@@ -298,7 +302,7 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config-v3.js?v=20260930-0305"></script>
-  <script src="app-v5.js?v=20260930-private1"></script>
+  <script src="app-v5.js?v=20260930-inbox1"></script>
   <div class="private-message-backdrop" id="privateMessageModal" hidden>
     <section class="private-message-card" role="dialog" aria-modal="true">
       <button type="button" class="private-message-close" id="privateMessageClose" aria-label="Cerrar">×</button>
