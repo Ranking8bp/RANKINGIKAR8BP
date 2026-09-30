@@ -934,23 +934,23 @@ async function openRankingPlayer(player){
   playerDetailFlag.textContent=getFlag(country);
   playerDetailCountry.textContent=country;
   playerDetailGameId.textContent=gameId;
-  playerDetailElo.textContent=String(elo);
   const isAdminProfile=String(player?.username||'').toLowerCase()==='ikar8bp'||player?.is_admin===true;
+  const eloStat=playerDetailElo?.closest('.player-detail-stat');
   const winStat=playerDetailWins?.closest('.player-detail-stat');
   const lossStat=playerDetailLosses?.closest('.player-detail-stat');
   if(isAdminProfile){
-    if(winStat){winStat.hidden=false;const label=winStat.querySelector('small');if(label)label.textContent='ADMIN';playerDetailWins.textContent='ADMIN';}
+    if(playerDetailRank)playerDetailRank.hidden=true;
+    if(eloStat){eloStat.hidden=false;const label=eloStat.querySelector('small');if(label)label.textContent='ADMINISTRADOR';playerDetailElo.textContent='ADMINISTRADOR';}
+    if(winStat)winStat.hidden=true;
     if(lossStat)lossStat.hidden=true;
   }else{
+    if(playerDetailRank)playerDetailRank.hidden=false;
+    if(eloStat){eloStat.hidden=false;const label=eloStat.querySelector('small');if(label)label.textContent='ELO';playerDetailElo.textContent=String(elo);}
     if(winStat){winStat.hidden=false;const label=winStat.querySelector('small');if(label)label.textContent='VICTORIAS';playerDetailWins.textContent=String(wins);}
     if(lossStat){lossStat.hidden=false;const label=lossStat.querySelector('small');if(label)label.textContent='DERROTAS';playerDetailLosses.textContent=String(losses);}
+    if(playerDetailRank){const rankName=playerDetailRank.querySelector('strong');if(rankName)rankName.textContent=rank.name.toUpperCase();}
+    renderPlayerDetailRankBadge(rank);
   }
-
-  if(playerDetailRank){
-    const rankName=playerDetailRank.querySelector('strong');
-    if(rankName)rankName.textContent=rank.name.toUpperCase();
-  }
-  renderPlayerDetailRankBadge(rank);
 
   updateHeartUI(player?.heart_count||0,false,player?.player_id===currentUser?.id);
 
