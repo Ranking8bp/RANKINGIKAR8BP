@@ -37,6 +37,7 @@ const playerDetailElo=document.getElementById('playerDetailElo');
 const playerDetailWins=document.getElementById('playerDetailWins');
 const playerDetailLosses=document.getElementById('playerDetailLosses');
 const playerDetailRank=document.getElementById('playerDetailRank');
+const playerDetailRankBadge=document.getElementById('playerDetailRankBadge');
 const playerHeartBtn=document.getElementById('playerHeartBtn');
 const playerHeartCount=document.getElementById('playerHeartCount');
 const playerHeartCountLabel=document.getElementById('playerHeartCountLabel');
@@ -227,6 +228,24 @@ async function renderRankBadge(rank){
   }catch(error){
     console.error('No se pudo cargar la insignia de rango:',error);
     rankBadgeImage.style.backgroundImage='none';
+  }
+}
+
+async function renderPlayerDetailRankBadge(rank){
+  if(!playerDetailRankBadge)return;
+  const spriteIndex=Number.isInteger(rank.spriteIndex)?rank.spriteIndex:rank.index;
+  const col=spriteIndex%5;
+  const row=Math.floor(spriteIndex/5);
+  playerDetailRankBadge.setAttribute('aria-label','Insignia '+rank.name);
+  playerDetailRankBadge.title='Rango '+rank.name;
+  try{
+    const sprite=await getRankSpriteUrl();
+    if(!currentDetailPlayer)return;
+    playerDetailRankBadge.style.backgroundImage='url("'+sprite+'")';
+    playerDetailRankBadge.style.backgroundPosition=(col*25)+'% '+(row*(100/3))+'%';
+  }catch(error){
+    console.error('No se pudo cargar la insignia del perfil:',error);
+    playerDetailRankBadge.style.backgroundImage='none';
   }
 }
 
@@ -426,6 +445,7 @@ async function openRankingPlayer(player){
     const rankName=playerDetailRank.querySelector('strong');
     if(rankName)rankName.textContent=rank.name.toUpperCase();
   }
+  renderPlayerDetailRankBadge(rank);
 
   updateHeartUI(player?.heart_count||0,false,player?.player_id===currentUser?.id);
 
