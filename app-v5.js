@@ -125,6 +125,9 @@ const loginError=document.getElementById('loginError');
 const loginUsername=document.getElementById('loginUsername');
 const loginPassword=document.getElementById('loginPassword');
 const toast=document.getElementById('toast');
+const whatsappContactBtn=document.getElementById('whatsappContactBtn');
+const OFFICIAL_WHATSAPP_GROUP_URL=window.RANKING_WHATSAPP_GROUP_URL||'';
+
 
 let supabaseClient=null;
 let currentUser=null;
@@ -1386,4 +1389,12 @@ async function enablePushNotifications(){
  if(!('serviceWorker'in navigator)||!('PushManager'in window)||!('Notification'in window)){showToast('Este navegador no permite notificaciones push.');return}
  try{const permission=await Notification.requestPermission();if(permission!=='granted'){showToast('Debes permitir las notificaciones.');return}const reg=await navigator.serviceWorker.register('./sw.js?v=1');await navigator.serviceWorker.ready;let sub=await reg.pushManager.getSubscription();if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:vapidBytes(PUSH_VAPID_PUBLIC)});const j=sub.toJSON();const {error}=await supabaseClient.from('push_subscriptions').upsert({user_id:currentUser.id,endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth},{onConflict:'endpoint'});if(error)throw error;pushEnableBtn.textContent='🔔 NOTIFICACIONES ACTIVADAS';pushEnableBtn.classList.add('enabled');showToast('Notificaciones activadas en este dispositivo.')}catch(e){console.error(e);showToast('No se pudieron activar las notificaciones.')}
 }
-pushEnableBtn?.addEventListener('click',enablePushNotifications);
+pushEnableBtn?.addEventListener('click',enablePushNotifications);if(whatsappContactBtn)whatsappContactBtn.addEventListener('click',()=>{
+  if(OFFICIAL_WHATSAPP_GROUP_URL){
+    window.open(OFFICIAL_WHATSAPP_GROUP_URL,'_blank','noopener,noreferrer');
+  }else{
+    showToast('El botón de WhatsApp ya está listo. Falta configurar el enlace del grupo oficial.');
+  }
+});
+
+
