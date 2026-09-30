@@ -65,6 +65,14 @@ const inboxBtn=document.getElementById('inboxBtn');
 const inboxPanel=document.getElementById('inboxPanel');
 const inboxList=document.getElementById('inboxList');
 const refreshInboxBtn=document.getElementById('refreshInboxBtn');
+const conversationPanel=document.getElementById('conversationPanel');
+const conversationTitle=document.getElementById('conversationTitle');
+const conversationMessages=document.getElementById('conversationMessages');
+const conversationInput=document.getElementById('conversationInput');
+const conversationSendBtn=document.getElementById('conversationSendBtn');
+const conversationBackBtn=document.getElementById('conversationBackBtn');
+const conversationCloseBtn=document.getElementById('conversationCloseBtn');
+let inboxMessagesCache=[],activeConversationUser=null;
 const notificationBtn=document.getElementById('notificationBtn');
 const notificationBadge=document.getElementById('notificationBadge');
 const notificationPanel=document.getElementById('notificationPanel');
@@ -878,24 +886,35 @@ if(privateMessageSend)privateMessageSend.addEventListener('click',sendPrivateMes
 if(privateMessageModal)privateMessageModal.addEventListener('click',e=>{if(e.target===privateMessageModal)closePrivateMessage()});
 if(profileCommentForm)profileCommentForm.addEventListener('submit',submitProfileComment);
 function renderInbox(items){
- if(!inboxList)return;inboxList.replaceChildren();
+ if(!inboxList)return;inboxList.replaceChildren();inboxMessagesCache=items||[];
  if(!items.length){inboxList.innerHTML='<div class="notification-empty">No tienes mensajes.</div>';return}
- items.forEach(m=>{
-  const incoming=m.recipient_id===currentUser?.id;
-  const item=document.createElement('article');item.className='notification-item inbox-message'+(incoming&&!m.is_read?' unread':'');
-  const icon=document.createElement('span');icon.className='notification-type-icon';icon.textContent=incoming?'📩':'📤';
-  const box=document.createElement('div');box.className='notification-copy';
-  const p=document.createElement('p');
-  const who=incoming?('De: '+String(m.sender_name||'Jugador')):('Para: '+String(m.recipient_name||'Jugador'));
-  const b=document.createElement('b');b.textContent=who;p.append(b,document.createElement('br'),document.createTextNode(String(m.body||'')));
-  const t=document.createElement('time');t.textContent=formatCommentDate(m.created_at);box.append(p,t);item.append(icon,box);inboxList.appendChild(item);
+ const conversations=new Map();
+ items.forEach(m=>{const incoming=m.recipient_id===currentUser?.id;const otherId=incoming?m.sender_id:m.recipient_id;const otherName=incoming?m.sender_name:m.recipient_name;if(!conversations.has(otherId))conversations.set(otherId,{id:otherId,name:otherName,last:m,unread:0});if(incoming&&!m.is_read)conversations.get(otherId).unread++});
+ conversations.forEach(c=>{
+  const item=document.createElement('button');item.type='button';item.className='notification-item inbox-message'+(c.unread?' unread':'');
+  const icon=document.createElement('span');icon.className='notification-type-icon';icon.textContent='💬';
+  const box=document.createElement('div');box.className='notification-copy';const p=document.createElement('p');const b=document.createElement('b');b.textContent=String(c.name||'Jugador');p.append(b,document.createElement('br'),document.createTextNode(String(c.last.body||'')));
+  const t=document.createElement('time');t.textContent=formatCommentDate(c.last.created_at);box.append(p,t);item.append(icon,box);item.addEventListener('click',()=>openConversation(c.id,c.name));inboxList.appendChild(item);
  });
+}
+function openConversation(userId,userName){
+ activeConversationUser={id:userId,name:userName};if(inboxPanel)inboxPanel.hidden=true;if(conversationPanel)conversationPanel.hidden=false;if(conversationTitle)conversationTitle.textContent=String(userName||'Jugador').toUpperCase();renderConversation();
+}
+function renderConversation(){
+ if(!conversationMessages||!activeConversationUser)return;conversationMessages.replaceChildren();
+ const msgs=inboxMessagesCache.filter(m=>(m.sender_id===activeConversationUser.id&&m.recipient_id===currentUser.id)||(m.sender_id===currentUser.id&&m.recipient_id===activeConversationUser.id)).slice().reverse();
+ msgs.forEach(m=>{const bubble=document.createElement('div');bubble.className='conversation-bubble '+(m.sender_id===currentUser.id?'mine':'theirs');const body=document.createElement('p');body.textContent=m.body;const time=document.createElement('time');time.textContent=formatCommentDate(m.created_at);bubble.append(body,time);conversationMessages.appendChild(bubble)});
+ conversationMessages.scrollTop=conversationMessages.scrollHeight;
+}
+async function sendConversationMessage(){
+ const body=conversationInput?.value.trim();if(!body||!activeConversationUser||!currentUser||!supabaseClient)return;conversationSendBtn.disabled=true;
+ try{const {error}=await supabaseClient.from('private_messages').insert({sender_id:currentUser.id,recipient_id:activeConversationUser.id,body});if(error)throw error;conversationInput.value='';await loadInbox();renderConversation()}catch(e){console.error(e);showToast('No se pudo enviar el mensaje.')}finally{conversationSendBtn.disabled=false}
 }
 async function loadInbox(){
  if(!currentUser||!supabaseClient||!inboxList)return;
  try{
   const {data,error}=await supabaseClient.rpc('get_my_private_messages');if(error)throw error;
-  const items=Array.isArray(data)?data:[];renderInbox(items);
+  const items=Array.isArray(data)?data:[];inboxMessagesCache=items;renderInbox(items);
   const unread=items.filter(m=>m.recipient_id===currentUser.id&&!m.is_read);
   if(unread.length)await supabaseClient.from('private_messages').update({is_read:true}).eq('recipient_id',currentUser.id).eq('is_read',false);
  }catch(e){console.error(e);inboxList.innerHTML='<div class="notification-empty">No se pudo cargar la bandeja.</div>'}
@@ -904,7 +923,7 @@ async function toggleInbox(){
  if(!inboxPanel)return;const opening=inboxPanel.hidden;closeHeaderMenus(inboxPanel);inboxPanel.hidden=!opening;if(opening)await loadInbox();
 }
 function closeHeaderMenus(except=null){
-  const menus=[inboxPanel,notificationPanel,activityPanel,settingsMenu];
+  const menus=[inboxPanel,conversationPanel,notificationPanel,activityPanel,settingsMenu];
   menus.forEach(menu=>{if(menu&&menu!==except)menu.hidden=true});
 }
 document.addEventListener('click',event=>{
@@ -916,6 +935,9 @@ document.addEventListener('click',event=>{
 });
 if(inboxBtn)inboxBtn.addEventListener('click',toggleInbox);
 if(refreshInboxBtn)refreshInboxBtn.addEventListener('click',loadInbox);
+if(conversationSendBtn)conversationSendBtn.addEventListener('click',sendConversationMessage);
+if(conversationBackBtn)conversationBackBtn.addEventListener('click',()=>{conversationPanel.hidden=true;inboxPanel.hidden=false});
+if(conversationCloseBtn)conversationCloseBtn.addEventListener('click',()=>{conversationPanel.hidden=true});
 if(notificationBtn)notificationBtn.addEventListener('click',toggleNotifications);
 if(activityBtn)activityBtn.addEventListener('click',toggleGlobalActivity);
 if(refreshActivityBtn)refreshActivityBtn.addEventListener('click',loadGlobalActivity);
