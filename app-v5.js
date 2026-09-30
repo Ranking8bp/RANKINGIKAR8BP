@@ -84,9 +84,16 @@ const RANKS=[
   {min:2100,name:'Diamante Negro'}
 ];
 
-const RANK_SPRITE_PARTS=Array.from({length:6},(_,i)=>
-  'assets/ranks/rank-sprite.part'+String(i+1).padStart(2,'0')+'.b64?v=1'
-);
+const RANK_SPRITE_PARTS=[
+  'assets/ranks/rank-sprite.part01.b64?v=2',
+  'assets/ranks/rank-sprite.part02.b64?v=2',
+  'assets/ranks/rank-sprite.part03a.b64?v=2',
+  'assets/ranks/rank-sprite.part03b.b64?v=2',
+  'assets/ranks/rank-sprite.part03c.b64?v=2',
+  'assets/ranks/rank-sprite.part04.b64?v=2',
+  'assets/ranks/rank-sprite.part05.b64?v=2',
+  'assets/ranks/rank-sprite.part06.b64?v=2'
+];
 let rankSpritePromise=null;
 
 function getRankByElo(value){
