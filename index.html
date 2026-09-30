@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>RANKING IKAR8BP</title>
-  <link rel="stylesheet" href="styles-v4.css" />
+  <link rel="stylesheet" href="styles-v5.css" />
 </head>
 <body>
   <main class="viewport-shell">
@@ -19,89 +19,175 @@
 
       <section class="guest-empty" id="guestEmpty"></section>
 
-      <section class="player-dashboard" id="playerDashboard" hidden>
-        <button class="dashboard-logout" id="logoutBtn" type="button">Cerrar sesión</button>
+      <section class="player-profile" id="playerDashboard" hidden>
+        <div class="profile-page-bg"></div>
 
-        <div class="dashboard-top">
-          <section class="avatar-panel">
-            <div class="avatar-frame">
+        <header class="profile-header">
+          <button class="icon-btn back-btn" id="backBtn" type="button" aria-label="Volver">‹</button>
+          <div class="profile-title-wrap">
+            <h1>PERFIL DEL JUGADOR</h1>
+            <div class="title-ornament"><span></span><b>⌄</b><span></span></div>
+          </div>
+          <button class="icon-btn settings-btn" id="settingsBtn" type="button" aria-label="Configuración">⚙</button>
+          <div class="settings-menu" id="settingsMenu" hidden>
+            <button id="logoutBtn" type="button">Cerrar sesión</button>
+          </div>
+        </header>
+
+        <section class="identity-section">
+          <div class="portrait-column">
+            <div class="portrait-frame">
               <img id="profileAvatar" alt="Foto de perfil" hidden />
               <div class="avatar-placeholder" id="avatarPlaceholder">👤</div>
-              <label class="avatar-camera" for="profilePhotoInput" aria-label="Cambiar foto de perfil">📷</label>
+              <label class="avatar-edit" for="profilePhotoInput" aria-label="Cambiar foto">✎</label>
               <input id="profilePhotoInput" class="hidden-file" type="file" accept="image/png,image/jpeg,image/webp" />
+              <div class="portrait-crown">◆</div>
             </div>
-          </section>
+          </div>
 
-          <section class="rank-panel">
-            <div class="rank-badge-wrap" aria-label="Rango actual">
-              <svg class="rank-badge-svg" viewBox="0 0 420 390" role="img" aria-labelledby="rankTitle">
-                <title id="rankTitle">Rango Latón</title>
-                <defs>
-                  <linearGradient id="bronzeOuter" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#6f3c10"/>
-                    <stop offset="18%" stop-color="#d99a3b"/>
-                    <stop offset="42%" stop-color="#704015"/>
-                    <stop offset="68%" stop-color="#f0b95b"/>
-                    <stop offset="100%" stop-color="#6b350d"/>
-                  </linearGradient>
-                  <linearGradient id="bronzeInner" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#57341c"/>
-                    <stop offset="100%" stop-color="#1f1712"/>
-                  </linearGradient>
-                  <radialGradient id="ballBlack" cx="32%" cy="20%" r="80%">
-                    <stop offset="0%" stop-color="#505050"/>
-                    <stop offset="28%" stop-color="#141414"/>
-                    <stop offset="100%" stop-color="#000000"/>
-                  </radialGradient>
-                  <filter id="goldGlow">
-                    <feGaussianBlur stdDeviation="3.5" result="blur"/>
-                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-                  </filter>
-                </defs>
-
-                <path d="M210 18 L318 78 L307 191 L210 278 L113 191 L102 78 Z"
-                  fill="url(#bronzeInner)" stroke="url(#bronzeOuter)" stroke-width="15"/>
-                <path d="M104 118 L28 88 L86 171 L19 158 L112 231 L139 184 Z"
-                  fill="url(#bronzeOuter)" stroke="#3f230d" stroke-width="5"/>
-                <path d="M316 118 L392 88 L334 171 L401 158 L308 231 L281 184 Z"
-                  fill="url(#bronzeOuter)" stroke="#3f230d" stroke-width="5"/>
-
-                <circle cx="210" cy="145" r="75" fill="#20150d" stroke="url(#bronzeOuter)" stroke-width="12"/>
-                <circle cx="210" cy="145" r="60" fill="url(#ballBlack)"/>
-                <ellipse cx="188" cy="119" rx="18" ry="11" fill="rgba(255,255,255,.45)"/>
-                <circle cx="210" cy="145" r="29" fill="#e7dcc7"/>
-                <text x="210" y="159" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="900" fill="#111">8</text>
-
-                <path d="M72 232 Q210 200 348 232 L330 319 Q210 351 90 319 Z"
-                  fill="#2a1b12" stroke="url(#bronzeOuter)" stroke-width="12" filter="url(#goldGlow)"/>
-                <text id="rankBadgeText" x="210" y="290" text-anchor="middle"
-                  font-family="Georgia, serif" font-size="48" font-weight="700"
-                  fill="#f1bb61" stroke="#3e230d" stroke-width="2" paint-order="stroke">Latón</text>
-              </svg>
+          <div class="identity-copy">
+            <div class="name-line">
+              <h2 id="dashboardPlayerName">JUGADOR</h2>
+              <span class="verified-mark">✓</span>
             </div>
-
-            <h1 class="player-name" id="dashboardPlayerName">JUGADOR</h1>
-            <div class="elo-line" id="dashboardElo">ELO / 200</div>
-          </section>
-        </div>
-
-        <div class="stats-row">
-          <section class="stat-column">
-            <h2>VICTORIAS</h2>
-            <div class="stat-box">
-              <span id="dashboardWins">0</span>
+            <div class="country-line">
+              <span class="country-flag" id="countryFlag">🌎</span>
+              <span id="countryName">País</span>
             </div>
-          </section>
+            <p class="profile-quote">“Disciplina hoy,<br>ranking mañana.”</p>
+          </div>
+        </section>
 
-          <section class="stat-column">
-            <h2>DERROTAS</h2>
-            <div class="stat-box">
-              <span id="dashboardLosses">0</span>
+        <section class="rank-hero-card">
+          <div class="rank-art">
+            <svg class="rank-badge-svg" viewBox="0 0 420 390" role="img" aria-labelledby="rankTitle">
+              <title id="rankTitle">Rango Latón</title>
+              <defs>
+                <linearGradient id="metalGold" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#6f4313"/>
+                  <stop offset="18%" stop-color="#e7bd62"/>
+                  <stop offset="40%" stop-color="#7c4d17"/>
+                  <stop offset="64%" stop-color="#f4d27e"/>
+                  <stop offset="100%" stop-color="#55320c"/>
+                </linearGradient>
+                <linearGradient id="darkMetal" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#263447"/>
+                  <stop offset="50%" stop-color="#071729"/>
+                  <stop offset="100%" stop-color="#020914"/>
+                </linearGradient>
+                <radialGradient id="ballBlack" cx="30%" cy="20%" r="80%">
+                  <stop offset="0%" stop-color="#525252"/>
+                  <stop offset="28%" stop-color="#151515"/>
+                  <stop offset="100%" stop-color="#000"/>
+                </radialGradient>
+                <filter id="blueGlow">
+                  <feGaussianBlur stdDeviation="6" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+
+              <path d="M210 18 L318 78 L307 191 L210 278 L113 191 L102 78 Z"
+                fill="url(#darkMetal)" stroke="url(#metalGold)" stroke-width="15"/>
+              <path d="M104 118 L28 88 L86 171 L19 158 L112 231 L139 184 Z"
+                fill="url(#metalGold)" stroke="#2f1b09" stroke-width="5"/>
+              <path d="M316 118 L392 88 L334 171 L401 158 L308 231 L281 184 Z"
+                fill="url(#metalGold)" stroke="#2f1b09" stroke-width="5"/>
+
+              <polygon points="210,60 246,119 210,185 174,119"
+                fill="#178cff" stroke="#81d3ff" stroke-width="7" filter="url(#blueGlow)"/>
+
+              <circle cx="210" cy="156" r="74" fill="#0d1621" stroke="url(#metalGold)" stroke-width="11"/>
+              <circle cx="210" cy="156" r="58" fill="url(#ballBlack)"/>
+              <ellipse cx="188" cy="132" rx="17" ry="10" fill="rgba(255,255,255,.45)"/>
+              <circle cx="210" cy="156" r="28" fill="#e9dfcb"/>
+              <text x="210" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="40" font-weight="900" fill="#111">8</text>
+
+              <path d="M72 244 Q210 214 348 244 L330 326 Q210 354 90 326 Z"
+                fill="#20150d" stroke="url(#metalGold)" stroke-width="11"/>
+              <text id="rankBadgeText" x="210" y="296" text-anchor="middle"
+                font-family="Georgia, serif" font-size="45" font-weight="700"
+                fill="#f1c970" stroke="#3e230d" stroke-width="2" paint-order="stroke">Latón</text>
+            </svg>
+          </div>
+
+          <div class="elo-block">
+            <div class="elo-label"><span class="elo-icon">▥</span> ELO <span class="info-dot">i</span></div>
+            <div class="elo-number" id="dashboardElo">200</div>
+            <div class="rank-caption">RANGO COMPETITIVO</div>
+          </div>
+        </section>
+
+        <section class="win-loss-grid">
+          <article class="result-card victory-card">
+            <div class="result-icon">🏆</div>
+            <div>
+              <div class="result-label">VICTORIAS</div>
+              <div class="result-number" id="dashboardWins">0</div>
             </div>
-          </section>
-        </div>
+          </article>
+
+          <article class="result-card defeat-card">
+            <div class="result-icon">⚔</div>
+            <div>
+              <div class="result-label">DERROTAS</div>
+              <div class="result-number" id="dashboardLosses">0</div>
+            </div>
+          </article>
+        </section>
+
+        <section class="general-stats-card">
+          <div class="section-title">
+            <span class="section-title-icon">▥</span>
+            <span>ESTADÍSTICAS GENERALES</span>
+            <span class="chevron">›</span>
+          </div>
+          <div class="general-stats-grid">
+            <div class="general-stat">
+              <span class="general-icon">⚔</span>
+              <small>PARTIDAS<br>JUGADAS</small>
+              <strong id="gamesPlayed">0</strong>
+            </div>
+            <div class="general-stat">
+              <span class="general-icon">◎</span>
+              <small>TASA DE VICTORIAS</small>
+              <strong id="winRate">0%</strong>
+            </div>
+            <div class="general-stat">
+              <span class="general-icon">♨</span>
+              <small>RACHA ACTUAL</small>
+              <strong id="currentStreak">0</strong>
+              <em>VICTORIAS</em>
+            </div>
+            <div class="general-stat">
+              <span class="general-icon">♟</span>
+              <small>MEJOR ELO</small>
+              <strong id="bestElo">200</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="profile-links">
+          <button type="button" class="profile-link-card">
+            <span class="link-icon">★</span>
+            <span>HISTORIAL<br>DE PARTIDAS</span>
+            <span class="chevron">›</span>
+          </button>
+          <button type="button" class="profile-link-card">
+            <span class="link-icon">▥</span>
+            <span>TABLA DE<br>CLASIFICACIÓN</span>
+            <span class="chevron">›</span>
+          </button>
+        </section>
 
         <p class="dashboard-message" id="dashboardMessage" aria-live="polite"></p>
+
+        <nav class="bottom-nav" aria-label="Navegación principal">
+          <button type="button"><span>⌂</span><small>INICIO</small></button>
+          <button type="button"><span>◆</span><small>COMPETIR</small></button>
+          <button type="button" class="active"><span>●</span><small>PERFIL</small></button>
+          <button type="button"><span>♟</span><small>AMIGOS</small></button>
+          <button type="button"><span>▣</span><small>TIENDA</small></button>
+        </nav>
       </section>
     </section>
   </main>
@@ -109,62 +195,29 @@
   <div class="modal-backdrop" id="registerModal" aria-hidden="true">
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="registerTitle">
       <button class="modal-close" id="closeRegisterModal" type="button" aria-label="Cerrar">×</button>
-
       <div class="modal-heading">
         <span class="modal-kicker">REGISTRO DE JUGADOR</span>
         <h2 id="registerTitle">Registrarse</h2>
         <p>Ingresa los datos de la cuenta que vas a utilizar.</p>
       </div>
-
       <form class="form-grid" id="registerForm" novalidate>
-        <label class="field">
-          <span class="field-label">Usuario</span>
-          <input id="username" type="text" autocomplete="username"
-            placeholder="Crea tu nombre de usuario" minlength="3" maxlength="30" required />
-          <span class="field-note">3 a 30 caracteres. Letras, números, punto, guion o guion bajo.</span>
-        </label>
-
-        <label class="field">
-          <span class="field-label">Contraseña</span>
-          <input id="password" type="password" autocomplete="new-password"
-            placeholder="Crea una contraseña" minlength="6" required />
-        </label>
-
-        <label class="field">
-          <span class="field-label">ID del juego</span>
-          <input id="gameId" type="text" inputmode="numeric" autocomplete="off"
-            placeholder="Ejemplo: 123456789" required />
-        </label>
-
-        <label class="field">
-          <span class="field-label">Nombre que tiene la cuenta</span>
-          <input id="accountName" type="text" autocomplete="off"
-            placeholder="Escribe el nombre de tu cuenta" required />
-        </label>
-
-        <label class="field">
-          <span class="field-label">País</span>
-          <input id="country" type="text" autocomplete="country-name"
-            placeholder="Ejemplo: México" required />
-        </label>
-
+        <label class="field"><span class="field-label">Usuario</span><input id="username" type="text" autocomplete="username" placeholder="Crea tu nombre de usuario" minlength="3" maxlength="30" required /><span class="field-note">3 a 30 caracteres. Letras, números, punto, guion o guion bajo.</span></label>
+        <label class="field"><span class="field-label">Contraseña</span><input id="password" type="password" autocomplete="new-password" placeholder="Crea una contraseña" minlength="6" required /></label>
+        <label class="field"><span class="field-label">ID del juego</span><input id="gameId" type="text" inputmode="numeric" autocomplete="off" placeholder="Ejemplo: 123456789" required /></label>
+        <label class="field"><span class="field-label">Nombre que tiene la cuenta</span><input id="accountName" type="text" autocomplete="off" placeholder="Escribe el nombre de tu cuenta" required /></label>
+        <label class="field"><span class="field-label">País</span><input id="country" type="text" autocomplete="country-name" placeholder="Ejemplo: México" required /></label>
         <div class="field">
           <span class="field-label">Captura de la cuenta</span>
           <p class="field-help">Sube una captura donde se vea claramente el ID del juego.</p>
-
           <label class="upload-box" id="uploadBox" for="accountScreenshot">
             <input id="accountScreenshot" type="file" accept="image/png,image/jpeg,image/webp" required />
-            <span class="upload-icon">＋</span>
-            <strong>Subir captura</strong>
-            <span>PNG, JPG o WEBP · máximo 10 MB</span>
+            <span class="upload-icon">＋</span><strong>Subir captura</strong><span>PNG, JPG o WEBP · máximo 10 MB</span>
           </label>
-
           <div class="preview-wrap" id="previewWrap" hidden>
             <img id="imagePreview" alt="Vista previa de la captura" />
             <button class="remove-image" id="removeImage" type="button">Cambiar captura</button>
           </div>
         </div>
-
         <p class="form-error" id="registerError" aria-live="polite"></p>
         <button class="submit-btn" id="registerSubmit" type="submit">Crear cuenta</button>
       </form>
@@ -174,24 +227,14 @@
   <div class="modal-backdrop" id="loginModal" aria-hidden="true">
     <div class="modal-card login-card" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
       <button class="modal-close" id="closeLoginModal" type="button" aria-label="Cerrar">×</button>
-
       <div class="modal-heading">
         <span class="modal-kicker">ACCESO DE JUGADOR</span>
         <h2 id="loginTitle">Iniciar sesión</h2>
         <p>Usa el usuario y la contraseña con los que te registraste.</p>
       </div>
-
       <form class="form-grid" id="loginForm" novalidate>
-        <label class="field">
-          <span class="field-label">Usuario</span>
-          <input id="loginUsername" type="text" autocomplete="username" placeholder="Tu usuario" required />
-        </label>
-
-        <label class="field">
-          <span class="field-label">Contraseña</span>
-          <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Tu contraseña" required />
-        </label>
-
+        <label class="field"><span class="field-label">Usuario</span><input id="loginUsername" type="text" autocomplete="username" placeholder="Tu usuario" required /></label>
+        <label class="field"><span class="field-label">Contraseña</span><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Tu contraseña" required /></label>
         <p class="form-error" id="loginError" aria-live="polite"></p>
         <button class="submit-btn" id="loginSubmit" type="submit">Entrar</button>
       </form>
@@ -199,9 +242,8 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config-v3.js"></script>
-  <script src="app-v4.js"></script>
+  <script src="app-v5.js"></script>
 </body>
 </html>
