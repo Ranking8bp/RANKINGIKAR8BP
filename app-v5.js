@@ -334,7 +334,7 @@ async function renderGuestRankShowcase(){
 
 async function loadGuestRanking(){
  if(!guestRankingList||!supabaseClient)return;
- guestRankingList.innerHTML='<div class="ranking-loading">Cargando clasificación...</div>';renderGuestRankShowcase().catch(()=>{});
+ guestRankingList.innerHTML='<div class="ranking-loading">Cargando clasificación...</div>';
  try{
   const {data,error}=await supabaseClient.rpc('get_public_ranking');if(error)throw error;
   const players=(Array.isArray(data)?data:[]).slice(0,100);guestRankingList.replaceChildren();
@@ -361,7 +361,9 @@ async function loadGuestRanking(){
 }
 
 function setGuestUI(){
-  currentUser=null;currentProfile=null;guestTopbar.hidden=false;guestEmpty.hidden=false;playerDashboard.hidden=true;settingsMenu.hidden=true;clearAvatar();loadGuestRanking().catch(()=>{})
+  currentUser=null;currentProfile=null;guestTopbar.hidden=false;guestEmpty.hidden=false;playerDashboard.hidden=true;settingsMenu.hidden=true;clearAvatar();
+  renderGuestRankShowcase().catch(()=>{});
+  loadGuestRanking().catch(()=>{});
 }
 function clearAvatar(){
   if(avatarPreviewUrl){URL.revokeObjectURL(avatarPreviewUrl);avatarPreviewUrl=''}
@@ -1121,3 +1123,4 @@ if(cloudReady){
   })
 }
 restoreSession();
+setTimeout(()=>{if(guestEmpty&&!guestEmpty.hidden)renderGuestRankShowcase().catch(()=>{})},300);
