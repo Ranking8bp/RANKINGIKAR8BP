@@ -794,7 +794,7 @@ function renderProfileComments(comments){
     item.className='profile-comment-item';item.dataset.commentId=String(comment.comment_id||'');
     const head=document.createElement('div');head.className='profile-comment-head';
     const author=document.createElement('strong');author.textContent=String(comment.author_name||'Jugador').toUpperCase();author.className='profile-comment-author';author.tabIndex=0;author.setAttribute('role','button');author.setAttribute('aria-label','Abrir perfil de '+String(comment.author_name||'Jugador'));
-    const openAuthorProfile=async()=>{if(!comment.author_id||!supabaseClient)return;try{const {data,error}=await supabaseClient.rpc('get_ranking');if(error)throw error;const player=(Array.isArray(data)?data:[]).find(p=>p.player_id===comment.author_id);if(!player){showToast('No se encontró ese perfil.');return}await openRankingPlayer(player)}catch(e){console.error(e);showToast('No se pudo abrir el perfil.')}};
+    const openAuthorProfile=async()=>{if(!comment.author_id||!supabaseClient)return;try{let {data,error}=await supabaseClient.rpc('get_profile_by_id',{p_player_id:comment.author_id});if(error)throw error;const player=Array.isArray(data)?data[0]:data;if(!player){showToast('No se encontró ese perfil.');return}await openRankingPlayer(player)}catch(e){console.error(e);showToast('No se pudo abrir el perfil.')}};
     author.addEventListener('click',openAuthorProfile);author.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openAuthorProfile()}});
     const date=document.createElement('time');date.textContent=formatCommentDate(comment.created_at);
     head.append(author,date);
