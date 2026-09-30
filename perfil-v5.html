@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />\n  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />\n  <meta http-equiv="Pragma" content="no-cache" />\n  <meta http-equiv="Expires" content="0" />
   <title>RANKING IKAR8BP</title>
-  <link rel="stylesheet" href="styles-v5.css?v=20260930-centerwl1" />
+  <link rel="stylesheet" href="styles-v5.css?v=20260930-ranking1" />
 </head>
 <body>
   <main class="viewport-shell">
@@ -84,6 +84,26 @@
               <div class="result-number" id="dashboardLosses">0</div>
             </div>
           </article>
+        </section>
+
+
+        <section class="ranking-card" id="rankingCard">
+          <div class="ranking-title">
+            <span class="ranking-crown">♛</span>
+            <span>TABLA DE CLASIFICACIÓN</span>
+            <span class="ranking-count" id="rankingCount"></span>
+          </div>
+
+          <div class="ranking-header">
+            <span>#</span>
+            <span>JUGADOR</span>
+            <span>PAÍS</span>
+            <span>ELO</span>
+          </div>
+
+          <div class="ranking-list" id="rankingList">
+            <div class="ranking-loading">Cargando clasificación...</div>
+          </div>
         </section>
 
         <section class="general-stats-card">
@@ -195,6 +215,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config-v3.js?v=20260930-0305"></script>
-  <script src="app-v5.js?v=20260930-ranks4"></script>
+  <script src="app-v5.js?v=20260930-ranking1"></script>
 </body>
 </html>

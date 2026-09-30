@@ -91,3 +91,41 @@ using (
   bucket_id = 'account-captures'
   and (storage.foldername(name))[1] = auth.uid()::text
 );
+
+
+-- CLASIFICACIÓN PÚBLICA PARA USUARIOS AUTENTICADOS
+-- Expone solamente datos necesarios para el ranking; no devuelve captura ni game_id.
+create or replace function public.get_ranking()
+returns table (
+  username text,
+  account_name text,
+  country text,
+  avatar_path text,
+  elo_points integer,
+  created_at timestamptz
+)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select
+    p.username,
+    p.account_name,
+    p.country,
+    p.avatar_path,
+    coalesce(p.elo_points, 200) as elo_points,
+    p.created_at
+  from public.profiles p
+  order by coalesce(p.elo_points, 200) desc, p.created_at asc, p.username asc;
+$$;
+
+revoke all on function public.get_ranking() from public;
+grant execute on function public.get_ranking() to authenticated;
+
+drop policy if exists "profile_photos_select_ranking" on storage.objects;
+create policy "profile_photos_select_ranking"
+on storage.objects
+for select
+to authenticated
+using (bucket_id = 'profile-photos');

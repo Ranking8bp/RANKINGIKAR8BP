@@ -261,3 +261,166 @@ button{cursor:pointer}
   margin-left:auto!important;
   margin-right:auto!important;
 }
+
+
+/* Tabla de clasificación */
+.ranking-card{
+  margin-top:24px;
+  border:1px solid #38526a;
+  border-radius:14px;
+  overflow:hidden;
+  background:linear-gradient(180deg,#071522 0%,#030a10 100%);
+  box-shadow:0 14px 34px rgba(0,0,0,.32);
+}
+.ranking-title{
+  min-height:82px;
+  padding:0 26px;
+  display:grid;
+  grid-template-columns:46px 1fr auto;
+  gap:12px;
+  align-items:center;
+  border-bottom:1px solid #1d3142;
+  font-size:27px;
+  font-weight:900;
+  color:#f2eee6;
+  letter-spacing:.4px;
+}
+.ranking-crown{
+  color:#f2c85f;
+  font-size:34px;
+  text-shadow:0 0 12px rgba(242,200,95,.25);
+}
+.ranking-count{
+  color:#62b7ff;
+  font:700 14px/1 Arial,sans-serif;
+  letter-spacing:.5px;
+  white-space:nowrap;
+}
+.ranking-header,
+.ranking-row{
+  display:grid;
+  grid-template-columns:76px minmax(0,1.35fr) minmax(180px,.9fr) 110px;
+  align-items:center;
+}
+.ranking-header{
+  min-height:54px;
+  padding:0 22px;
+  color:#8d9aa7;
+  font:800 16px/1 Arial,sans-serif;
+  border-bottom:1px solid #142635;
+}
+.ranking-header span:last-child{text-align:center}
+.ranking-row{
+  min-height:86px;
+  padding:0 22px;
+  border-bottom:1px solid #172836;
+  color:#eef2f5;
+  position:relative;
+}
+.ranking-row:last-child{border-bottom:0}
+.ranking-first{
+  margin:8px 14px;
+  min-height:92px;
+  padding:0 8px;
+  border:2px solid #d5a640;
+  border-radius:12px;
+  background:linear-gradient(90deg,rgba(140,92,16,.48),rgba(74,49,12,.25),rgba(151,100,18,.35));
+  box-shadow:0 0 18px rgba(223,172,63,.24),inset 0 0 18px rgba(255,201,79,.06);
+}
+.ranking-position{
+  text-align:center;
+  color:#b7c1ca;
+  font:800 22px/1 Arial,sans-serif;
+}
+.ranking-medal{
+  width:42px;height:50px;
+  margin:auto;
+  display:grid;
+  place-items:center;
+  clip-path:polygon(50% 0,90% 18%,82% 78%,50% 100%,18% 78%,10% 18%);
+  font:900 18px/1 Arial,sans-serif;
+  color:#fff;
+  text-shadow:0 2px 3px #000;
+}
+.ranking-medal-1{background:linear-gradient(#f8d775,#9d6515)}
+.ranking-medal-2{background:linear-gradient(#d7e0e8,#63727f)}
+.ranking-medal-3{background:linear-gradient(#dc9860,#794021)}
+.ranking-player{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.ranking-avatar{
+  width:52px;height:52px;flex:0 0 52px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  border:2px solid #497aa6;
+  background:linear-gradient(145deg,#10283c,#07101a);
+  color:#e8d18a;
+  font:900 20px/1 Arial,sans-serif;
+}
+.ranking-first .ranking-avatar{border-color:#d7a73b}
+.ranking-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.ranking-player-name{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:23px;
+  font-weight:800;
+}
+.ranking-country{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:#bac4cc;
+  font:700 18px/1.1 Arial,sans-serif;
+}
+.ranking-flag{font-size:28px;flex:0 0 auto}
+.ranking-country-name{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.ranking-elo{
+  text-align:center;
+  color:#eef2f5;
+  font-size:27px;
+  font-weight:900;
+}
+.ranking-first .ranking-elo{color:#f0c95f}
+.ranking-loading{
+  min-height:92px;
+  display:grid;
+  place-items:center;
+  padding:20px;
+  color:#7f909e;
+  font:700 15px/1.3 Arial,sans-serif;
+  text-align:center;
+}
+.ranking-error{color:#d97a7a}
+
+@media(max-width:700px){
+  .ranking-card{margin-top:12px;border-radius:8px}
+  .ranking-title{min-height:52px;padding:0 12px;grid-template-columns:28px 1fr auto;gap:7px;font-size:15px}
+  .ranking-crown{font-size:21px}
+  .ranking-count{font-size:9px}
+  .ranking-header,
+  .ranking-row{grid-template-columns:34px minmax(0,1.28fr) minmax(86px,.92fr) 52px}
+  .ranking-header{min-height:38px;padding:0 8px;font-size:9px}
+  .ranking-row{min-height:62px;padding:0 8px}
+  .ranking-first{margin:5px 6px;min-height:66px;padding:0 2px;border-width:1px;border-radius:7px}
+  .ranking-position{font-size:15px}
+  .ranking-medal{width:28px;height:34px;font-size:12px}
+  .ranking-player{gap:7px}
+  .ranking-avatar{width:35px;height:35px;flex-basis:35px;border-width:1px;font-size:13px}
+  .ranking-player-name{font-size:12px}
+  .ranking-country{gap:4px;font-size:10px}
+  .ranking-flag{font-size:17px}
+  .ranking-elo{font-size:15px}
+  .ranking-loading{min-height:62px;font-size:11px}
+}

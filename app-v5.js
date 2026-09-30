@@ -23,6 +23,8 @@ const currentStreak=document.getElementById('currentStreak');
 const bestElo=document.getElementById('bestElo');
 const dashboardMessage=document.getElementById('dashboardMessage');
 const rankBadgeImage=document.getElementById('rankBadgeImage');
+const rankingList=document.getElementById('rankingList');
+const rankingCount=document.getElementById('rankingCount');
 
 const registerModal=document.getElementById('registerModal');
 const closeRegisterModalBtn=document.getElementById('closeRegisterModal');
@@ -285,6 +287,95 @@ async function setPlayerUI(profile,user){
   dashboardMessage.textContent='';
 
   if(profile?.avatar_path){await loadAvatar(profile.avatar_path)}else{clearAvatar()}
+  await loadRanking();
+}
+
+
+function createRankingAvatar(player){
+  const wrap=document.createElement('div');
+  wrap.className='ranking-avatar';
+  const fallback=document.createElement('span');
+  const displayName=player?.username||player?.account_name||'J';
+  fallback.textContent=String(displayName).trim().charAt(0).toUpperCase()||'J';
+  wrap.appendChild(fallback);
+
+  if(player?.avatar_path&&supabaseClient){
+    supabaseClient.storage.from('profile-photos').createSignedUrl(player.avatar_path,3600)
+      .then(({data,error})=>{
+        if(error||!data?.signedUrl)return;
+        const img=document.createElement('img');
+        img.src=data.signedUrl;
+        img.alt='';
+        img.onload=()=>{wrap.replaceChildren(img)};
+      })
+      .catch(()=>{});
+  }
+  return wrap;
+}
+
+function buildRankingRow(player,index){
+  const row=document.createElement('div');
+  row.className='ranking-row'+(index===0?' ranking-first':index===1?' ranking-second':index===2?' ranking-third':'');
+  
+  const position=document.createElement('div');
+  position.className='ranking-position';
+  if(index<3){
+    const medal=document.createElement('span');
+    medal.className='ranking-medal ranking-medal-'+(index+1);
+    medal.textContent=String(index+1);
+    position.appendChild(medal);
+  }else{
+    position.textContent=String(index+1);
+  }
+
+  const playerCell=document.createElement('div');
+  playerCell.className='ranking-player';
+  playerCell.appendChild(createRankingAvatar(player));
+  const name=document.createElement('span');
+  name.className='ranking-player-name';
+  name.textContent=String(player?.username||player?.account_name||'Jugador').toUpperCase();
+  playerCell.appendChild(name);
+
+  const countryCell=document.createElement('div');
+  countryCell.className='ranking-country';
+  const flag=document.createElement('span');
+  flag.className='ranking-flag';
+  flag.textContent=getFlag(player?.country);
+  const countryText=document.createElement('span');
+  countryText.className='ranking-country-name';
+  countryText.textContent=player?.country||'País';
+  countryCell.append(flag,countryText);
+
+  const elo=document.createElement('div');
+  elo.className='ranking-elo';
+  elo.textContent=String(Number.isFinite(Number(player?.elo_points))?Number(player.elo_points):200);
+
+  row.append(position,playerCell,countryCell,elo);
+  return row;
+}
+
+async function loadRanking(){
+  if(!rankingList||!rankingCount||!supabaseClient)return;
+  rankingList.innerHTML='<div class="ranking-loading">Cargando clasificación...</div>';
+  rankingCount.textContent='';
+  try{
+    const {data,error}=await supabaseClient.rpc('get_ranking');
+    if(error)throw error;
+    const players=Array.isArray(data)?data:[];
+    rankingList.replaceChildren();
+    rankingCount.textContent=players.length+' '+(players.length===1?'JUGADOR':'JUGADORES');
+    if(!players.length){
+      const empty=document.createElement('div');
+      empty.className='ranking-loading';
+      empty.textContent='Todavía no hay jugadores registrados.';
+      rankingList.appendChild(empty);
+      return;
+    }
+    players.forEach((player,index)=>rankingList.appendChild(buildRankingRow(player,index)));
+  }catch(error){
+    console.error('Error cargando clasificación:',error);
+    rankingList.innerHTML='<div class="ranking-loading ranking-error">No se pudo cargar la clasificación.</div>';
+  }
 }
 
 async function getProfile(userId){
