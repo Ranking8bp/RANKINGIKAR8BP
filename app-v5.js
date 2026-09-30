@@ -46,12 +46,6 @@ const password=document.getElementById('password');
 const gameId=document.getElementById('gameId');
 const accountName=document.getElementById('accountName');
 const country=document.getElementById('country');
-const accountScreenshot=document.getElementById('accountScreenshot');
-const uploadBox=document.getElementById('uploadBox');
-const previewWrap=document.getElementById('previewWrap');
-const imagePreview=document.getElementById('imagePreview');
-const removeImage=document.getElementById('removeImage');
-
 const loginModal=document.getElementById('loginModal');
 const closeLoginModalBtn=document.getElementById('closeLoginModal');
 const loginForm=document.getElementById('loginForm');
@@ -64,7 +58,6 @@ const toast=document.getElementById('toast');
 let supabaseClient=null;
 let currentUser=null;
 let currentProfile=null;
-let screenshotPreviewUrl='';
 let avatarPreviewUrl='';
 let toastTimer;
 
@@ -233,7 +226,6 @@ async function renderRankBadge(rank){
 function normalizeUsername(value){return value.trim().toLowerCase()}
 function usernameToInternalEmail(value){return normalizeUsername(value)+'@login.rankingikar8bp.com'}
 function validUsername(value){return /^[a-zA-Z0-9._-]{3,30}$/.test(value)}
-function safeFileName(name){return name.toLowerCase().replace(/[^a-z0-9._-]/g,'-').replace(/-+/g,'-').slice(-80)}
 
 function showToast(message){
   toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);
@@ -483,11 +475,6 @@ async function restoreSession(){
   await setPlayerUI(profile,data.session.user)
 }
 
-function resetScreenshot(){
-  accountScreenshot.value='';uploadBox.hidden=false;previewWrap.hidden=true;imagePreview.removeAttribute('src');
-  if(screenshotPreviewUrl){URL.revokeObjectURL(screenshotPreviewUrl);screenshotPreviewUrl=''}
-}
-
 loginBtn.addEventListener('click',()=>{loginError.textContent='';openModal(loginModal,loginUsername)});
 registerBtn.addEventListener('click',()=>{registerError.textContent='';openModal(registerModal,username)});
 closeRegisterModalBtn.addEventListener('click',()=>closeModal(registerModal));
@@ -498,16 +485,6 @@ backBtn.addEventListener('click',()=>showToast('Perfil del jugador'));
 settingsBtn.addEventListener('click',()=>{settingsMenu.hidden=!settingsMenu.hidden});
 if(closePlayerDetail)closePlayerDetail.addEventListener('click',closeRankingPlayer);
 if(playerDetailModal)playerDetailModal.addEventListener('click',event=>{if(event.target===playerDetailModal)closeRankingPlayer()});
-
-accountScreenshot.addEventListener('change',()=>{
-  registerError.textContent='';const file=accountScreenshot.files?.[0];
-  if(!file){resetScreenshot();return}
-  if(!['image/png','image/jpeg','image/webp'].includes(file.type)){registerError.textContent='La captura debe ser PNG, JPG o WEBP.';resetScreenshot();return}
-  if(file.size>10*1024*1024){registerError.textContent='La captura no puede pesar más de 10 MB.';resetScreenshot();return}
-  if(screenshotPreviewUrl)URL.revokeObjectURL(screenshotPreviewUrl);
-  screenshotPreviewUrl=URL.createObjectURL(file);imagePreview.src=screenshotPreviewUrl;uploadBox.hidden=true;previewWrap.hidden=false
-});
-removeImage.addEventListener('click',resetScreenshot);
 
 profilePhotoInput.addEventListener('change',async()=>{
   dashboardMessage.textContent='';const file=profilePhotoInput.files?.[0];
@@ -536,10 +513,10 @@ registerForm.addEventListener('submit',async event=>{
   event.preventDefault();registerError.textContent='';
   if(!cloudReady){registerError.textContent='La nube todavía no está configurada.';return}
 
-  const usernameValue=username.value.trim(),passwordValue=password.value,idValue=gameId.value.trim(),nameValue=accountName.value.trim(),countryValue=country.value.trim(),screenshot=accountScreenshot.files?.[0];
+  const usernameValue=username.value.trim(),passwordValue=password.value,idValue=gameId.value.trim(),nameValue=accountName.value.trim(),countryValue=country.value.trim();
   if(!validUsername(usernameValue)){registerError.textContent='El usuario solo puede tener letras, números, punto, guion o guion bajo.';return}
   if(passwordValue.length<6){registerError.textContent='La contraseña debe tener al menos 6 caracteres.';return}
-  if(!idValue||!nameValue||!countryValue||!screenshot){registerError.textContent='Completa todos los datos y sube la captura.';return}
+  if(!idValue||!nameValue||!countryValue){registerError.textContent='Completa todos los datos.';return}
 
   setRegisterBusy(true);
   try{
@@ -550,16 +527,12 @@ registerForm.addEventListener('submit',async event=>{
     if(loginAfterRegisterError||!loginData?.session||!loginData?.user)throw new Error('La cuenta se creó, pero no se pudo iniciar la sesión automáticamente.');
 
     const userId=loginData.user.id;
-    const filePath=userId+'/'+Date.now()+'-'+safeFileName(screenshot.name||'captura.jpg');
-    const {error:uploadError}=await supabaseClient.storage.from('account-captures').upload(filePath,screenshot,{cacheControl:'3600',upsert:false,contentType:screenshot.type});
-    if(uploadError)throw new Error('No se pudo subir la captura: '+uploadError.message);
-
     const {data:newProfile,error:profileError}=await supabaseClient.from('profiles').insert({
-      id:userId,username:normalizeUsername(usernameValue),game_id:idValue,account_name:nameValue,country:countryValue,screenshot_path:filePath,avatar_path:null
+      id:userId,username:normalizeUsername(usernameValue),game_id:idValue,account_name:nameValue,country:countryValue,screenshot_path:null,avatar_path:null
     }).select('id, username, game_id, account_name, country, screenshot_path, avatar_path, rank_name, elo_points, wins, losses, created_at').single();
     if(profileError)throw new Error('No se pudo guardar el perfil: '+profileError.message);
 
-    registerForm.reset();resetScreenshot();closeModal(registerModal);await setPlayerUI(newProfile,loginData.user);showToast('Cuenta creada. Rango inicial: Latón · ELO 200.')
+    registerForm.reset();closeModal(registerModal);await setPlayerUI(newProfile,loginData.user);showToast('Cuenta creada. Rango inicial: Latón · ELO 200.')
   }catch(error){console.error(error);registerError.textContent=error?.message||'No se pudo crear la cuenta.'}
   finally{setRegisterBusy(false)}
 });

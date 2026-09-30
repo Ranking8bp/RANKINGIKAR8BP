@@ -214,18 +214,6 @@
         <label class="field"><span class="field-label">ID del juego</span><input id="gameId" type="text" inputmode="numeric" autocomplete="off" placeholder="Ejemplo: 123456789" required /></label>
         <label class="field"><span class="field-label">Nombre que tiene la cuenta</span><input id="accountName" type="text" autocomplete="off" placeholder="Escribe el nombre de tu cuenta" required /></label>
         <label class="field"><span class="field-label">País</span><input id="country" type="text" autocomplete="country-name" placeholder="Ejemplo: México" required /></label>
-        <div class="field">
-          <span class="field-label">Captura de la cuenta</span>
-          <p class="field-help">Sube una captura donde se vea claramente el ID del juego.</p>
-          <label class="upload-box" id="uploadBox" for="accountScreenshot">
-            <input id="accountScreenshot" type="file" accept="image/png,image/jpeg,image/webp" required />
-            <span class="upload-icon">＋</span><strong>Subir captura</strong><span>PNG, JPG o WEBP · máximo 10 MB</span>
-          </label>
-          <div class="preview-wrap" id="previewWrap" hidden>
-            <img id="imagePreview" alt="Vista previa de la captura" />
-            <button class="remove-image" id="removeImage" type="button">Cambiar captura</button>
-          </div>
-        </div>
         <p class="form-error" id="registerError" aria-live="polite"></p>
         <button class="submit-btn" id="registerSubmit" type="submit">Crear cuenta</button>
       </form>
@@ -252,6 +240,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config-v3.js?v=20260930-0305"></script>
-  <script src="app-v5.js?v=20260930-rankingfix2"></script>
+  <script src="app-v5.js?v=20260930-noscreenshot1"></script>
 </body>
 </html>
