@@ -965,3 +965,35 @@ html,body{color-scheme:dark!important}
  #playerDetailModal .player-heart-btn{width:104px!important;font-size:8px!important}
  #playerDetailModal .profile-comments{width:142px!important}
 }
+
+/* TikTok WebView final: mantener TODO dentro de la tarjeta */
+@media(max-width:700px){
+ #playerDetailModal .player-detail-card{width:calc(100vw - 42px)!important;max-width:390px!important;max-height:84dvh!important;overflow-y:auto!important;overflow-x:hidden!important}
+ #playerDetailModal .player-detail-head{min-height:104px!important;padding:12px 100px 12px 12px!important;gap:9px!important}
+ #playerDetailModal .player-detail-avatar{width:60px!important;height:60px!important;flex-basis:60px!important}
+ #playerDetailModal .player-detail-identity{max-width:180px!important}
+ #playerDetailModal .player-detail-identity h3{font-size:16px!important;max-width:180px!important}
+ #playerDetailModal .player-detail-country{font-size:9px!important}
+ #playerDetailModal .player-detail-rank{top:28px!important;right:8px!important;width:76px!important;min-width:76px!important;max-width:76px!important}
+ #playerDetailModal .player-detail-rank-badge{width:42px!important;height:42px!important}
+ #playerDetailModal .player-follow-area{box-sizing:border-box!important;display:grid!important;grid-template-columns:minmax(0,1fr) 142px!important;width:100%!important;margin:0!important;padding:8px 10px!important;gap:8px!important;overflow:hidden!important}
+ #playerDetailModal .player-follow-counts{min-width:0!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:2px!important}
+ #playerDetailModal .player-follow-counts strong{font-size:15px!important}
+ #playerDetailModal .player-follow-counts span{font-size:6px!important}
+ #playerDetailModal .player-profile-actions{min-width:0!important;width:142px!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:5px!important;margin:0!important}
+ #playerDetailModal .player-follow-btn{display:flex!important}
+ #playerDetailModal .player-follow-btn,#playerDetailModal .player-message-btn{box-sizing:border-box!important;width:100%!important;max-width:none!important;min-width:0!important;height:30px!important;padding:3px!important;font-size:6px!important}
+ #playerDetailModal .player-detail-stats{padding:10px!important;gap:7px!important}
+ #playerDetailModal .player-detail-stat{min-height:58px!important;padding:6px!important}
+ #playerDetailModal .player-detail-stat strong{font-size:17px!important}
+ #playerDetailModal .player-detail-id strong{font-size:15px!important}
+ #playerDetailModal .player-heart-area{box-sizing:border-box!important;display:block!important;min-height:0!important;margin:0 10px 10px!important;padding:10px!important;padding-right:0!important;overflow:visible!important}
+ #playerDetailModal .player-heart-btn{width:128px!important;height:38px!important;margin:12px auto 8px 4px!important}
+ #playerDetailModal .player-heart-count{width:145px!important;margin-left:0!important;justify-content:center!important}
+ #playerDetailModal .profile-comments{box-sizing:border-box!important;position:static!important;width:100%!important;max-width:100%!important;margin:10px 0 0!important;padding:9px!important;overflow:visible!important}
+ #playerDetailModal .profile-comment-form{display:grid!important;grid-template-columns:minmax(0,1fr) 72px!important;gap:7px!important}
+ #playerDetailModal .profile-comment-form textarea{box-sizing:border-box!important;width:100%!important;min-width:0!important;min-height:58px!important;font-size:8px!important}
+ #playerDetailModal .profile-comment-form button{box-sizing:border-box!important;width:72px!important;height:34px!important;font-size:7px!important}
+ #playerDetailModal .profile-comment-item{box-sizing:border-box!important;width:100%!important;max-width:100%!important;overflow:hidden!important}
+ #playerDetailModal .profile-comment-item *{max-width:100%!important;overflow-wrap:anywhere!important}
+}
