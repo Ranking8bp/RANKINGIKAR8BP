@@ -293,11 +293,14 @@ async function setPlayerUI(profile,user){
   winRate.textContent=rate+'%';
   currentStreak.textContent='0';
   bestElo.textContent=elo;
-  await renderRankBadge(rank);
   dashboardMessage.textContent='';
 
-  if(profile?.avatar_path){await loadAvatar(profile.avatar_path)}else{clearAvatar()}
-  await loadRanking();
+  // El ranking debe aparecer de inmediato en todos los perfiles.
+  // No esperamos a que termine de cargar/procesar la insignia.
+  const rankingTask=loadRanking();
+  const rankTask=renderRankBadge(rank);
+  const avatarTask=profile?.avatar_path?loadAvatar(profile.avatar_path):Promise.resolve(clearAvatar());
+  await Promise.allSettled([rankingTask,rankTask,avatarTask]);
 }
 
 
@@ -417,16 +420,36 @@ function buildRankingRow(player,index){
   return row;
 }
 
-async function loadRanking(){
+async function loadRanking(attempt=0){
   if(!rankingList||!rankingCount||!supabaseClient)return;
-  rankingList.innerHTML='<div class="ranking-loading">Cargando clasificación...</div>';
-  rankingCount.textContent='';
+  if(attempt===0){
+    rankingList.innerHTML='<div class="ranking-loading">Cargando clasificación...</div>';
+    rankingCount.textContent='';
+  }
+
   try{
+    const {data:sessionData}=await supabaseClient.auth.getSession();
+    if(!sessionData?.session){
+      if(attempt<8){
+        await new Promise(resolve=>setTimeout(resolve,250));
+        return loadRanking(attempt+1);
+      }
+      throw new Error('La sesión todavía no está disponible.');
+    }
+
     const {data,error}=await supabaseClient.rpc('get_ranking');
-    if(error)throw error;
+    if(error){
+      if(attempt<8&&(error.code==='42501'||/jwt|session|permission|authorized/i.test(error.message||''))){
+        await new Promise(resolve=>setTimeout(resolve,250));
+        return loadRanking(attempt+1);
+      }
+      throw error;
+    }
+
     const players=Array.isArray(data)?data:[];
     rankingList.replaceChildren();
     rankingCount.textContent=players.length+' '+(players.length===1?'JUGADOR':'JUGADORES');
+
     if(!players.length){
       const empty=document.createElement('div');
       empty.className='ranking-loading';
@@ -434,10 +457,12 @@ async function loadRanking(){
       rankingList.appendChild(empty);
       return;
     }
+
     players.forEach((player,index)=>rankingList.appendChild(buildRankingRow(player,index)));
   }catch(error){
     console.error('Error cargando clasificación:',error);
-    rankingList.innerHTML='<div class="ranking-loading ranking-error">No se pudo cargar la clasificación.</div>';
+    rankingList.innerHTML='<div class="ranking-loading ranking-error">No se pudo cargar la clasificación. Toca aquí para reintentar.</div>';
+    rankingList.onclick=()=>{rankingList.onclick=null;loadRanking()};
   }
 }
 
