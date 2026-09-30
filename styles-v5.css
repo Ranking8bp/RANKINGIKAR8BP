@@ -19,7 +19,7 @@ button{cursor:pointer}
 [hidden]{display:none!important}
 
 .viewport-shell{min-height:100dvh;display:flex;justify-content:center;background:#000}
-.site-canvas{width:min(100vw,1080px);min-height:100dvh;background:#000;color:var(--text);position:relative;overflow:hidden}
+.site-canvas{width:min(100vw,1080px);max-width:100%;min-height:100dvh;background:#000;color:var(--text);position:relative;overflow-x:hidden;overflow-y:visible}
 
 .guest-topbar{height:130px;padding:30px 42px;display:flex;justify-content:space-between;align-items:center;background:#07111c;border-bottom:1px solid #16283a}
 .topbar-actions{display:flex;gap:16px}
@@ -59,7 +59,7 @@ button{cursor:pointer}
 .identity-section{
   position:relative;z-index:2;display:grid;grid-template-columns:1.02fr 1.18fr;gap:60px;align-items:center;padding:8px 28px 30px;
 }
-.portrait-column{display:flex;justify-content:center}
+.portrait-column{display:flex;justify-content:center;min-width:0;max-width:100%}
 .portrait-frame{
   width:410px;height:410px;border-radius:50%;padding:12px;position:relative;
   background:linear-gradient(145deg,#85611e,#f2d380 32%,#5f4217 52%,#f9d97d 73%,#8b641f);
@@ -79,15 +79,15 @@ button{cursor:pointer}
 .hidden-file{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .portrait-crown{position:absolute;left:50%;bottom:-17px;transform:translateX(-50%);color:#dfbb5f;font-size:56px;text-shadow:0 0 12px #7f5a15}
 
-.identity-copy{align-self:center}
-.name-line{display:flex;align-items:center;gap:20px}
+.identity-copy{align-self:center;min-width:0;max-width:100%;overflow:hidden}
+.name-line{display:flex;align-items:center;gap:20px;min-width:0;max-width:100%}
 .name-line h2{font-size:66px;line-height:1;text-transform:uppercase;letter-spacing:1px;color:#f1ece4;text-shadow:0 3px 6px #000}
 .verified-mark{
   width:46px;height:46px;display:grid;place-items:center;transform:rotate(45deg);border:4px solid #3e9cff;border-radius:8px;color:#6eb7ff;
   font-family:Arial,sans-serif;font-size:28px
 }
 .verified-mark::first-letter{transform:rotate(-45deg)}
-.country-line{margin-top:28px;display:flex;align-items:center;gap:22px;font-size:38px;font-weight:700}
+.country-line{margin-top:28px;display:flex;align-items:center;gap:22px;font-size:38px;font-weight:700;min-width:0;max-width:100%}
 .country-flag{font-size:58px;line-height:1}
 .profile-quote{margin-top:28px;color:#87929e;font-style:italic;font-size:30px;line-height:1.25}
 
@@ -187,12 +187,16 @@ button{cursor:pointer}
   .icon-btn{width:44px;height:44px;font-size:37px}.settings-btn{font-size:32px}
   .profile-title-wrap h1{font-size:22px}.title-ornament{grid-template-columns:1fr 28px 1fr;margin-top:4px}.title-ornament b{font-size:22px}
   .settings-menu{top:58px;right:2px}
-  .identity-section{grid-template-columns:44% 56%;gap:8px;padding:7px 4px 14px}
+  .identity-section{grid-template-columns:minmax(0,44%) minmax(0,56%);gap:8px;padding:7px 4px 14px;width:100%;max-width:100%;box-sizing:border-box;overflow:hidden}
   .portrait-frame{width:165px;height:165px;padding:5px}.portrait-frame:before{inset:7px;border-width:1px;box-shadow:inset 0 0 0 2px #07121c}
   #profileAvatar,.avatar-placeholder{border-width:4px}.avatar-placeholder{font-size:58px}.avatar-edit{right:1px;bottom:8px;width:40px;height:40px;border-width:2px;font-size:21px}
   .portrait-crown{bottom:-10px;font-size:28px}
-  .name-line{gap:8px}.name-line h2{font-size:27px}.verified-mark{width:24px;height:24px;border-width:2px;border-radius:5px;font-size:14px}
-  .country-line{margin-top:12px;gap:7px;font-size:17px}.country-flag{font-size:30px}.profile-quote{margin-top:12px;font-size:14px}
+  .name-line{gap:6px;width:100%;max-width:100%;min-width:0;overflow:hidden}
+  .name-line h2{font-size:clamp(18px,6.4vw,27px);line-height:1;letter-spacing:0;min-width:0;max-width:calc(100% - 30px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .verified-mark{width:24px;height:24px;min-width:24px;flex:0 0 24px;border-width:2px;border-radius:5px;font-size:14px}
+  .country-line{margin-top:12px;gap:7px;font-size:clamp(14px,4.2vw,17px);min-width:0;max-width:100%;overflow:hidden}
+  .country-line #countryName{min-width:0;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .country-flag{font-size:30px;flex:0 0 auto}.profile-quote{margin-top:12px;font-size:14px;max-width:100%}
   .rank-hero-card{min-height:178px;margin-top:8px;grid-template-columns:44% 56%;border-radius:8px}
   .rank-art{padding:0}.rank-badge-image{width:165px;height:160px;font-size:17px;border-radius:10px}.elo-block{padding:8px}
   .elo-label{font-size:20px;gap:7px}.elo-icon{font-size:22px}.info-dot{width:20px;height:20px;border-width:1px;font-size:12px}
@@ -205,4 +209,12 @@ button{cursor:pointer}
   .bottom-nav{height:78px;padding:0 5px;border-radius:28px 28px 0 0}.bottom-nav button{height:65px;gap:3px}.bottom-nav button span{font-size:23px}.bottom-nav button small{font-size:9px}
   .dashboard-message{font-size:11px;margin-top:8px}
   .modal-backdrop{padding:14px}.modal-card{width:100%;max-height:calc(100dvh - 28px);padding:38px 22px 24px;border-radius:24px}.modal-card h2{font-size:31px}.modal-card p{font-size:16px}.field input[type="text"],.field input[type="password"]{height:58px;font-size:17px}.submit-btn{height:60px;font-size:18px}
+}
+@media(max-width:390px){
+  .player-profile{padding-left:8px;padding-right:8px}
+  .identity-section{grid-template-columns:minmax(0,42%) minmax(0,58%);gap:6px;padding-left:0;padding-right:0}
+  .portrait-frame{width:148px;height:148px}
+  .name-line h2{font-size:clamp(17px,6vw,23px);max-width:calc(100% - 28px)}
+  .verified-mark{width:22px;height:22px;min-width:22px;flex-basis:22px}
+  .country-line{font-size:14px}.country-flag{font-size:26px}
 }
