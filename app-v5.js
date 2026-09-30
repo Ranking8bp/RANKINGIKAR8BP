@@ -985,7 +985,8 @@ document.addEventListener('click',event=>{
   const insideActivity=activityPanel?.contains(event.target)||activityBtn?.contains(event.target);
   const insideSettings=settingsMenu?.contains(event.target)||settingsBtn?.contains(event.target);
   const insideInbox=inboxPanel?.contains(event.target)||inboxBtn?.contains(event.target);
-  if(!insideNotification&&!insideActivity&&!insideSettings&&!insideInbox)closeHeaderMenus();
+  const insideConversation=conversationPanel?.contains(event.target);
+  if(!insideNotification&&!insideActivity&&!insideSettings&&!insideInbox&&!insideConversation)closeHeaderMenus();
 });
 if(inboxBtn)inboxBtn.addEventListener('click',toggleInbox);
 if(refreshInboxBtn)refreshInboxBtn.addEventListener('click',loadInbox);
