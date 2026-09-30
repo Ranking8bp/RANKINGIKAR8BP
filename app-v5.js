@@ -47,6 +47,8 @@ const versusOpponentElo=document.getElementById('versusOpponentElo');
 const versusMyAvatar=document.getElementById('versusMyAvatar'),versusOpponentAvatar=document.getElementById('versusOpponentAvatar');
 const versusMyRank=document.getElementById('versusMyRank'),versusOpponentRank=document.getElementById('versusOpponentRank');
 const versusMyPosition=document.getElementById('versusMyPosition'),versusOpponentPosition=document.getElementById('versusOpponentPosition');
+const pendingMatchesCount=document.getElementById('pendingMatchesCount');
+let pendingMatchesTimer=null;
 let matchmakingTimer=null,currentRankedMatchId=null;
 const gamesPlayed=document.getElementById('gamesPlayed');
 const winRate=document.getElementById('winRate');
@@ -312,6 +314,12 @@ async function renderPlayerDetailRankBadge(rank){
 }
 
 
+
+async function updatePendingMatchesCount(){
+ if(!currentUser||!supabaseClient||!pendingMatchesCount)return;
+ try{const {data,error}=await supabaseClient.rpc('get_pending_ranked_matches_count');if(error)throw error;const n=Number(data)||0;pendingMatchesCount.textContent=n+' '+(n===1?'PARTIDO PENDIENTE':'PARTIDOS PENDIENTES')}catch(e){console.error(e)}
+}
+
 function showRankedMatch(match){
  if(!matchmakingModal)return;
  currentRankedMatchId=match.match_id;
@@ -327,6 +335,8 @@ function showRankedMatch(match){
  const setVsAvatar=(el,path,name)=>{if(!el)return;el.replaceChildren();if(path){const {data}=supabaseClient.storage.from('profile-photos').getPublicUrl(path);if(data?.publicUrl){const img=document.createElement('img');img.src=data.publicUrl;img.alt=name;el.appendChild(img);return}}const s=document.createElement('span');s.textContent=String(name||'?').charAt(0).toUpperCase();el.appendChild(s)};
  setVsAvatar(versusMyAvatar,match.my_avatar_path,currentProfile?.account_name||currentProfile?.username||'TÚ');
  setVsAvatar(versusOpponentAvatar,match.opponent_avatar_path,match.opponent_name);
+ updatePendingMatchesCount();
+ clearInterval(pendingMatchesTimer);pendingMatchesTimer=setInterval(updatePendingMatchesCount,5000);
 }
 async function pollRankedMatch(){
  if(!currentUser||!supabaseClient)return;
@@ -342,7 +352,7 @@ async function startRankedMatchmaking(){
  }catch(e){console.error(e);matchmakingModal.hidden=true;showToast('No se pudo iniciar la búsqueda de rival.')}
 }
 async function closeRankedMatchmaking(){
- clearInterval(matchmakingTimer);matchmakingTimer=null;
+ clearInterval(matchmakingTimer);matchmakingTimer=null;clearInterval(pendingMatchesTimer);pendingMatchesTimer=null;
  if(matchmakingModal)matchmakingModal.hidden=true;
  if(!currentRankedMatchId&&currentUser&&supabaseClient)await supabaseClient.rpc('cancel_ranked_matchmaking');
 }
