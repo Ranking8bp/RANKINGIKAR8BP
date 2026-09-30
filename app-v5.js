@@ -449,9 +449,36 @@ function renderNotifications(items){
       p.textContent=String(n.actor_name||'Alguien')+(n.type==='comment_heart'?' dio corazón a tu comentario.':' dio corazón a tu perfil.');
     }
     const t=document.createElement('time');t.textContent=formatCommentDate(n.created_at);
-    box.append(p,t);item.append(icon,box);notificationList.appendChild(item);
+    box.append(p,t);item.append(icon,box);
+    item.tabIndex=0;item.setAttribute('role','button');item.setAttribute('aria-label','Abrir lugar de esta notificación');
+    const go=()=>openNotificationTarget(n);
+    item.addEventListener('click',go);
+    item.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
+    notificationList.appendChild(item);
   });
 }
+async function openNotificationTarget(n){
+  if(!n?.target_profile_id||!supabaseClient)return;
+  try{
+    const {data,error}=await supabaseClient.rpc('get_ranking');
+    if(error)throw error;
+    const player=(Array.isArray(data)?data:[]).find(x=>x.player_id===n.target_profile_id);
+    if(!player){showToast('No se encontró ese perfil.');return}
+    if(notificationPanel)notificationPanel.hidden=true;
+    if(!n.is_read){
+      await supabaseClient.from('notifications').update({is_read:true}).eq('id',n.notification_id).eq('recipient_id',currentUser.id);
+      n.is_read=true;loadNotifications().catch(()=>{});
+    }
+    await openRankingPlayer(player);
+    setTimeout(()=>{
+      const target=n.comment_id&&profileCommentsList?.querySelector('[data-comment-id="'+n.comment_id+'"]');
+      const el=target||document.getElementById('profileComments')||playerDetailModal;
+      el?.scrollIntoView({behavior:'smooth',block:'center'});
+      if(target){target.classList.add('notification-target-flash');setTimeout(()=>target.classList.remove('notification-target-flash'),2200)}
+    },500);
+  }catch(error){console.error(error);showToast('No se pudo abrir la notificación.')}
+}
+
 async function loadNotifications(){
   if(!currentUser||!supabaseClient)return;
   try{
@@ -493,7 +520,7 @@ function renderProfileComments(comments){
   }
   comments.forEach(comment=>{
     const item=document.createElement('article');
-    item.className='profile-comment-item';
+    item.className='profile-comment-item';item.dataset.commentId=String(comment.comment_id||'');
     const head=document.createElement('div');head.className='profile-comment-head';
     const author=document.createElement('strong');author.textContent=String(comment.author_name||'Jugador').toUpperCase();
     const date=document.createElement('time');date.textContent=formatCommentDate(comment.created_at);
