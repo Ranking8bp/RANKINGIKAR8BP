@@ -4,6 +4,7 @@ const playerDashboard=document.getElementById('playerDashboard');
 const loginBtn=document.getElementById('loginBtn');
 const registerBtn=document.getElementById('registerBtn');
 const logoutBtn=document.getElementById('logoutBtn');
+const deleteAccountBtn=document.getElementById('deleteAccountBtn');
 const backBtn=document.getElementById('backBtn');
 const settingsBtn=document.getElementById('settingsBtn');
 const settingsMenu=document.getElementById('settingsMenu');
@@ -640,6 +641,46 @@ loginForm.addEventListener('submit',async event=>{
 });
 
 logoutBtn.addEventListener('click',async()=>{settingsMenu.hidden=true;if(supabaseClient)await supabaseClient.auth.signOut();setGuestUI();showToast('Sesión cerrada.')});
+
+if(deleteAccountBtn)deleteAccountBtn.addEventListener('click',async()=>{
+  settingsMenu.hidden=true;
+  if(!supabaseClient||!currentUser){showToast('No hay una sesión activa.');return}
+
+  const confirmed=window.confirm('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción es permanente y no se puede deshacer.');
+  if(!confirmed)return;
+
+  const confirmedAgain=window.confirm('ÚLTIMA CONFIRMACIÓN: se eliminarán tu cuenta, perfil, ELO, estadísticas, corazones y fotos asociadas. ¿Eliminar definitivamente?');
+  if(!confirmedAgain)return;
+
+  deleteAccountBtn.disabled=true;
+  dashboardMessage.textContent='Eliminando cuenta...';
+
+  try{
+    const pathsByBucket={};
+    if(currentProfile?.avatar_path)(pathsByBucket['profile-photos']??=[]).push(currentProfile.avatar_path);
+    if(currentProfile?.screenshot_path)(pathsByBucket['account-captures']??=[]).push(currentProfile.screenshot_path);
+
+    for(const [bucket,paths] of Object.entries(pathsByBucket)){
+      if(paths.length){
+        const {error:storageError}=await supabaseClient.storage.from(bucket).remove(paths);
+        if(storageError)console.warn('No se pudo borrar un archivo de '+bucket+':',storageError);
+      }
+    }
+
+    const {error}=await supabaseClient.rpc('delete_my_account');
+    if(error)throw error;
+
+    await supabaseClient.auth.signOut().catch(()=>{});
+    setGuestUI();
+    showToast('Tu cuenta fue eliminada permanentemente.');
+  }catch(error){
+    console.error('Error eliminando cuenta:',error);
+    dashboardMessage.textContent='No se pudo eliminar la cuenta. Inténtalo de nuevo.';
+    showToast('No se pudo eliminar la cuenta.');
+  }finally{
+    deleteAccountBtn.disabled=false;
+  }
+});
 
 if(cloudReady){
   supabaseClient.auth.onAuthStateChange(async(event,session)=>{
