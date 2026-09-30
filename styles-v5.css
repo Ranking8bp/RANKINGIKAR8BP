@@ -235,3 +235,29 @@ button{cursor:pointer}
   grid-template-columns:1fr!important;
   text-align:center;
 }
+
+
+/* Centrar automáticamente el contenido de VICTORIAS y DERROTAS */
+.win-loss-grid .result-card{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  grid-template-columns:none!important;
+}
+.win-loss-grid .result-copy{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  margin:0!important;
+}
+.win-loss-grid .result-label,
+.win-loss-grid .result-number{
+  width:100%;
+  text-align:center!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
