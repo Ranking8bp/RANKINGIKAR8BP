@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />\n  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />\n  <meta http-equiv="Pragma" content="no-cache" />\n  <meta http-equiv="Expires" content="0" />
   <title>RANKING IKAR8BP</title>
-  <link rel="stylesheet" href="styles-v5.css?v=20260930-detail-rank-badge" />
+  <link rel="stylesheet" href="styles-v5.css?v=20260930-comments1" />
 </head>
 <body>
   <main class="viewport-shell">
@@ -213,6 +213,20 @@
           <strong id="playerHeartCount">0</strong>
           <span id="playerHeartCountLabel">jugadores le dieron un corazón</span>
         </div>
+
+      <section class="profile-comments" id="profileComments">
+        <div class="profile-comments-title">
+          <strong>COMENTARIOS</strong>
+          <span id="profileCommentCount">0</span>
+        </div>
+        <form class="profile-comment-form" id="profileCommentForm">
+          <textarea id="profileCommentInput" maxlength="500" rows="3" placeholder="Escribe un comentario público..." required></textarea>
+          <button id="profileCommentSubmit" type="submit">PUBLICAR</button>
+        </form>
+        <div class="profile-comments-list" id="profileCommentsList">
+          <div class="profile-comments-empty">Cargando comentarios...</div>
+        </div>
+      </section>
       </div>
     </section>
   </div>
@@ -256,6 +270,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config-v3.js?v=20260930-0305"></script>
-  <script src="app-v5.js?v=20260930-detail-rank-badge"></script>
+  <script src="app-v5.js?v=20260930-comments1"></script>
 </body>
 </html>
