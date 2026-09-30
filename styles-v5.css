@@ -893,3 +893,15 @@ html,body{color-scheme:dark!important}
  .player-follow-counts strong{font-size:15px!important}.player-follow-counts span{font-size:6.5px!important}
  .player-follow-btn{max-width:64px!important;font-size:7px!important}.player-message-btn{max-width:58px!important;font-size:6.5px!important}
 }
+
+/* Perfil móvil definitivo: acciones en filas separadas para WebViews */
+@media(max-width:700px){
+ #playerDetailModal .player-follow-area{display:block!important;width:auto!important;max-width:none!important;margin:7px 8px!important;padding:8px!important;overflow:hidden!important}
+ #playerDetailModal .player-follow-counts{display:flex!important;width:100%!important;justify-content:space-around!important;align-items:center!important;gap:0!important;margin:0 0 8px!important}
+ #playerDetailModal .player-follow-counts>div{width:50%!important;min-width:0!important;text-align:center!important}
+ #playerDetailModal .player-follow-counts strong{display:block!important;font:900 16px/1 Arial,sans-serif!important}
+ #playerDetailModal .player-follow-counts span{display:block!important;margin-top:3px!important;font:700 7px/1 Arial,sans-serif!important;letter-spacing:0!important}
+ #playerDetailModal .player-profile-actions{display:grid!important;grid-template-columns:1fr 1fr!important;width:100%!important;gap:6px!important}
+ #playerDetailModal .player-follow-btn,#playerDetailModal .player-message-btn{display:flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;width:100%!important;max-width:none!important;min-width:0!important;height:32px!important;margin:0!important;padding:4px 5px!important;font:900 8px/1 Arial,sans-serif!important;letter-spacing:0!important;white-space:nowrap!important}
+ #playerDetailModal .player-message-btn{font-size:7px!important}
+}
