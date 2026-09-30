@@ -663,12 +663,22 @@ async function loadFollowStats(player){
   if(playerFollowBtn){const own=player.player_id===currentUser?.id;playerFollowBtn.hidden=own;playerFollowBtn.dataset.following=s?.viewer_follows?'1':'0';playerFollowBtn.dataset.friend=s?.is_friend?'1':'0';playerFollowBtn.textContent=s?.is_friend?'AMIGOS':(s?.viewer_follows?'SIGUIENDO':'SEGUIR');playerFollowBtn.classList.toggle('following',!!s?.viewer_follows);playerFollowBtn.classList.toggle('friends',!!s?.is_friend)}
  }catch(e){console.error('Error seguidores:',e)}
 }
-function openPrivateMessage(){
- if(!currentDetailPlayer||currentDetailPlayer.player_id===currentUser?.id||!privateMessageModal)return;
- privateMessageTo.textContent='Para: '+String(currentDetailPlayer.username||currentDetailPlayer.account_name||'Jugador');
- privateMessageInput.value='';privateMessageModal.hidden=false;setTimeout(()=>privateMessageInput.focus(),50);
+function openPrivateMessage(event){
+ if(event){event.preventDefault();event.stopPropagation()}
+ const player=currentDetailPlayer;
+ if(!player||player.player_id===currentUser?.id)return;
+ if(!privateMessageModal||!privateMessageInput||!privateMessageSend){showToast('No se pudo abrir el mensaje.');return}
+ privateMessageTo.textContent='Para: '+String(player.username||player.account_name||'Jugador');
+ privateMessageInput.value='';
+ privateMessageModal.hidden=false;
+ privateMessageModal.style.display='grid';
+ privateMessageInput.disabled=false;
+ privateMessageInput.readOnly=false;
+ privateMessageInput.style.pointerEvents='auto';
+ privateMessageInput.style.userSelect='text';
+ setTimeout(()=>{privateMessageInput.focus();privateMessageInput.click()},100);
 }
-function closePrivateMessage(){if(privateMessageModal)privateMessageModal.hidden=true}
+function closePrivateMessage(){if(privateMessageModal){privateMessageModal.hidden=true;privateMessageModal.style.display=''}}
 async function sendPrivateMessage(){
  const target=currentDetailPlayer?.player_id,body=privateMessageInput?.value.trim();
  if(!target||!body||!currentUser||!supabaseClient)return;
