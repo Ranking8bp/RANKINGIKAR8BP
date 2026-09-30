@@ -832,6 +832,40 @@ html,body{color-scheme:dark!important}
 .general-chat-profile-link{cursor:pointer!important}.general-chat-message strong.general-chat-profile-link{text-decoration:underline;text-decoration-color:rgba(232,199,103,.45);text-underline-offset:3px}.general-chat-profile-link:hover{filter:brightness(1.2)}
 
 .push-enable-area{display:flex;justify-content:center;margin:-16px 0 25px}.push-enable-btn{width:min(690px,92%);padding:13px 25px;border:1px solid #715c2d;border-radius:11px;background:#0b171f;color:#e7c86f;font:900 13px Arial,sans-serif;letter-spacing:.8px;cursor:pointer}.push-enable-btn.enabled{border-color:#397d55;background:#102b1d;color:#9fe0b7}@media(max-width:520px){.push-enable-area{margin:-10px 0 20px}.push-enable-btn{width:92%;font-size:11px}}
+.whatsapp-contact-area{display:flex;justify-content:center;margin:-8px 0 26px}
+.whatsapp-contact-btn{
+  width:min(690px,92%);
+  min-height:72px;
+  padding:5px 22px 5px 9px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:16px;
+  border:0;
+  border-radius:38px;
+  background:linear-gradient(180deg,#20cf2f 0%,#08a51b 100%);
+  color:#fff;
+  font:900 21px Arial,sans-serif;
+  letter-spacing:.1px;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.35),0 4px 12px rgba(0,0,0,.3);
+  cursor:pointer;
+  text-shadow:0 1px 2px rgba(0,0,0,.25);
+}
+.whatsapp-contact-icon{
+  width:58px;height:58px;min-width:58px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  background:#fff;
+  color:#18b62b;
+  font:900 34px/1 Arial,sans-serif;
+  box-shadow:0 1px 3px rgba(0,0,0,.2);
+}
+.whatsapp-contact-btn:active{transform:scale(.985)}
+@media(max-width:520px){
+  .whatsapp-contact-area{margin:-4px 0 20px}
+  .whatsapp-contact-btn{width:92%;min-height:58px;font-size:15px;gap:10px;padding-right:15px}
+  .whatsapp-contact-icon{width:46px;height:46px;min-width:46px;font-size:27px}
+}
 
 /* Ficha de jugador compacta para WebView móvil (TikTok incluido) */
 @media(max-width:700px){
