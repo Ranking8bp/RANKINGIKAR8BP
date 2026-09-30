@@ -417,8 +417,8 @@ async function loadAdminMatches(){
  adminMatchList.innerHTML='<div class="admin-empty">Cargando...</div>';
  try{
   const {data,error}=await supabaseClient.rpc('admin_get_ranked_matches');if(error)throw error;
-  const rows=Array.isArray(data)?data:[];adminMatchList.replaceChildren();
-  if(!rows.length){adminMatchList.innerHTML='<div class="admin-empty">No hay emparejamientos.</div>';return}
+  const rows=(Array.isArray(data)?data:[]).filter(m=>m.status==='matched');adminMatchList.replaceChildren();
+  if(!rows.length){adminMatchList.innerHTML='<div class="admin-empty">No hay partidos en espera.</div>';return}
   for(const m of rows){
    const row=document.createElement('article');row.className='admin-match '+m.status;
    const title=document.createElement('div');title.className='admin-match-vs admin-match-vs-rich';
