@@ -905,3 +905,28 @@ html,body{color-scheme:dark!important}
  #playerDetailModal .player-follow-btn,#playerDetailModal .player-message-btn{display:flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;width:100%!important;max-width:none!important;min-width:0!important;height:32px!important;margin:0!important;padding:4px 5px!important;font:900 8px/1 Arial,sans-serif!important;letter-spacing:0!important;white-space:nowrap!important}
  #playerDetailModal .player-message-btn{font-size:7px!important}
 }
+
+/* TikTok: ficha de jugador en una sola columna, sin desbordes */
+@media(max-width:700px){
+ #playerDetailModal .player-detail-card{width:calc(100vw - 24px)!important;max-width:430px!important;box-sizing:border-box!important}
+ #playerDetailModal .player-follow-area{display:flex!important;flex-direction:column!important;width:auto!important;margin:8px!important;padding:10px!important;gap:10px!important;overflow:visible!important}
+ #playerDetailModal .player-follow-counts{display:grid!important;grid-template-columns:1fr 1fr!important;width:100%!important;gap:8px!important;margin:0!important}
+ #playerDetailModal .player-follow-counts>div{width:auto!important}
+ #playerDetailModal .player-follow-counts strong{font-size:18px!important}
+ #playerDetailModal .player-follow-counts span{font-size:8px!important;white-space:nowrap!important}
+ #playerDetailModal .player-profile-actions{display:grid!important;grid-template-columns:1fr 1fr!important;width:100%!important;gap:8px!important}
+ #playerDetailModal .player-follow-btn,#playerDetailModal .player-message-btn{width:100%!important;max-width:100%!important;height:38px!important;font-size:9px!important}
+ #playerDetailModal .player-heart-area{display:flex!important;flex-direction:column!important;align-items:stretch!important;width:auto!important;margin:8px!important;padding:10px!important;gap:8px!important;min-height:0!important}
+ #playerDetailModal .player-heart-btn{width:100%!important;min-width:0!important;height:42px!important;font-size:10px!important}
+ #playerDetailModal .player-heart-icon{font-size:20px!important}
+ #playerDetailModal .player-heart-count{width:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;text-align:center!important}
+ #playerDetailModal .player-heart-count strong{font-size:18px!important}
+ #playerDetailModal .player-heart-count span{font-size:8px!important;line-height:1.2!important;max-width:none!important}
+ #playerDetailModal .profile-comments{box-sizing:border-box!important;width:auto!important;margin:8px!important;padding:10px!important;display:block!important;position:static!important;float:none!important}
+ #playerDetailModal .profile-comments-title{width:100%!important}
+ #playerDetailModal .profile-comment-form{width:100%!important;display:block!important}
+ #playerDetailModal .profile-comment-form textarea{box-sizing:border-box!important;width:100%!important;min-height:70px!important;font-size:10px!important}
+ #playerDetailModal .profile-comment-form button{box-sizing:border-box!important;width:100%!important;height:38px!important;margin-top:7px!important;font-size:9px!important}
+ #playerDetailModal .profile-comments-list{width:100%!important}
+ #playerDetailModal .profile-comments-empty{font-size:9px!important;padding:18px 8px!important}
+}
