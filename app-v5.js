@@ -551,19 +551,27 @@ async function setPlayerUI(profile,user){
   dashboardPlayerName.textContent=String(playerName).toUpperCase();
   countryName.textContent=profile?.country||'País';
   countryFlag.textContent=getFlag(profile?.country);
-  dashboardElo.textContent=elo;
-  dashboardWins.textContent=wins;
-  dashboardLosses.textContent=losses;
-  gamesPlayed.textContent=games;
-  winRate.textContent=rate+'%';
-  currentStreak.textContent='0';
-  bestElo.textContent=elo;
+  const isAdminDashboard=profile?.is_admin===true||String(profile?.username||'').toLowerCase()==='ikar8bp';
+  const rankHero=document.querySelector('#playerDashboard .rank-hero-card');
+  const winLossGrid=document.querySelector('#playerDashboard .win-loss-grid');
+  if(isAdminDashboard){
+    if(rankHero){rankHero.hidden=false;rankHero.classList.add('admin-only-card');rankHero.innerHTML='<div class="admin-only-title">ADMINISTRADOR</div>';}
+    if(winLossGrid)winLossGrid.hidden=true;
+  }else{
+    if(rankHero){rankHero.hidden=false;rankHero.classList.remove('admin-only-card');}
+    if(winLossGrid)winLossGrid.hidden=false;
+    dashboardElo.textContent=elo;
+    dashboardWins.textContent=wins;
+    dashboardLosses.textContent=losses;
+  }
+  gamesPlayed.textContent=isAdminDashboard?'—':games;
+  winRate.textContent=isAdminDashboard?'—':rate+'%';
+  currentStreak.textContent=isAdminDashboard?'—':'0';
+  bestElo.textContent=isAdminDashboard?'—':elo;
   dashboardMessage.textContent='';
 
-  // El ranking debe aparecer de inmediato en todos los perfiles.
-  // No esperamos a que termine de cargar/procesar la insignia.
   const rankingTask=loadRanking();
-  const rankTask=renderRankBadge(rank);
+  const rankTask=isAdminDashboard?Promise.resolve():renderRankBadge(rank);
   const avatarTask=profile?.avatar_path?loadAvatar(profile.avatar_path):Promise.resolve(clearAvatar());
   const followTask=loadDashboardFollowStats(profile?.id||user?.id);
   await Promise.allSettled([rankingTask,rankTask,avatarTask,followTask]);
