@@ -45,6 +45,9 @@ const playerDetailRankBadge=document.getElementById('playerDetailRankBadge');
 const playerHeartBtn=document.getElementById('playerHeartBtn');
 const playerHeartCount=document.getElementById('playerHeartCount');
 const playerHeartCountLabel=document.getElementById('playerHeartCountLabel');
+const playerFollowBtn=document.getElementById('playerFollowBtn');
+const playerFollowersCount=document.getElementById('playerFollowersCount');
+const playerFollowingCount=document.getElementById('playerFollowingCount');
 const profileCommentForm=document.getElementById('profileCommentForm');
 const profileCommentInput=document.getElementById('profileCommentInput');
 const profileCommentSubmit=document.getElementById('profileCommentSubmit');
@@ -627,6 +630,25 @@ function closeRankingPlayer(){
   document.body.classList.remove('player-detail-open');
 }
 
+async function loadFollowStats(player){
+ if(!supabaseClient||!player?.player_id)return;
+ try{
+  const {data,error}=await supabaseClient.rpc('get_follow_stats',{p_profile_id:player.player_id});if(error)throw error;
+  const s=Array.isArray(data)?data[0]:data;
+  if(playerFollowersCount)playerFollowersCount.textContent=String(s?.followers||0);
+  if(playerFollowingCount)playerFollowingCount.textContent=String(s?.following||0);
+  if(playerFollowBtn){const own=player.player_id===currentUser?.id;playerFollowBtn.hidden=own;playerFollowBtn.dataset.following=s?.viewer_follows?'1':'0';playerFollowBtn.textContent=s?.viewer_follows?'SIGUIENDO':'SEGUIR';playerFollowBtn.classList.toggle('following',!!s?.viewer_follows)}
+ }catch(e){console.error('Error seguidores:',e)}
+}
+async function toggleFollow(){
+ const player=currentDetailPlayer;if(!currentUser||!supabaseClient||!player?.player_id||player.player_id===currentUser.id)return;
+ const following=playerFollowBtn?.dataset.following==='1';
+ try{
+  if(following){const {error}=await supabaseClient.from('profile_follows').delete().eq('follower_id',currentUser.id).eq('following_id',player.player_id);if(error)throw error}
+  else{const {error}=await supabaseClient.from('profile_follows').insert({follower_id:currentUser.id,following_id:player.player_id});if(error)throw error}
+  await loadFollowStats(player);
+ }catch(e){console.error(e);showToast('No se pudo actualizar el seguimiento.')}
+}
 async function openRankingPlayer(player){
   if(!playerDetailModal)return;
   currentDetailPlayer=player;
@@ -665,6 +687,7 @@ async function openRankingPlayer(player){
   document.body.classList.add('player-detail-open');
 
   loadPlayerHeartState(player).catch(error=>console.error('Error cargando corazones:',error));
+  loadFollowStats(player).catch(error=>console.error('Error cargando seguidores:',error));
   loadProfileComments().catch(error=>console.error('Error cargando comentarios:',error));
 
   if(player?.avatar_path&&supabaseClient){
@@ -799,6 +822,7 @@ backBtn.addEventListener('click',()=>showToast('Perfil del jugador'));
 settingsBtn.addEventListener('click',()=>{settingsMenu.hidden=!settingsMenu.hidden});
 if(closePlayerDetail)closePlayerDetail.addEventListener('click',closeRankingPlayer);
 if(playerHeartBtn)playerHeartBtn.addEventListener('click',togglePlayerHeart);
+if(playerFollowBtn)playerFollowBtn.addEventListener('click',toggleFollow);
 if(profileCommentForm)profileCommentForm.addEventListener('submit',submitProfileComment);
 if(notificationBtn)notificationBtn.addEventListener('click',toggleNotifications);
 if(activityBtn)activityBtn.addEventListener('click',toggleGlobalActivity);
