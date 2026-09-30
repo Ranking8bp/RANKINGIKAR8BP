@@ -61,6 +61,10 @@ const profileCommentInput=document.getElementById('profileCommentInput');
 const profileCommentSubmit=document.getElementById('profileCommentSubmit');
 const profileCommentsList=document.getElementById('profileCommentsList');
 const profileCommentCount=document.getElementById('profileCommentCount');
+const inboxBtn=document.getElementById('inboxBtn');
+const inboxPanel=document.getElementById('inboxPanel');
+const inboxList=document.getElementById('inboxList');
+const refreshInboxBtn=document.getElementById('refreshInboxBtn');
 const notificationBtn=document.getElementById('notificationBtn');
 const notificationBadge=document.getElementById('notificationBadge');
 const notificationPanel=document.getElementById('notificationPanel');
@@ -863,17 +867,45 @@ if(privateMessageClose)privateMessageClose.addEventListener('click',closePrivate
 if(privateMessageSend)privateMessageSend.addEventListener('click',sendPrivateMessage);
 if(privateMessageModal)privateMessageModal.addEventListener('click',e=>{if(e.target===privateMessageModal)closePrivateMessage()});
 if(profileCommentForm)profileCommentForm.addEventListener('submit',submitProfileComment);
+function renderInbox(items){
+ if(!inboxList)return;inboxList.replaceChildren();
+ if(!items.length){inboxList.innerHTML='<div class="notification-empty">No tienes mensajes.</div>';return}
+ items.forEach(m=>{
+  const incoming=m.recipient_id===currentUser?.id;
+  const item=document.createElement('article');item.className='notification-item inbox-message'+(incoming&&!m.is_read?' unread':'');
+  const icon=document.createElement('span');icon.className='notification-type-icon';icon.textContent=incoming?'📩':'📤';
+  const box=document.createElement('div');box.className='notification-copy';
+  const p=document.createElement('p');
+  const who=incoming?('De: '+String(m.sender_name||'Jugador')):('Para: '+String(m.recipient_name||'Jugador'));
+  const b=document.createElement('b');b.textContent=who;p.append(b,document.createElement('br'),document.createTextNode(String(m.body||'')));
+  const t=document.createElement('time');t.textContent=formatCommentDate(m.created_at);box.append(p,t);item.append(icon,box);inboxList.appendChild(item);
+ });
+}
+async function loadInbox(){
+ if(!currentUser||!supabaseClient||!inboxList)return;
+ try{
+  const {data,error}=await supabaseClient.rpc('get_my_private_messages');if(error)throw error;
+  const items=Array.isArray(data)?data:[];renderInbox(items);
+  const unread=items.filter(m=>m.recipient_id===currentUser.id&&!m.is_read);
+  if(unread.length)await supabaseClient.from('private_messages').update({is_read:true}).eq('recipient_id',currentUser.id).eq('is_read',false);
+ }catch(e){console.error(e);inboxList.innerHTML='<div class="notification-empty">No se pudo cargar la bandeja.</div>'}
+}
+async function toggleInbox(){
+ if(!inboxPanel)return;const opening=inboxPanel.hidden;closeHeaderMenus(inboxPanel);inboxPanel.hidden=!opening;if(opening)await loadInbox();
+}
 function closeHeaderMenus(except=null){
-  const menus=[notificationPanel,activityPanel,settingsMenu];
+  const menus=[inboxPanel,notificationPanel,activityPanel,settingsMenu];
   menus.forEach(menu=>{if(menu&&menu!==except)menu.hidden=true});
 }
 document.addEventListener('click',event=>{
   const insideNotification=notificationPanel?.contains(event.target)||notificationBtn?.contains(event.target);
   const insideActivity=activityPanel?.contains(event.target)||activityBtn?.contains(event.target);
   const insideSettings=settingsMenu?.contains(event.target)||settingsBtn?.contains(event.target);
-  const insideInbox=document.getElementById('inboxBtn')?.contains(event.target);
+  const insideInbox=inboxPanel?.contains(event.target)||inboxBtn?.contains(event.target);
   if(!insideNotification&&!insideActivity&&!insideSettings&&!insideInbox)closeHeaderMenus();
 });
+if(inboxBtn)inboxBtn.addEventListener('click',toggleInbox);
+if(refreshInboxBtn)refreshInboxBtn.addEventListener('click',loadInbox);
 if(notificationBtn)notificationBtn.addEventListener('click',toggleNotifications);
 if(activityBtn)activityBtn.addEventListener('click',toggleGlobalActivity);
 if(refreshActivityBtn)refreshActivityBtn.addEventListener('click',loadGlobalActivity);
