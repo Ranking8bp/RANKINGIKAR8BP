@@ -756,3 +756,8 @@ button{cursor:pointer}
 
 .guest-ranking-player{position:relative}.guest-ranking-player-info{min-width:0;display:flex;flex-direction:column;gap:4px}.guest-ranking-player-info b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.guest-ranking-rank{color:#d8b75e;font:900 8px Arial,sans-serif;letter-spacing:.6px}.guest-ranking-rank-badge{flex:0 0 34px;width:34px;height:34px;background-repeat:no-repeat;background-size:500% 400%;background-position:center;border-radius:5px}.guest-ranking-avatar{flex-basis:42px!important;width:42px!important;height:42px!important}
 @media(max-width:620px){.guest-ranking-rank-badge{width:28px;height:28px;flex-basis:28px}.guest-ranking-avatar{width:36px!important;height:36px!important;flex-basis:36px!important}.guest-ranking-rank{font-size:7px}}
+
+/* Botón JUGAR principal x3 */
+.dashboard-play-area{margin:12px 0 28px!important}
+.dashboard-play-btn{width:min(690px,92%)!important;min-width:0!important;padding:30px 48px!important;border-radius:18px!important;font-size:30px!important;letter-spacing:2.5px!important;box-shadow:0 10px 34px rgba(211,169,78,.32)!important}
+@media(max-width:520px){.dashboard-play-btn{width:92%!important;padding:24px 30px!important;font-size:25px!important;border-radius:16px!important}}
