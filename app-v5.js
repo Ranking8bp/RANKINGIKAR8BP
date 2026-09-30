@@ -48,6 +48,7 @@ const versusMyAvatar=document.getElementById('versusMyAvatar'),versusOpponentAva
 const versusMyRank=document.getElementById('versusMyRank'),versusOpponentRank=document.getElementById('versusOpponentRank');
 const versusMyPosition=document.getElementById('versusMyPosition'),versusOpponentPosition=document.getElementById('versusOpponentPosition');
 const pendingMatchesCount=document.getElementById('pendingMatchesCount');
+const abandonRankedBtn=document.getElementById('abandonRankedBtn');
 let pendingMatchesTimer=null;
 let matchmakingTimer=null,currentRankedMatchId=null;
 const gamesPlayed=document.getElementById('gamesPlayed');
@@ -314,6 +315,18 @@ async function renderPlayerDetailRankBadge(rank){
 }
 
 
+
+
+async function abandonRankedMatch(){
+ if(!currentRankedMatchId||!supabaseClient)return;
+ if(!confirm('¿Abandonar este emparejamiento? Tu rival volverá automáticamente a buscar rival.'))return;
+ const id=currentRankedMatchId;
+ try{
+  const {error}=await supabaseClient.rpc('abandon_ranked_match',{p_match_id:id});if(error)throw error;
+  currentRankedMatchId=null;clearInterval(matchmakingTimer);clearInterval(pendingMatchesTimer);matchmakingTimer=null;pendingMatchesTimer=null;
+  if(matchmakingModal)matchmakingModal.hidden=true;showToast('Abandonaste el emparejamiento.');
+ }catch(e){console.error(e);showToast('No se pudo abandonar el emparejamiento.')}
+}
 
 async function updatePendingMatchesCount(){
  if(!currentUser||!supabaseClient||!pendingMatchesCount)return;
@@ -1053,6 +1066,7 @@ if(dashboardPlayBtn)dashboardPlayBtn.addEventListener('click',async()=>{
   await startRankedMatchmaking();
 });
 if(matchmakingClose)matchmakingClose.addEventListener('click',closeRankedMatchmaking);
+if(abandonRankedBtn)abandonRankedBtn.addEventListener('click',abandonRankedMatch);
 if(playerMessageBtn)playerMessageBtn.addEventListener('click',openPrivateMessage);
 if(playerPlayBtn)playerPlayBtn.addEventListener('click',()=>showToast('Próximamente podrás desafiar a este jugador.'));
 if(privateMessageClose)privateMessageClose.addEventListener('click',closePrivateMessage);
