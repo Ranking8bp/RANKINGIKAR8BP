@@ -633,3 +633,30 @@ button{cursor:pointer}
   .player-detail-rank-badge{width:72px;height:72px;margin:-3px auto 4px}
   .player-detail-rank{top:43px;min-width:108px}
 }
+
+/* Comentarios públicos en perfiles */
+.profile-comments{margin:0 20px 20px;padding:16px;border:1px solid #263a4a;border-radius:12px;background:#06101a}
+.profile-comments-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;color:#f0c95f;font:900 14px/1 Arial,sans-serif;letter-spacing:.8px}
+.profile-comments-title span{min-width:30px;padding:5px 8px;border-radius:999px;background:#101f2b;color:#d7e0e6;text-align:center;font-size:12px}
+.profile-comment-form{display:grid;grid-template-columns:1fr auto;gap:9px;align-items:end;margin-bottom:15px}
+.profile-comment-form textarea{width:100%;min-height:70px;resize:vertical;padding:11px 12px;border:1px solid #314b60;border-radius:9px;outline:none;background:#02090f;color:#f4f0e8;font:600 14px/1.35 Arial,sans-serif}
+.profile-comment-form textarea:focus{border-color:#a9843f}
+.profile-comment-form button{height:42px;padding:0 15px;border:1px solid #9a7939;border-radius:8px;background:linear-gradient(180deg,#c49b49,#806125);color:#080604;font:900 11px/1 Arial,sans-serif;cursor:pointer}
+.profile-comment-form button:disabled{opacity:.55}
+.profile-comments-list{display:flex;flex-direction:column;gap:9px;max-height:360px;overflow:auto}
+.profile-comment-item{padding:12px;border:1px solid #1f3444;border-radius:9px;background:#040b11}
+.profile-comment-head{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.profile-comment-head strong{color:#e6c976;font:900 12px/1.1 Arial,sans-serif}
+.profile-comment-head time{color:#71818d;font:600 9px/1 Arial,sans-serif}
+.profile-comment-item p{margin:9px 0 10px;color:#e2e8ec;font:500 14px/1.4 Arial,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere}
+.profile-comment-actions{display:flex;justify-content:flex-end}
+.comment-heart-btn{min-width:58px;height:32px;padding:0 10px;border:1px solid #5b3040;border-radius:999px;background:#130a0e;color:#bd8c9b;cursor:pointer}
+.comment-heart-btn span{font-size:18px;vertical-align:-1px}.comment-heart-btn b{margin-left:4px}
+.comment-heart-btn.liked{border-color:#d85579;background:#35101e;color:#ff7197}
+.profile-comments-empty{padding:18px 10px;text-align:center;color:#7f909d;font:600 12px/1.35 Arial,sans-serif}
+@media(max-width:700px){
+ .profile-comments{margin:0 12px 12px;padding:11px}
+ .profile-comment-form{grid-template-columns:1fr}
+ .profile-comment-form button{width:100%}
+ .profile-comments-list{max-height:300px}
+}
