@@ -999,3 +999,5 @@ html,body{color-scheme:dark!important}
 }
 
 #playerDashboard .rank-hero-card.admin-only-card{min-height:150px!important;display:flex!important;align-items:center!important;justify-content:center!important;background:linear-gradient(180deg,#071522,#02070c)!important}.admin-only-title{font-size:clamp(28px,7vw,52px)!important;font-weight:1000!important;letter-spacing:3px!important;color:#d3a94e!important;text-align:center!important}
+
+#playerDetailModal .player-detail-stat.admin-profile-label{grid-column:1/-1!important;width:100%!important;min-height:76px!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:10px!important}#playerDetailModal .player-detail-stat.admin-profile-label strong{font-size:clamp(18px,5vw,30px)!important;line-height:1!important;white-space:nowrap!important;word-break:normal!important;overflow-wrap:normal!important;letter-spacing:1px!important}
