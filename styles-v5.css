@@ -705,3 +705,7 @@ button{cursor:pointer}
 .profile-header-actions{z-index:10020!important}
 .notification-panel,.activity-panel,.settings-menu{z-index:10050!important}
 @media(max-width:700px){.notification-panel,.activity-panel,.settings-menu{z-index:10050!important}}
+
+.main-follow-stats{display:flex;gap:22px;margin:9px 0 10px;align-items:center}
+.main-follow-stats div{text-align:left}.main-follow-stats strong{display:block;color:#f4ead7;font:900 19px/1 Arial,sans-serif}.main-follow-stats span{display:block;margin-top:4px;color:#9eabb4;font:700 10px/1 Arial,sans-serif;text-transform:uppercase}
+@media(max-width:520px){.main-follow-stats{gap:15px;margin:7px 0 8px}.main-follow-stats strong{font-size:16px}.main-follow-stats span{font-size:8px}}
