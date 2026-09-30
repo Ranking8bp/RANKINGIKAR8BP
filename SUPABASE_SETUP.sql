@@ -382,3 +382,22 @@ $$;
 revoke all on function public.get_my_notifications() from public;
 revoke execute on function public.get_my_notifications() from anon;
 grant execute on function public.get_my_notifications() to authenticated;
+
+
+-- NOTIFICACIONES NAVEGABLES
+drop function if exists public.get_my_notifications();
+create function public.get_my_notifications()
+returns table(notification_id bigint,type text,actor_id uuid,actor_name text,recipient_id uuid,target_profile_id uuid,comment_id bigint,comment_body text,is_read boolean,created_at timestamptz)
+language sql stable security definer set search_path=public as $$
+ select n.id,n.type,n.actor_id,coalesce(p.account_name,p.username,'Jugador'),n.recipient_id,
+        case when n.type='thread_comment' then c.profile_id else n.recipient_id end,
+        n.comment_id,c.body,n.is_read,n.created_at
+ from public.notifications n
+ join public.profiles p on p.id=n.actor_id
+ left join public.profile_comments c on c.id=n.comment_id
+ where n.recipient_id=auth.uid()
+ order by n.created_at desc limit 100;
+$$;
+revoke all on function public.get_my_notifications() from public;
+revoke execute on function public.get_my_notifications() from anon;
+grant execute on function public.get_my_notifications() to authenticated;
