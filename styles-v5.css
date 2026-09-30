@@ -105,7 +105,12 @@ button{cursor:pointer}
   box-shadow:inset 0 0 40px rgba(0,0,0,.25)
 }
 .rank-art{display:flex;align-items:center;justify-content:center;padding:18px 0}
-.rank-badge-svg{width:350px;height:330px;filter:drop-shadow(0 12px 10px rgba(0,0,0,.55))}
+.rank-badge-image{
+  width:350px;height:330px;display:flex;align-items:center;justify-content:center;
+  background-repeat:no-repeat;background-size:500% 400%;background-position:0 0;
+  border-radius:18px;color:#f3d37c;font-size:34px;font-weight:900;text-align:center;
+  text-shadow:0 3px 8px #000;filter:drop-shadow(0 12px 10px rgba(0,0,0,.55))
+}
 .elo-block{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px 28px}
 .elo-label{font-size:42px;font-weight:700;display:flex;align-items:center;gap:18px;color:#dedbd4}
 .elo-icon{color:#e6bd5d;font-size:44px;font-family:Arial,sans-serif}
@@ -194,7 +199,7 @@ button{cursor:pointer}
   .name-line{gap:8px}.name-line h2{font-size:27px}.verified-mark{width:24px;height:24px;border-width:2px;border-radius:5px;font-size:14px}
   .country-line{margin-top:12px;gap:7px;font-size:17px}.country-flag{font-size:30px}.profile-quote{margin-top:12px;font-size:14px}
   .rank-hero-card{min-height:178px;margin-top:8px;grid-template-columns:44% 56%;border-radius:8px}
-  .rank-art{padding:0}.rank-badge-svg{width:165px;height:160px}.elo-block{padding:8px}
+  .rank-art{padding:0}.rank-badge-image{width:165px;height:160px;font-size:17px;border-radius:10px}.elo-block{padding:8px}
   .elo-label{font-size:20px;gap:7px}.elo-icon{font-size:22px}.info-dot{width:20px;height:20px;border-width:1px;font-size:12px}
   .elo-number{font-size:58px}.rank-caption{height:25px;font-size:11px}
   .win-loss-grid{margin-top:12px;gap:10px}.result-card{min-height:100px;padding:12px;grid-template-columns:48px 1fr;border-radius:7px}

@@ -22,8 +22,7 @@ const winRate=document.getElementById('winRate');
 const currentStreak=document.getElementById('currentStreak');
 const bestElo=document.getElementById('bestElo');
 const dashboardMessage=document.getElementById('dashboardMessage');
-const rankBadgeText=document.getElementById('rankBadgeText');
-const rankTitle=document.getElementById('rankTitle');
+const rankBadgeImage=document.getElementById('rankBadgeImage');
 
 const registerModal=document.getElementById('registerModal');
 const closeRegisterModalBtn=document.getElementById('closeRegisterModal');
@@ -60,6 +59,74 @@ let toastTimer;
 const cloudConfig=window.SUPABASE_CONFIG||{};
 const cloudReady=typeof window.supabase!=='undefined'&&typeof cloudConfig.url==='string'&&cloudConfig.url.startsWith('https://')&&typeof cloudConfig.key==='string'&&cloudConfig.key.length>20;
 if(cloudReady){supabaseClient=window.supabase.createClient(cloudConfig.url,cloudConfig.key)}
+
+
+const RANKS=[
+  {min:200,name:'Latón'},
+  {min:300,name:'Bronce I'},
+  {min:400,name:'Bronce II'},
+  {min:500,name:'Bronce III'},
+  {min:600,name:'Plata I'},
+  {min:700,name:'Plata II'},
+  {min:800,name:'Plata III'},
+  {min:900,name:'Oro I'},
+  {min:1000,name:'Oro II'},
+  {min:1100,name:'Oro III'},
+  {min:1200,name:'Amatista I'},
+  {min:1300,name:'Amatista II'},
+  {min:1400,name:'Amatista III'},
+  {min:1500,name:'Esmeralda I'},
+  {min:1600,name:'Esmeralda II'},
+  {min:1700,name:'Esmeralda III'},
+  {min:1800,name:'Diamante I'},
+  {min:1900,name:'Diamante II'},
+  {min:2000,name:'Diamante III'},
+  {min:2100,name:'Diamante Negro'}
+];
+
+const RANK_SPRITE_PARTS=Array.from({length:6},(_,i)=>
+  'assets/ranks/rank-sprite.part'+String(i+1).padStart(2,'0')+'.b64?v=1'
+);
+let rankSpritePromise=null;
+
+function getRankByElo(value){
+  const elo=Number.isFinite(Number(value))?Number(value):200;
+  let index=0;
+  for(let i=0;i<RANKS.length;i++){
+    if(elo>=RANKS[i].min)index=i;
+    else break;
+  }
+  return {...RANKS[index],index};
+}
+
+function getRankSpriteUrl(){
+  if(!rankSpritePromise){
+    rankSpritePromise=Promise.all(RANK_SPRITE_PARTS.map(async path=>{
+      const response=await fetch(path,{cache:'force-cache'});
+      if(!response.ok)throw new Error('No se pudo cargar '+path);
+      return (await response.text()).trim();
+    })).then(parts=>'data:image/webp;base64,'+parts.join(''));
+  }
+  return rankSpritePromise;
+}
+
+async function renderRankBadge(rank){
+  if(!rankBadgeImage)return;
+  rankBadgeImage.textContent=rank.name;
+  rankBadgeImage.setAttribute('aria-label','Rango '+rank.name);
+  rankBadgeImage.title='Rango '+rank.name;
+  const col=rank.index%5;
+  const row=Math.floor(rank.index/5);
+  try{
+    const sprite=await getRankSpriteUrl();
+    rankBadgeImage.style.backgroundImage='url("'+sprite+'")';
+    rankBadgeImage.style.backgroundPosition=(col*25)+'% '+(row*(100/3))+'%';
+    rankBadgeImage.textContent='';
+  }catch(error){
+    console.error('No se pudo cargar la insignia de rango:',error);
+    rankBadgeImage.style.backgroundImage='none';
+  }
+}
 
 function normalizeUsername(value){return value.trim().toLowerCase()}
 function usernameToInternalEmail(value){return normalizeUsername(value)+'@login.rankingikar8bp.com'}
@@ -106,8 +173,9 @@ async function setPlayerUI(profile,user){
   guestTopbar.hidden=true;guestEmpty.hidden=true;playerDashboard.hidden=false;
 
   const playerName=profile?.username||user?.user_metadata?.username||profile?.account_name||'Jugador';
-  const rankName=profile?.rank_name||'Latón';
   const elo=Number.isFinite(Number(profile?.elo_points))?Number(profile.elo_points):200;
+  const rank=getRankByElo(elo);
+  const rankName=rank.name;
   const wins=Number.isFinite(Number(profile?.wins))?Number(profile.wins):0;
   const losses=Number.isFinite(Number(profile?.losses))?Number(profile.losses):0;
   const games=wins+losses;
@@ -123,8 +191,7 @@ async function setPlayerUI(profile,user){
   winRate.textContent=rate+'%';
   currentStreak.textContent='0';
   bestElo.textContent=elo;
-  rankBadgeText.textContent=rankName;
-  rankTitle.textContent='Rango '+rankName;
+  await renderRankBadge(rank);
   dashboardMessage.textContent='';
 
   if(profile?.avatar_path){await loadAvatar(profile.avatar_path)}else{clearAvatar()}
