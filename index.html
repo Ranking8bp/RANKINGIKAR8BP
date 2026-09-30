@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Registro 8 Ball Pool</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>RANKING IKAR8BP</title>
+  <link rel="stylesheet" href="styles-v2.css" />
 </head>
 <body>
   <main class="viewport-shell">
@@ -23,7 +23,74 @@
         </div>
       </header>
 
-      <section class="content-area" aria-label="Contenido principal"></section>
+      <section class="content-area" aria-label="Contenido principal">
+        <section class="profile-screen" id="profileScreen" hidden>
+          <div class="profile-heading">
+            <div class="profile-heading-icon">♙</div>
+            <div>
+              <h1>Mi Perfil</h1>
+              <p>Administra tu información y personaliza tu perfil.</p>
+            </div>
+          </div>
+
+          <form class="profile-card" id="profileForm">
+            <div class="profile-photo-zone">
+              <div class="avatar-column">
+                <div class="avatar-ring">
+                  <img id="profileAvatar" alt="Foto de perfil" hidden />
+                  <div class="avatar-placeholder" id="avatarPlaceholder">👤</div>
+                  <label class="avatar-camera" for="profilePhotoInput" aria-label="Cambiar foto">📷</label>
+                </div>
+              </div>
+
+              <div class="profile-upload-column">
+                <h2>Cambiar foto de perfil</h2>
+                <label class="profile-upload-box" for="profilePhotoInput">
+                  <input id="profilePhotoInput" type="file" accept="image/png,image/jpeg,image/webp" />
+                  <span class="cloud-icon">☁</span>
+                  <strong>Selecciona una imagen</strong>
+                  <span>JPG, PNG o WEBP · Máx. 5 MB</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="profile-fields">
+              <label class="profile-row">
+                <span class="row-icon">👤</span>
+                <span class="row-label">Usuario</span>
+                <input id="profileUsername" type="text" readonly />
+                <span class="row-lock">🔒</span>
+              </label>
+
+              <label class="profile-row">
+                <span class="row-icon">🎮</span>
+                <span class="row-label">ID del juego</span>
+                <input id="profileGameId" type="text" inputmode="numeric" required />
+                <span class="row-edit">✎</span>
+              </label>
+
+              <label class="profile-row">
+                <span class="row-icon">👤</span>
+                <span class="row-label">Nombre de cuenta</span>
+                <input id="profileAccountName" type="text" required />
+                <span class="row-edit">✎</span>
+              </label>
+
+              <label class="profile-row">
+                <span class="row-icon">🌎</span>
+                <span class="row-label">País</span>
+                <input id="profileCountry" type="text" required />
+                <span class="row-edit">✎</span>
+              </label>
+            </div>
+
+            <p class="profile-error" id="profileError" aria-live="polite"></p>
+            <button class="profile-save-btn" id="profileSaveBtn" type="submit">
+              💾 Guardar cambios
+            </button>
+          </form>
+        </section>
+      </section>
     </section>
   </main>
 
@@ -40,67 +107,33 @@
       <form class="form-grid" id="registerForm" novalidate>
         <label class="field">
           <span class="field-label">Usuario</span>
-          <input
-            id="username"
-            name="username"
-            type="text"
-            autocomplete="username"
-            placeholder="Crea tu nombre de usuario"
-            minlength="3"
-            maxlength="30"
-            required
-          />
+          <input id="username" name="username" type="text" autocomplete="username"
+            placeholder="Crea tu nombre de usuario" minlength="3" maxlength="30" required />
           <span class="field-note">3 a 30 caracteres. Letras, números, punto, guion o guion bajo.</span>
         </label>
 
         <label class="field">
           <span class="field-label">Contraseña</span>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            autocomplete="new-password"
-            placeholder="Crea una contraseña"
-            minlength="6"
-            required
-          />
+          <input id="password" name="password" type="password" autocomplete="new-password"
+            placeholder="Crea una contraseña" minlength="6" required />
         </label>
 
         <label class="field">
           <span class="field-label">ID del juego</span>
-          <input
-            id="gameId"
-            name="gameId"
-            type="text"
-            inputmode="numeric"
-            autocomplete="off"
-            placeholder="Ejemplo: 123456789"
-            required
-          />
+          <input id="gameId" name="gameId" type="text" inputmode="numeric"
+            autocomplete="off" placeholder="Ejemplo: 123456789" required />
         </label>
 
         <label class="field">
           <span class="field-label">Nombre que tiene la cuenta</span>
-          <input
-            id="accountName"
-            name="accountName"
-            type="text"
-            autocomplete="off"
-            placeholder="Escribe el nombre de tu cuenta"
-            required
-          />
+          <input id="accountName" name="accountName" type="text" autocomplete="off"
+            placeholder="Escribe el nombre de tu cuenta" required />
         </label>
 
         <label class="field">
           <span class="field-label">País</span>
-          <input
-            id="country"
-            name="country"
-            type="text"
-            autocomplete="country-name"
-            placeholder="Ejemplo: México"
-            required
-          />
+          <input id="country" name="country" type="text" autocomplete="country-name"
+            placeholder="Ejemplo: México" required />
         </label>
 
         <div class="field">
@@ -108,13 +141,8 @@
           <p class="field-help">Sube una captura donde se vea claramente el ID del juego.</p>
 
           <label class="upload-box" id="uploadBox" for="accountScreenshot">
-            <input
-              id="accountScreenshot"
-              name="accountScreenshot"
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-              required
-            />
+            <input id="accountScreenshot" name="accountScreenshot" type="file"
+              accept="image/png,image/jpeg,image/webp" required />
             <span class="upload-icon">＋</span>
             <strong id="uploadTitle">Subir captura</strong>
             <span id="uploadText">PNG, JPG o WEBP · máximo 10 MB</span>
@@ -145,26 +173,14 @@
       <form class="form-grid" id="loginForm" novalidate>
         <label class="field">
           <span class="field-label">Usuario</span>
-          <input
-            id="loginUsername"
-            name="loginUsername"
-            type="text"
-            autocomplete="username"
-            placeholder="Tu usuario"
-            required
-          />
+          <input id="loginUsername" name="loginUsername" type="text"
+            autocomplete="username" placeholder="Tu usuario" required />
         </label>
 
         <label class="field">
           <span class="field-label">Contraseña</span>
-          <input
-            id="loginPassword"
-            name="loginPassword"
-            type="password"
-            autocomplete="current-password"
-            placeholder="Tu contraseña"
-            required
-          />
+          <input id="loginPassword" name="loginPassword" type="password"
+            autocomplete="current-password" placeholder="Tu contraseña" required />
         </label>
 
         <p class="form-error" id="loginError" aria-live="polite"></p>
@@ -176,7 +192,7 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config-v2.js"></script>
-  <script src="app-v2.js"></script>
+  <script src="supabase-config-v3.js"></script>
+  <script src="app-v3.js"></script>
 </body>
 </html>
