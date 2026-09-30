@@ -8,6 +8,10 @@ const deleteAccountBtn=document.getElementById('deleteAccountBtn');
 const backBtn=document.getElementById('backBtn');
 const settingsBtn=document.getElementById('settingsBtn');
 const settingsMenu=document.getElementById('settingsMenu');
+const activityBtn=document.getElementById('activityBtn');
+const activityPanel=document.getElementById('activityPanel');
+const activityList=document.getElementById('activityList');
+const refreshActivityBtn=document.getElementById('refreshActivityBtn');
 
 const profileAvatar=document.getElementById('profileAvatar');
 const avatarPlaceholder=document.getElementById('avatarPlaceholder');
@@ -425,6 +429,22 @@ async function togglePlayerHeart(){
 
 
 
+function renderGlobalActivity(items){
+ if(!activityList)return; activityList.replaceChildren();
+ if(!items.length){activityList.innerHTML='<div class="notification-empty">Todavía no hay actividad.</div>';return}
+ items.forEach(n=>{
+  const item=document.createElement('article'); item.className='notification-item global-activity-item';
+  const icon=document.createElement('span'); icon.className='notification-type-icon';
+  const box=document.createElement('div'); box.className='notification-copy'; const p=document.createElement('p');
+  if(n.type==='registration'){icon.textContent='🌎';p.textContent=String(n.actor_name||'Un jugador')+' se ha registrado en Ranking8BP.'}
+  else if(n.type==='comment'){icon.textContent='💬';p.textContent=String(n.actor_name||'Alguien')+' comentó en el perfil de '+String(n.recipient_name||'un jugador')+'.'}
+  else if(n.type==='comment_heart'){icon.textContent='♥';p.textContent=String(n.actor_name||'Alguien')+' dio corazón al comentario de '+String(n.recipient_name||'un jugador')+'.'}
+  else{icon.textContent='♥';p.textContent=String(n.actor_name||'Alguien')+' dio corazón al perfil de '+String(n.recipient_name||'un jugador')+'.'}
+  const t=document.createElement('time');t.textContent=formatCommentDate(n.created_at);box.append(p,t);item.append(icon,box);activityList.appendChild(item);
+ });
+}
+async function loadGlobalActivity(){if(!currentUser||!supabaseClient||!activityList)return;try{const {data,error}=await supabaseClient.rpc('get_global_activity');if(error)throw error;renderGlobalActivity(Array.isArray(data)?data:[])}catch(e){console.error(e);activityList.innerHTML='<div class="notification-empty">No se pudo cargar la actividad.</div>'}}
+async function toggleGlobalActivity(){if(!activityPanel)return;const opening=activityPanel.hidden;activityPanel.hidden=!opening;if(notificationPanel)notificationPanel.hidden=true;if(settingsMenu)settingsMenu.hidden=true;if(opening)await loadGlobalActivity()}
 function updateNotificationBadge(count){
   if(!notificationBadge)return;
   const n=Number(count)||0;
@@ -781,6 +801,8 @@ if(closePlayerDetail)closePlayerDetail.addEventListener('click',closeRankingPlay
 if(playerHeartBtn)playerHeartBtn.addEventListener('click',togglePlayerHeart);
 if(profileCommentForm)profileCommentForm.addEventListener('submit',submitProfileComment);
 if(notificationBtn)notificationBtn.addEventListener('click',toggleNotifications);
+if(activityBtn)activityBtn.addEventListener('click',toggleGlobalActivity);
+if(refreshActivityBtn)refreshActivityBtn.addEventListener('click',loadGlobalActivity);
 if(markNotificationsRead)markNotificationsRead.addEventListener('click',markAllNotificationsRead);
 let notificationRefreshTimer=null;
 function startNotificationRefresh(){
