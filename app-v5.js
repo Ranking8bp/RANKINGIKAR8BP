@@ -50,7 +50,7 @@ const versusMyPosition=document.getElementById('versusMyPosition'),versusOpponen
 const pendingMatchesCount=document.getElementById('pendingMatchesCount');
 const abandonRankedBtn=document.getElementById('abandonRankedBtn');
 let pendingMatchesTimer=null;
-let matchmakingTimer=null,currentRankedMatchId=null;
+let matchmakingTimer=null,currentRankedMatchId=null,matchmakingHeartbeatTimer=null;
 const gamesPlayed=document.getElementById('gamesPlayed');
 const winRate=document.getElementById('winRate');
 const currentStreak=document.getElementById('currentStreak');
@@ -368,6 +368,10 @@ async function pollRankedMatch(){
  if(!currentUser||!supabaseClient)return;
  try{const {data,error}=await supabaseClient.rpc('get_my_active_ranked_match');if(error)throw error;const m=Array.isArray(data)?data[0]:data;if(m){clearInterval(matchmakingTimer);matchmakingTimer=null;showRankedMatch(m)}}catch(e){console.error(e)}
 }
+async function heartbeatRankedSearch(){
+ if(currentRankedMatchId||!currentUser||!supabaseClient)return;
+ try{await supabaseClient.rpc('heartbeat_ranked_matchmaking')}catch(e){console.error(e)}
+}
 async function startRankedMatchmaking(){
  if(!currentUser||!supabaseClient)return;
  matchmakingModal.hidden=false;matchmakingSearching.hidden=false;matchmakingVersus.hidden=true;
@@ -375,10 +379,11 @@ async function startRankedMatchmaking(){
   const {data,error}=await supabaseClient.rpc('join_ranked_matchmaking');if(error)throw error;const m=Array.isArray(data)?data[0]:data;
   if(m?.matched){showRankedMatch(m);return}
   clearInterval(matchmakingTimer);matchmakingTimer=setInterval(pollRankedMatch,1500);
+  clearInterval(matchmakingHeartbeatTimer);matchmakingHeartbeatTimer=setInterval(heartbeatRankedSearch,3000);heartbeatRankedSearch();
  }catch(e){console.error(e);matchmakingModal.hidden=true;showToast('No se pudo iniciar la búsqueda de rival.')}
 }
 async function closeRankedMatchmaking(){
- clearInterval(matchmakingTimer);matchmakingTimer=null;clearInterval(pendingMatchesTimer);pendingMatchesTimer=null;
+ clearInterval(matchmakingTimer);matchmakingTimer=null;clearInterval(matchmakingHeartbeatTimer);matchmakingHeartbeatTimer=null;clearInterval(pendingMatchesTimer);pendingMatchesTimer=null;
  if(matchmakingModal)matchmakingModal.hidden=true;
  if(!currentRankedMatchId&&currentUser&&supabaseClient)await supabaseClient.rpc('cancel_ranked_matchmaking');
 }
