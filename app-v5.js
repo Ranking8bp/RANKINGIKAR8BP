@@ -331,7 +331,11 @@ async function loadGuestRanking(){
     const {data:avatarData}=supabaseClient.storage.from('profile-photos').getPublicUrl(player.avatar_path);
     if(avatarData?.publicUrl){const img=document.createElement('img');img.src=avatarData.publicUrl;img.alt='Foto de '+String(player.username||player.account_name||'Jugador');img.loading='lazy';img.onerror=()=>img.remove();avatar.appendChild(img)}
    }
-   const n=document.createElement('b');n.textContent=String(player.username||player.account_name||'Jugador').toUpperCase();name.append(avatar,n);
+   const info=document.createElement('div');info.className='guest-ranking-player-info';
+   const n=document.createElement('b');n.textContent=String(player.username||player.account_name||'Jugador').toUpperCase();
+   const rank=getRankByElo(player.elo_points);const rankLine=document.createElement('span');rankLine.className='guest-ranking-rank';rankLine.textContent=rank.name.toUpperCase();
+   const miniBadge=document.createElement('span');miniBadge.className='guest-ranking-rank-badge';const spriteIndex=Number.isInteger(rank.spriteIndex)?rank.spriteIndex:rank.index;miniBadge.style.backgroundPosition=((spriteIndex%5)*25)+'% '+(Math.floor(spriteIndex/5)*(100/3))+'%';getRankSpriteUrl().then(sprite=>miniBadge.style.backgroundImage='url("'+sprite+'")').catch(()=>{});
+   info.append(n,rankLine);name.append(avatar,miniBadge,info);
    const country=document.createElement('div');country.className='guest-ranking-country';country.textContent=getFlag(player.country)+' '+String(player.country||'País');
    const elo=document.createElement('strong');elo.className='guest-ranking-elo';elo.textContent=String(Number(player.elo_points)||200);
    row.append(pos,name,country,elo);guestRankingList.appendChild(row);
