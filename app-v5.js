@@ -17,6 +17,8 @@ const profileAvatar=document.getElementById('profileAvatar');
 const avatarPlaceholder=document.getElementById('avatarPlaceholder');
 const profilePhotoInput=document.getElementById('profilePhotoInput');
 const dashboardPlayerName=document.getElementById('dashboardPlayerName');
+const dashboardFollowersCount=document.getElementById('dashboardFollowersCount');
+const dashboardFollowingCount=document.getElementById('dashboardFollowingCount');
 const countryFlag=document.getElementById('countryFlag');
 const countryName=document.getElementById('countryName');
 const dashboardElo=document.getElementById('dashboardElo');
@@ -335,9 +337,20 @@ async function setPlayerUI(profile,user){
   const rankingTask=loadRanking();
   const rankTask=renderRankBadge(rank);
   const avatarTask=profile?.avatar_path?loadAvatar(profile.avatar_path):Promise.resolve(clearAvatar());
-  await Promise.allSettled([rankingTask,rankTask,avatarTask]);
+  const followTask=loadDashboardFollowStats(profile?.id||user?.id);
+  await Promise.allSettled([rankingTask,rankTask,avatarTask,followTask]);
 }
 
+
+async function loadDashboardFollowStats(profileId){
+ if(!profileId||!supabaseClient)return;
+ try{
+  const {data,error}=await supabaseClient.rpc('get_follow_stats',{p_profile_id:profileId});if(error)throw error;
+  const s=Array.isArray(data)?data[0]:data;
+  if(dashboardFollowersCount)dashboardFollowersCount.textContent=String(s?.followers||0);
+  if(dashboardFollowingCount)dashboardFollowingCount.textContent=String(s?.following||0);
+ }catch(e){console.error('Error cargando seguidores del perfil:',e)}
+}
 
 function createRankingAvatar(player){
   const wrap=document.createElement('div');
