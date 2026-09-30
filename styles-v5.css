@@ -692,3 +692,10 @@ button{cursor:pointer}
 @media(max-width:520px){.player-follow-area{gap:12px}.player-follow-counts{gap:14px}.player-follow-btn{min-width:92px;padding:9px 11px}}
 
 .player-follow-btn.friends{border-color:#4fa978;background:#153b2a;color:#bff1d2}
+
+/* Panel Actividad General - corregido */
+.activity-panel{position:absolute;z-index:40;top:76px;right:72px;width:min(430px,calc(100vw - 28px));max-height:min(560px,70vh);overflow:hidden;border:1px solid #315c73;border-radius:14px;background:#050c12;box-shadow:0 18px 50px rgba(0,0,0,.72)}
+.activity-panel .notification-list{max-height:calc(min(560px,70vh) - 45px);overflow-y:auto;overscroll-behavior:contain}
+.activity-panel .notification-panel-head{background:#081722;position:sticky;top:0;z-index:2}
+.global-activity-item{border-left:3px solid #2c7696}
+@media(max-width:700px){.activity-panel{position:fixed;z-index:100;top:68px;left:10px;right:10px;width:auto;max-height:calc(100dvh - 88px);border-radius:12px}.activity-panel .notification-list{max-height:calc(100dvh - 135px)}}
