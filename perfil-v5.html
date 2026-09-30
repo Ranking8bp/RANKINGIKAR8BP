@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />\n  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />\n  <meta http-equiv="Pragma" content="no-cache" />\n  <meta http-equiv="Expires" content="0" />
   <title>RANKING IKAR8BP</title>
-  <link rel="stylesheet" href="styles-v5.css?v=20260930-playercard1" />
+  <link rel="stylesheet" href="styles-v5.css?v=20260930-hearts2" />
 </head>
 <body>
   <main class="viewport-shell">
@@ -169,6 +169,10 @@
       <button type="button" class="player-detail-close" id="closePlayerDetail" aria-label="Cerrar">×</button>
 
       <div class="player-detail-head">
+        <div class="player-detail-rank" id="playerDetailRank">
+          <small>RANGO</small>
+          <strong>LATÓN</strong>
+        </div>
         <div class="player-detail-avatar" id="playerDetailAvatar"><span>J</span></div>
         <div class="player-detail-identity">
           <h3 id="playerDetailName">JUGADOR</h3>
@@ -195,6 +199,17 @@
         <div class="player-detail-stat player-detail-loss">
           <small>DERROTAS</small>
           <strong id="playerDetailLosses">0</strong>
+        </div>
+      </div>
+
+      <div class="player-heart-area">
+        <button type="button" class="player-heart-btn" id="playerHeartBtn" aria-pressed="false">
+          <span class="player-heart-icon">♥</span>
+          <span class="player-heart-label">Dar corazón</span>
+        </button>
+        <div class="player-heart-count">
+          <strong id="playerHeartCount">0</strong>
+          <span id="playerHeartCountLabel">jugadores le dieron un corazón</span>
         </div>
       </div>
     </section>
@@ -239,6 +254,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config-v3.js?v=20260930-0305"></script>
-  <script src="app-v5.js?v=20260930-noaccountname1"></script>
+  <script src="app-v5.js?v=20260930-hearts2"></script>
 </body>
 </html>

@@ -92,12 +92,39 @@ using (
   and (storage.foldername(name))[1] = auth.uid()::text
 );
 
+-- CORAZONES ENTRE PERFILES
+create table if not exists public.profile_hearts (
+  liker_id uuid not null references public.profiles(id) on delete cascade,
+  target_id uuid not null references public.profiles(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (liker_id, target_id),
+  constraint profile_hearts_no_self check (liker_id <> target_id)
+);
+
+alter table public.profile_hearts enable row level security;
+
+drop policy if exists "profile_hearts_select_authenticated" on public.profile_hearts;
+create policy "profile_hearts_select_authenticated"
+on public.profile_hearts for select to authenticated using (true);
+
+drop policy if exists "profile_hearts_insert_own" on public.profile_hearts;
+create policy "profile_hearts_insert_own"
+on public.profile_hearts for insert to authenticated
+with check (liker_id = auth.uid());
+
+drop policy if exists "profile_hearts_delete_own" on public.profile_hearts;
+create policy "profile_hearts_delete_own"
+on public.profile_hearts for delete to authenticated
+using (liker_id = auth.uid());
+
+grant select, insert, delete on public.profile_hearts to authenticated;
+
 -- CLASIFICACIÓN PARA USUARIOS AUTENTICADOS
--- Devuelve solo datos que se muestran en la tabla y ficha del jugador.
 drop function if exists public.get_ranking();
 
 create function public.get_ranking()
 returns table (
+  player_id uuid,
   username text,
   account_name text,
   game_id text,
@@ -106,6 +133,7 @@ returns table (
   elo_points integer,
   wins integer,
   losses integer,
+  heart_count bigint,
   created_at timestamptz
 )
 language sql
@@ -114,6 +142,7 @@ security definer
 set search_path = public
 as $$
   select
+    p.id as player_id,
     p.username,
     p.account_name,
     p.game_id,
@@ -122,18 +151,14 @@ as $$
     coalesce(p.elo_points, 200) as elo_points,
     coalesce(p.wins, 0) as wins,
     coalesce(p.losses, 0) as losses,
+    count(h.liker_id) as heart_count,
     p.created_at
   from public.profiles p
+  left join public.profile_hearts h on h.target_id = p.id
+  group by p.id, p.username, p.account_name, p.game_id, p.country, p.avatar_path, p.elo_points, p.wins, p.losses, p.created_at
   order by coalesce(p.elo_points, 200) desc, p.created_at asc, p.username asc;
 $$;
 
 revoke all on function public.get_ranking() from public;
 revoke execute on function public.get_ranking() from anon;
 grant execute on function public.get_ranking() to authenticated;
-
-drop policy if exists "profile_photos_select_ranking" on storage.objects;
-create policy "profile_photos_select_ranking"
-on storage.objects
-for select
-to authenticated
-using (bucket_id = 'profile-photos');

@@ -35,6 +35,10 @@ const playerDetailGameId=document.getElementById('playerDetailGameId');
 const playerDetailElo=document.getElementById('playerDetailElo');
 const playerDetailWins=document.getElementById('playerDetailWins');
 const playerDetailLosses=document.getElementById('playerDetailLosses');
+const playerDetailRank=document.getElementById('playerDetailRank');
+const playerHeartBtn=document.getElementById('playerHeartBtn');
+const playerHeartCount=document.getElementById('playerHeartCount');
+const playerHeartCountLabel=document.getElementById('playerHeartCountLabel');
 
 const registerModal=document.getElementById('registerModal');
 const closeRegisterModalBtn=document.getElementById('closeRegisterModal');
@@ -59,6 +63,9 @@ let currentUser=null;
 let currentProfile=null;
 let avatarPreviewUrl='';
 let toastTimer;
+let currentDetailPlayer=null;
+let currentDetailHearted=false;
+let currentDetailHeartBusy=false;
 
 const cloudConfig=window.SUPABASE_CONFIG||{};
 const cloudReady=typeof window.supabase!=='undefined'&&typeof cloudConfig.url==='string'&&cloudConfig.url.startsWith('https://')&&typeof cloudConfig.key==='string'&&cloudConfig.key.length>20;
@@ -318,8 +325,77 @@ function createRankingAvatar(player){
 }
 
 
+
+function updateHeartUI(count,hearted,isOwn=false){
+  const total=Math.max(0,Number(count)||0);
+  if(playerHeartCount)playerHeartCount.textContent=String(total);
+  if(playerHeartCountLabel)playerHeartCountLabel.textContent=total===1?'jugador le dio un corazón':'jugadores le dieron un corazón';
+  if(!playerHeartBtn)return;
+  playerHeartBtn.classList.toggle('hearted',Boolean(hearted));
+  playerHeartBtn.setAttribute('aria-pressed',hearted?'true':'false');
+  playerHeartBtn.disabled=Boolean(isOwn)||currentDetailHeartBusy;
+  const label=playerHeartBtn.querySelector('.player-heart-label');
+  if(label)label.textContent=isOwn?'Tu perfil':hearted?'Quitar corazón':'Dar corazón';
+}
+
+async function loadPlayerHeartState(player){
+  if(!playerHeartBtn||!player?.player_id||!currentUser||!supabaseClient)return;
+  const isOwn=player.player_id===currentUser.id;
+  let hearted=false;
+
+  if(!isOwn){
+    const {data,error}=await supabaseClient
+      .from('profile_hearts')
+      .select('target_id')
+      .eq('liker_id',currentUser.id)
+      .eq('target_id',player.player_id)
+      .maybeSingle();
+    if(error)console.error('Error consultando corazón:',error);
+    else hearted=Boolean(data);
+  }
+
+  currentDetailHearted=hearted;
+  updateHeartUI(player.heart_count||0,hearted,isOwn);
+}
+
+async function togglePlayerHeart(){
+  const player=currentDetailPlayer;
+  if(!player?.player_id||!currentUser||!supabaseClient||currentDetailHeartBusy)return;
+  if(player.player_id===currentUser.id)return;
+
+  currentDetailHeartBusy=true;
+  updateHeartUI(player.heart_count||0,currentDetailHearted,false);
+
+  try{
+    if(currentDetailHearted){
+      const {error}=await supabaseClient
+        .from('profile_hearts')
+        .delete()
+        .eq('liker_id',currentUser.id)
+        .eq('target_id',player.player_id);
+      if(error)throw error;
+      currentDetailHearted=false;
+      player.heart_count=Math.max(0,(Number(player.heart_count)||0)-1);
+    }else{
+      const {error}=await supabaseClient
+        .from('profile_hearts')
+        .insert({liker_id:currentUser.id,target_id:player.player_id});
+      if(error)throw error;
+      currentDetailHearted=true;
+      player.heart_count=(Number(player.heart_count)||0)+1;
+    }
+  }catch(error){
+    console.error('Error actualizando corazón:',error);
+    showToast('No se pudo actualizar el corazón.');
+  }finally{
+    currentDetailHeartBusy=false;
+    updateHeartUI(player.heart_count||0,currentDetailHearted,false);
+  }
+}
+
 function closeRankingPlayer(){
   if(!playerDetailModal)return;
+  currentDetailPlayer=null;
   playerDetailModal.classList.remove('open');
   playerDetailModal.setAttribute('aria-hidden','true');
   document.body.classList.remove('player-detail-open');
@@ -327,6 +403,7 @@ function closeRankingPlayer(){
 
 async function openRankingPlayer(player){
   if(!playerDetailModal)return;
+  currentDetailPlayer=player;
 
   const displayName=String(player?.username||player?.account_name||'Jugador').toUpperCase();
   const country=player?.country||'País';
@@ -334,6 +411,7 @@ async function openRankingPlayer(player){
   const wins=Number.isFinite(Number(player?.wins))?Number(player.wins):0;
   const losses=Number.isFinite(Number(player?.losses))?Number(player.losses):0;
   const gameId=String(player?.game_id||'—');
+  const rank=getRankByElo(elo);
 
   playerDetailName.textContent=displayName;
   playerDetailFlag.textContent=getFlag(country);
@@ -343,6 +421,13 @@ async function openRankingPlayer(player){
   playerDetailWins.textContent=String(wins);
   playerDetailLosses.textContent=String(losses);
 
+  if(playerDetailRank){
+    const rankName=playerDetailRank.querySelector('strong');
+    if(rankName)rankName.textContent=rank.name.toUpperCase();
+  }
+
+  updateHeartUI(player?.heart_count||0,false,player?.player_id===currentUser?.id);
+
   playerDetailAvatar.replaceChildren();
   const fallback=document.createElement('span');
   fallback.textContent=displayName.charAt(0)||'J';
@@ -351,6 +436,8 @@ async function openRankingPlayer(player){
   playerDetailModal.classList.add('open');
   playerDetailModal.setAttribute('aria-hidden','false');
   document.body.classList.add('player-detail-open');
+
+  loadPlayerHeartState(player).catch(error=>console.error('Error cargando corazones:',error));
 
   if(player?.avatar_path&&supabaseClient){
     try{
@@ -483,6 +570,7 @@ window.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal(registerMo
 backBtn.addEventListener('click',()=>showToast('Perfil del jugador'));
 settingsBtn.addEventListener('click',()=>{settingsMenu.hidden=!settingsMenu.hidden});
 if(closePlayerDetail)closePlayerDetail.addEventListener('click',closeRankingPlayer);
+if(playerHeartBtn)playerHeartBtn.addEventListener('click',togglePlayerHeart);
 if(playerDetailModal)playerDetailModal.addEventListener('click',event=>{if(event.target===playerDetailModal)closeRankingPlayer()});
 
 profilePhotoInput.addEventListener('change',async()=>{
