@@ -107,7 +107,7 @@ button{cursor:pointer}
 .rank-art{display:flex;align-items:center;justify-content:center;padding:18px 0}
 .rank-badge-image{
   width:350px;height:330px;display:flex;align-items:center;justify-content:center;
-  background-repeat:no-repeat;background-size:500% 400%;background-position:0 0;
+  background-color:transparent!important;background-repeat:no-repeat;background-size:500% 400%;background-position:0 0;
   border-radius:18px;color:#f3d37c;font-size:34px;font-weight:900;text-align:center;
   text-shadow:0 3px 8px #000;filter:drop-shadow(0 12px 10px rgba(0,0,0,.55))
 }

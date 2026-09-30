@@ -106,13 +106,95 @@ function getRankByElo(value){
   return {...RANKS[index],index};
 }
 
+function makeRankSpriteTransparent(dataUrl){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.onload=()=>{
+      try{
+        const width=img.naturalWidth||img.width;
+        const height=img.naturalHeight||img.height;
+        const canvas=document.createElement('canvas');
+        canvas.width=width;
+        canvas.height=height;
+        const ctx=canvas.getContext('2d',{willReadFrequently:true});
+        ctx.clearRect(0,0,width,height);
+        ctx.drawImage(img,0,0);
+
+        const frame=ctx.getImageData(0,0,width,height);
+        const pixels=frame.data;
+        const visited=new Uint8Array(width*height);
+        const columns=5;
+        const rows=4;
+        const cellWidth=Math.floor(width/columns);
+        const cellHeight=Math.floor(height/rows);
+        const darkLimit=26;
+
+        const isBackgroundDark=index=>{
+          const p=index*4;
+          return pixels[p]<=darkLimit&&pixels[p+1]<=darkLimit&&pixels[p+2]<=darkLimit;
+        };
+
+        for(let row=0;row<rows;row++){
+          for(let col=0;col<columns;col++){
+            const x0=col*cellWidth;
+            const y0=row*cellHeight;
+            const x1=col===columns-1?width:(col+1)*cellWidth;
+            const y1=row===rows-1?height:(row+1)*cellHeight;
+            const queue=new Int32Array((x1-x0)*(y1-y0));
+            let head=0;
+            let tail=0;
+
+            const add=(x,y)=>{
+              if(x<x0||x>=x1||y<y0||y>=y1)return;
+              const index=y*width+x;
+              if(visited[index]||!isBackgroundDark(index))return;
+              visited[index]=1;
+              queue[tail++]=index;
+            };
+
+            for(let x=x0;x<x1;x++){
+              add(x,y0);
+              add(x,y1-1);
+            }
+            for(let y=y0;y<y1;y++){
+              add(x0,y);
+              add(x1-1,y);
+            }
+
+            while(head<tail){
+              const index=queue[head++];
+              const p=index*4;
+              pixels[p+3]=0;
+              const x=index%width;
+              const y=Math.floor(index/width);
+              add(x-1,y);
+              add(x+1,y);
+              add(x,y-1);
+              add(x,y+1);
+            }
+          }
+        }
+
+        ctx.putImageData(frame,0,0);
+        resolve(canvas.toDataURL('image/png'));
+      }catch(error){
+        reject(error);
+      }
+    };
+    img.onerror=()=>reject(new Error('No se pudo procesar la hoja de insignias.'));
+    img.src=dataUrl;
+  });
+}
+
 function getRankSpriteUrl(){
   if(!rankSpritePromise){
     rankSpritePromise=Promise.all(RANK_SPRITE_PARTS.map(async path=>{
       const response=await fetch(path,{cache:'force-cache'});
       if(!response.ok)throw new Error('No se pudo cargar '+path);
       return (await response.text()).trim();
-    })).then(parts=>'data:image/webp;base64,'+parts.join(''));
+    }))
+      .then(parts=>'data:image/webp;base64,'+parts.join(''))
+      .then(makeRankSpriteTransparent);
   }
   return rankSpritePromise;
 }
