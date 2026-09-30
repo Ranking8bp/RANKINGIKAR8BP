@@ -456,3 +456,34 @@ $$;
 revoke all on function public.get_global_activity() from public;
 revoke execute on function public.get_global_activity() from anon;
 grant execute on function public.get_global_activity() to authenticated;
+
+
+-- SISTEMA DE SEGUIDORES
+create table if not exists public.profile_follows (
+  follower_id uuid not null references public.profiles(id) on delete cascade,
+  following_id uuid not null references public.profiles(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (follower_id,following_id),
+  constraint profile_follows_no_self check (follower_id<>following_id)
+);
+alter table public.profile_follows enable row level security;
+drop policy if exists "profile_follows_select_authenticated" on public.profile_follows;
+create policy "profile_follows_select_authenticated" on public.profile_follows for select to authenticated using(true);
+drop policy if exists "profile_follows_insert_own" on public.profile_follows;
+create policy "profile_follows_insert_own" on public.profile_follows for insert to authenticated with check(follower_id=auth.uid());
+drop policy if exists "profile_follows_delete_own" on public.profile_follows;
+create policy "profile_follows_delete_own" on public.profile_follows for delete to authenticated using(follower_id=auth.uid());
+grant select,insert,delete on public.profile_follows to authenticated;
+
+drop function if exists public.get_follow_stats(uuid);
+create function public.get_follow_stats(p_profile_id uuid)
+returns table(followers bigint,following bigint,viewer_follows boolean)
+language sql stable security definer set search_path=public as $$
+ select
+  (select count(*) from public.profile_follows where following_id=p_profile_id),
+  (select count(*) from public.profile_follows where follower_id=p_profile_id),
+  exists(select 1 from public.profile_follows where follower_id=auth.uid() and following_id=p_profile_id);
+$$;
+revoke all on function public.get_follow_stats(uuid) from public;
+revoke execute on function public.get_follow_stats(uuid) from anon;
+grant execute on function public.get_follow_stats(uuid) to authenticated;
