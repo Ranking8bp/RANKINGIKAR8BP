@@ -824,6 +824,17 @@ if(closePlayerDetail)closePlayerDetail.addEventListener('click',closeRankingPlay
 if(playerHeartBtn)playerHeartBtn.addEventListener('click',togglePlayerHeart);
 if(playerFollowBtn)playerFollowBtn.addEventListener('click',toggleFollow);
 if(profileCommentForm)profileCommentForm.addEventListener('submit',submitProfileComment);
+function closeHeaderMenus(except=null){
+  const menus=[notificationPanel,activityPanel,settingsMenu];
+  menus.forEach(menu=>{if(menu&&menu!==except)menu.hidden=true});
+}
+document.addEventListener('click',event=>{
+  const insideNotification=notificationPanel?.contains(event.target)||notificationBtn?.contains(event.target);
+  const insideActivity=activityPanel?.contains(event.target)||activityBtn?.contains(event.target);
+  const insideSettings=settingsMenu?.contains(event.target)||settingsBtn?.contains(event.target);
+  const insideInbox=document.getElementById('inboxBtn')?.contains(event.target);
+  if(!insideNotification&&!insideActivity&&!insideSettings&&!insideInbox)closeHeaderMenus();
+});
 if(notificationBtn)notificationBtn.addEventListener('click',toggleNotifications);
 if(activityBtn)activityBtn.addEventListener('click',toggleGlobalActivity);
 if(refreshActivityBtn)refreshActivityBtn.addEventListener('click',loadGlobalActivity);
