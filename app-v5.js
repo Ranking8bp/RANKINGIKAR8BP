@@ -137,7 +137,93 @@ let currentDetailHeartBusy=false;
 
 const cloudConfig=window.SUPABASE_CONFIG||{};
 const cloudReady=typeof window.supabase!=='undefined'&&typeof cloudConfig.url==='string'&&cloudConfig.url.startsWith('https://')&&typeof cloudConfig.key==='string'&&cloudConfig.key.length>20;
+
 if(cloudReady){supabaseClient=window.supabase.createClient(cloudConfig.url,cloudConfig.key)}
+
+/* Inicialización temprana de acceso: estos controles se registran antes del resto
+   de la interfaz para que un error de una función secundaria no deje bloqueados
+   los botones de Iniciar sesión / Registrarse. */
+function bindAuthModalsEarly(){
+  const open=(modal,focusTarget)=>{
+    if(!modal)return;
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+    setTimeout(()=>focusTarget?.focus(),60);
+  };
+  const close=(modal)=>{
+    if(!modal)return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+    if(!document.querySelector('.modal-backdrop.open'))document.body.classList.remove('modal-open');
+  };
+
+  loginBtn?.addEventListener('click',()=>{
+    if(loginError)loginError.textContent='';
+    open(loginModal,loginUsername);
+  });
+  registerBtn?.addEventListener('click',()=>{
+    if(registerError)registerError.textContent='';
+    open(registerModal,username);
+  });
+  closeLoginModalBtn?.addEventListener('click',()=>close(loginModal));
+  closeRegisterModalBtn?.addEventListener('click',()=>close(registerModal));
+  [registerModal,loginModal].forEach(modal=>{
+    modal?.addEventListener('click',e=>{if(e.target===modal)close(modal)});
+  });
+
+  registerForm?.addEventListener('submit',async event=>{
+    event.preventDefault();
+    if(registerError)registerError.textContent='';
+    if(!cloudReady){if(registerError)registerError.textContent='La nube todavía no está configurada.';return}
+    const usernameValue=username.value.trim(),passwordValue=password.value,idValue=gameId.value.trim(),countryValue=country.value.trim();
+    if(!validUsername(usernameValue)){registerError.textContent='El usuario solo puede tener letras, números, punto, guion o guion bajo.';return}
+    if(passwordValue.length<6){registerError.textContent='La contraseña debe tener al menos 6 caracteres.';return}
+    if(!idValue||!countryValue){registerError.textContent='Completa todos los datos.';return}
+    setRegisterBusy(true);
+    try{
+      const {data:registerData,error:registerFunctionError}=await supabaseClient.functions.invoke('register-user',{body:{username:usernameValue,password:passwordValue}});
+      if(registerFunctionError||!registerData?.ok)throw new Error(registerData?.error||'No se pudo crear la cuenta.');
+      const {data:loginData,error:loginAfterRegisterError}=await supabaseClient.auth.signInWithPassword({email:usernameToInternalEmail(usernameValue),password:passwordValue});
+      if(loginAfterRegisterError||!loginData?.session||!loginData?.user)throw new Error('La cuenta se creó, pero no se pudo iniciar la sesión automáticamente.');
+      const userId=loginData.user.id;
+      const {data:newProfile,error:profileError}=await supabaseClient.from('profiles').insert({
+        id:userId,username:normalizeUsername(usernameValue),game_id:idValue,account_name:usernameValue.trim(),country:countryValue,screenshot_path:null,avatar_path:null
+      }).select('id, username, game_id, account_name, country, screenshot_path, avatar_path, rank_name, elo_points, wins, losses, created_at').single();
+      if(profileError)throw new Error('No se pudo guardar el perfil: '+profileError.message);
+      registerForm.reset();
+      close(registerModal);
+      await setPlayerUI(newProfile,loginData.user);
+      showToast('Cuenta creada. Rango inicial: Latón · ELO 200.');
+    }catch(error){
+      console.error(error);
+      if(registerError)registerError.textContent=error?.message||'No se pudo crear la cuenta.';
+    }finally{setRegisterBusy(false)}
+  });
+
+  loginForm?.addEventListener('submit',async event=>{
+    event.preventDefault();
+    if(loginError)loginError.textContent='';
+    if(!cloudReady){if(loginError)loginError.textContent='La nube todavía no está configurada.';return}
+    const usernameValue=loginUsername.value.trim(),passwordValue=loginPassword.value;
+    if(!usernameValue||!passwordValue){loginError.textContent='Escribe tu usuario y contraseña.';return}
+    setLoginBusy(true);
+    try{
+      const {data,error}=await supabaseClient.auth.signInWithPassword({email:usernameToInternalEmail(usernameValue),password:passwordValue});
+      if(error||!data.session)throw new Error('Usuario o contraseña incorrectos.');
+      const profile=await getProfile(data.user.id);
+      loginForm.reset();
+      close(loginModal);
+      await setPlayerUI(profile,data.user);
+      showToast('Sesión iniciada correctamente.');
+    }catch(error){
+      console.error(error);
+      if(loginError)loginError.textContent=error?.message||'No se pudo iniciar sesión.';
+    }finally{setLoginBusy(false)}
+  });
+}
+bindAuthModalsEarly();
+
 
 
 const RANKS=[
@@ -1101,11 +1187,7 @@ async function restoreSession(){
   await setPlayerUI(profile,data.session.user)
 }
 
-loginBtn.addEventListener('click',()=>{loginError.textContent='';openModal(loginModal,loginUsername)});
-registerBtn.addEventListener('click',()=>{registerError.textContent='';openModal(registerModal,username)});
-closeRegisterModalBtn.addEventListener('click',()=>closeModal(registerModal));
-closeLoginModalBtn.addEventListener('click',()=>closeModal(loginModal));
-[registerModal,loginModal].forEach(modal=>modal.addEventListener('click',e=>{if(e.target===modal)closeModal(modal)}));
+/* Los controles de autenticación se enlazan al inicio mediante bindAuthModalsEarly(). */
 window.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal(registerModal);closeModal(loginModal);closeRankingPlayer();settingsMenu.hidden=true}});
 backBtn.addEventListener('click',()=>showToast('Perfil del jugador'));
 settingsBtn.addEventListener('click',()=>{settingsMenu.hidden=!settingsMenu.hidden});
@@ -1229,49 +1311,6 @@ profilePhotoInput.addEventListener('change',async()=>{
     if(oldPath&&oldPath!==newPath)await supabaseClient.storage.from('profile-photos').remove([oldPath]);
     currentProfile=updatedProfile;profilePhotoInput.value='';await loadAvatar(newPath);showToast('Foto de perfil actualizada.')
   }catch(error){console.error(error);dashboardMessage.textContent='No se pudo guardar la foto de perfil.'}
-});
-
-registerForm.addEventListener('submit',async event=>{
-  event.preventDefault();registerError.textContent='';
-  if(!cloudReady){registerError.textContent='La nube todavía no está configurada.';return}
-
-  const usernameValue=username.value.trim(),passwordValue=password.value,idValue=gameId.value.trim(),countryValue=country.value.trim();
-  if(!validUsername(usernameValue)){registerError.textContent='El usuario solo puede tener letras, números, punto, guion o guion bajo.';return}
-  if(passwordValue.length<6){registerError.textContent='La contraseña debe tener al menos 6 caracteres.';return}
-  if(!idValue||!countryValue){registerError.textContent='Completa todos los datos.';return}
-
-  setRegisterBusy(true);
-  try{
-    const {data:registerData,error:registerFunctionError}=await supabaseClient.functions.invoke('register-user',{body:{username:usernameValue,password:passwordValue}});
-    if(registerFunctionError||!registerData?.ok)throw new Error(registerData?.error||'No se pudo crear la cuenta.');
-
-    const {data:loginData,error:loginAfterRegisterError}=await supabaseClient.auth.signInWithPassword({email:usernameToInternalEmail(usernameValue),password:passwordValue});
-    if(loginAfterRegisterError||!loginData?.session||!loginData?.user)throw new Error('La cuenta se creó, pero no se pudo iniciar la sesión automáticamente.');
-
-    const userId=loginData.user.id;
-    const {data:newProfile,error:profileError}=await supabaseClient.from('profiles').insert({
-      id:userId,username:normalizeUsername(usernameValue),game_id:idValue,account_name:usernameValue.trim(),country:countryValue,screenshot_path:null,avatar_path:null
-    }).select('id, username, game_id, account_name, country, screenshot_path, avatar_path, rank_name, elo_points, wins, losses, created_at').single();
-    if(profileError)throw new Error('No se pudo guardar el perfil: '+profileError.message);
-
-    registerForm.reset();closeModal(registerModal);await setPlayerUI(newProfile,loginData.user);showToast('Cuenta creada. Rango inicial: Latón · ELO 200.')
-  }catch(error){console.error(error);registerError.textContent=error?.message||'No se pudo crear la cuenta.'}
-  finally{setRegisterBusy(false)}
-});
-
-loginForm.addEventListener('submit',async event=>{
-  event.preventDefault();loginError.textContent='';
-  if(!cloudReady){loginError.textContent='La nube todavía no está configurada.';return}
-  const usernameValue=loginUsername.value.trim(),passwordValue=loginPassword.value;
-  if(!usernameValue||!passwordValue){loginError.textContent='Escribe tu usuario y contraseña.';return}
-
-  setLoginBusy(true);
-  try{
-    const {data,error}=await supabaseClient.auth.signInWithPassword({email:usernameToInternalEmail(usernameValue),password:passwordValue});
-    if(error||!data.session)throw new Error('Usuario o contraseña incorrectos.');
-    const profile=await getProfile(data.user.id);loginForm.reset();closeModal(loginModal);await setPlayerUI(profile,data.user);showToast('Sesión iniciada correctamente.')
-  }catch(error){console.error(error);loginError.textContent=error?.message||'No se pudo iniciar sesión.'}
-  finally{setLoginBusy(false)}
 });
 
 logoutBtn.addEventListener('click',async()=>{settingsMenu.hidden=true;if(supabaseClient)await supabaseClient.auth.signOut();setGuestUI();showToast('Sesión cerrada.')});
