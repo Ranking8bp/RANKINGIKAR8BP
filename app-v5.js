@@ -946,12 +946,16 @@ async function openRankingPlayer(player){
   const eloStat=playerDetailElo?.closest('.player-detail-stat');
   const winStat=playerDetailWins?.closest('.player-detail-stat');
   const lossStat=playerDetailLosses?.closest('.player-detail-stat');
+  const idStat=playerDetailGameId?.closest('.player-detail-stat');
   if(isAdminProfile){
     if(playerDetailRank)playerDetailRank.hidden=true;
-    if(eloStat){eloStat.hidden=false;const label=eloStat.querySelector('small');if(label)label.textContent='ADMINISTRADOR';playerDetailElo.textContent='ADMINISTRADOR';}
+    if(idStat)idStat.hidden=true;
+    if(eloStat){eloStat.hidden=false;eloStat.classList.add('admin-profile-label');const label=eloStat.querySelector('small');if(label)label.textContent='';playerDetailElo.textContent='ADMINISTRADOR';}
     if(winStat)winStat.hidden=true;
     if(lossStat)lossStat.hidden=true;
   }else{
+    if(idStat)idStat.hidden=false;
+    if(eloStat)eloStat.classList.remove('admin-profile-label');
     if(playerDetailRank)playerDetailRank.hidden=false;
     if(eloStat){eloStat.hidden=false;const label=eloStat.querySelector('small');if(label)label.textContent='ELO';playerDetailElo.textContent=String(elo);}
     if(winStat){winStat.hidden=false;const label=winStat.querySelector('small');if(label)label.textContent='VICTORIAS';playerDetailWins.textContent=String(wins);}
