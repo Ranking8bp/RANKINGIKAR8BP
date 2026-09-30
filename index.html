@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Registro 8 Ball Pool</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="viewport-shell">
+    <section class="site-canvas" id="siteCanvas">
+      <header class="topbar">
+        <div class="topbar-spacer" aria-hidden="true"></div>
+        <div class="topbar-actions">
+          <button class="login-btn" id="loginBtn" type="button">Iniciar sesión</button>
+          <button class="register-btn" id="registerBtn" type="button">Registrarse</button>
+        </div>
+      </header>
+
+      <section class="content-area" aria-label="Contenido principal">
+        <!-- Aquí iremos agregando las siguientes secciones del sitio. -->
+      </section>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="registerModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="registerTitle">
+      <button class="modal-close" id="closeModal" type="button" aria-label="Cerrar">×</button>
+
+      <div class="modal-heading">
+        <span class="modal-kicker">REGISTRO DE JUGADOR</span>
+        <h2 id="registerTitle">Registrarse</h2>
+        <p>Ingresa los datos de la cuenta que vas a utilizar.</p>
+      </div>
+
+      <form class="register-form" id="registerForm" novalidate>
+
+        <label class="field">
+          <span class="field-label">Usuario</span>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            autocomplete="username"
+            placeholder="Crea tu nombre de usuario"
+            required
+          />
+        </label>
+
+        <label class="field">
+          <span class="field-label">Contraseña</span>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="new-password"
+            placeholder="Crea una contraseña"
+            minlength="4"
+            required
+          />
+        </label>
+        <label class="field">
+          <span class="field-label">ID del juego</span>
+          <input
+            id="gameId"
+            name="gameId"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            placeholder="Ejemplo: 123456789"
+            required
+          />
+        </label>
+
+        <label class="field">
+          <span class="field-label">Nombre que tiene la cuenta</span>
+          <input
+            id="accountName"
+            name="accountName"
+            type="text"
+            autocomplete="off"
+            placeholder="Escribe el nombre de tu cuenta"
+            required
+          />
+        </label>
+
+        <label class="field">
+          <span class="field-label">País</span>
+          <input
+            id="country"
+            name="country"
+            type="text"
+            autocomplete="country-name"
+            placeholder="Ejemplo: México"
+            required
+          />
+        </label>
+
+        <div class="field">
+          <span class="field-label">Captura de la cuenta</span>
+          <p class="field-help">Sube una captura donde se vea claramente el ID del juego.</p>
+
+          <label class="upload-box" id="uploadBox" for="accountScreenshot">
+            <input
+              id="accountScreenshot"
+              name="accountScreenshot"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              required
+            />
+            <span class="upload-icon">＋</span>
+            <strong id="uploadTitle">Subir captura</strong>
+            <span id="uploadText">PNG, JPG o WEBP</span>
+          </label>
+
+          <div class="preview-wrap" id="previewWrap" hidden>
+            <img id="imagePreview" alt="Vista previa de la captura de la cuenta" />
+            <button class="remove-image" id="removeImage" type="button">Cambiar captura</button>
+          </div>
+        </div>
+
+        <p class="form-error" id="formError" aria-live="polite"></p>
+
+        <button class="submit-btn" type="submit">Enviar registro</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Datos listos para registrar.</div>
+
+  <script src="script.js"></script>
+</body>
+</html>
