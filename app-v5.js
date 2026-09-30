@@ -474,7 +474,14 @@ async function openNotificationTarget(n){
       const target=n.comment_id&&profileCommentsList?.querySelector('[data-comment-id="'+n.comment_id+'"]');
       const el=target||document.getElementById('profileComments')||playerDetailModal;
       el?.scrollIntoView({behavior:'smooth',block:'center'});
-      if(target){target.classList.add('notification-target-flash');setTimeout(()=>target.classList.remove('notification-target-flash'),2200)}
+      if(target){
+        target.classList.remove('notification-target-focus');
+        void target.offsetWidth;
+        target.classList.add('notification-target-focus');
+        target.setAttribute('tabindex','-1');
+        target.focus({preventScroll:true});
+        setTimeout(()=>target.classList.remove('notification-target-focus'),5000);
+      }
     },500);
   }catch(error){console.error(error);showToast('No se pudo abrir la notificación.')}
 }
