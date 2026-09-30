@@ -722,3 +722,5 @@ button{cursor:pointer}
 .player-follow-counts strong{font-size:30px!important;line-height:1!important}
 .player-follow-counts span{margin-top:7px!important;font-size:14px!important;letter-spacing:.5px!important}
 @media(max-width:520px){.player-follow-counts{gap:28px!important}.player-follow-counts strong{font-size:25px!important}.player-follow-counts span{font-size:12px!important}}
+
+.private-message-backdrop{pointer-events:auto!important}.private-message-card{z-index:20001;pointer-events:auto!important}.private-message-card textarea{position:relative;z-index:20002;pointer-events:auto!important;user-select:text!important;-webkit-user-select:text!important;touch-action:manipulation}.private-message-card textarea:focus{border-color:#d3a94e;box-shadow:0 0 0 2px rgba(211,169,78,.2)}
