@@ -794,3 +794,9 @@ button{cursor:pointer}
 .admin-match.matched>small{display:block!important;text-align:center!important;font-size:12px!important;margin:0 0 12px!important}
 .admin-result-title{font-size:16px!important;margin:10px 0 12px!important}.admin-match-actions{justify-content:center!important;gap:12px!important}.admin-match-actions button{font-size:15px!important;padding:12px 22px!important}
 @media(max-width:850px){.admin-match-vs-rich{grid-template-columns:1fr!important}.admin-vs-word{width:70px!important;height:70px!important;font-size:27px!important}.admin-vs-player{grid-template-columns:95px 70px 1fr!important}.admin-vs-avatar{width:90px!important;height:90px!important}.admin-vs-rank-badge{width:66px!important;height:66px!important}.admin-vs-info strong{font-size:18px!important}.admin-vs-info span,.admin-vs-info b{font-size:13px!important}}
+
+/* Acercar datos de cada jugador a su foto en Sala VS */
+.admin-vs-player{grid-template-columns:124px 72px max-content!important;gap:8px!important;justify-content:center!important}
+.admin-vs-rank-badge{margin:0 2px!important}
+.admin-vs-info{margin-left:0!important;width:max-content!important;min-width:0!important}
+@media(max-width:850px){.admin-vs-player{grid-template-columns:90px 58px max-content!important;gap:7px!important;justify-content:center!important}}
