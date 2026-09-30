@@ -349,8 +349,21 @@ function showRankedMatch(match){
  setVsAvatar(versusMyAvatar,match.my_avatar_path,currentProfile?.account_name||currentProfile?.username||'TÚ');
  setVsAvatar(versusOpponentAvatar,match.opponent_avatar_path,match.opponent_name);
  updatePendingMatchesCount();
- clearInterval(pendingMatchesTimer);pendingMatchesTimer=setInterval(updatePendingMatchesCount,5000);
+ clearInterval(pendingMatchesTimer);pendingMatchesTimer=setInterval(()=>{updatePendingMatchesCount();watchCurrentRankedMatch()},2000);
 }
+async function watchCurrentRankedMatch(){
+ if(!currentRankedMatchId||!supabaseClient)return;
+ try{
+  const {data,error}=await supabaseClient.rpc('get_my_active_ranked_match');if(error)throw error;
+  if(!data||!data.length||Number(data[0].match_id)!==Number(currentRankedMatchId)){
+   currentRankedMatchId=null;clearInterval(pendingMatchesTimer);pendingMatchesTimer=null;
+   if(matchmakingModal)matchmakingModal.hidden=false;if(matchmakingSearching)matchmakingSearching.hidden=false;if(matchmakingVersus)matchmakingVersus.hidden=true;
+   showToast('Tu rival abandonó. Buscando un nuevo rival...');
+   await startRankedMatchmaking();return;
+  }
+ }catch(e){console.error(e)}
+}
+
 async function pollRankedMatch(){
  if(!currentUser||!supabaseClient)return;
  try{const {data,error}=await supabaseClient.rpc('get_my_active_ranked_match');if(error)throw error;const m=Array.isArray(data)?data[0]:data;if(m){clearInterval(matchmakingTimer);matchmakingTimer=null;showRankedMatch(m)}}catch(e){console.error(e)}
