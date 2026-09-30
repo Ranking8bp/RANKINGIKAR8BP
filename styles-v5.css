@@ -743,3 +743,5 @@ button{cursor:pointer}
  .main-follow-stats strong{font-size:27px!important}
  .main-follow-stats span{font-size:12px!important}
 }
+
+.player-play-area{display:flex;justify-content:center;padding:4px 24px 14px}.player-play-btn{min-width:190px;padding:13px 34px;border:1px solid #d5ad4f;border-radius:10px;background:linear-gradient(180deg,#e3bd61,#a77b2c);color:#101010;box-shadow:0 5px 18px rgba(211,169,78,.22);font:900 15px/1 Arial,sans-serif;letter-spacing:1px;cursor:pointer}.player-play-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}@media(max-width:520px){.player-play-btn{min-width:170px;padding:12px 28px;font-size:14px}}
