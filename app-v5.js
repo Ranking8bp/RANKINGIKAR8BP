@@ -439,11 +439,11 @@ function renderNotifications(items){
   }
   items.forEach(n=>{
     const item=document.createElement('article');item.className='notification-item'+(n.is_read?'':' unread');
-    const icon=document.createElement('span');icon.className='notification-type-icon';icon.textContent=n.type==='comment'?'💬':'♥';
+    const icon=document.createElement('span');icon.className='notification-type-icon';icon.textContent=(n.type==='comment'||n.type==='thread_comment')?'💬':'♥';
     const box=document.createElement('div');box.className='notification-copy';
     const p=document.createElement('p');
-    if(n.type==='comment'){
-      p.append(document.createTextNode(String(n.actor_name||'Alguien')+' comentó en tu perfil: '));
+    if(n.type==='comment'||n.type==='thread_comment'){
+      p.append(document.createTextNode(String(n.actor_name||'Alguien')+(n.type==='thread_comment'?' también comentó en un perfil donde participaste: ':' comentó en tu perfil: ')));
       const q=document.createElement('b');q.textContent='“'+String(n.comment_body||'')+'”';p.appendChild(q);
     }else{
       p.textContent=String(n.actor_name||'Alguien')+(n.type==='comment_heart'?' dio corazón a tu comentario.':' dio corazón a tu perfil.');
@@ -748,6 +748,16 @@ if(playerHeartBtn)playerHeartBtn.addEventListener('click',togglePlayerHeart);
 if(profileCommentForm)profileCommentForm.addEventListener('submit',submitProfileComment);
 if(notificationBtn)notificationBtn.addEventListener('click',toggleNotifications);
 if(markNotificationsRead)markNotificationsRead.addEventListener('click',markAllNotificationsRead);
+let notificationRefreshTimer=null;
+function startNotificationRefresh(){
+  if(notificationRefreshTimer)clearInterval(notificationRefreshTimer);
+  if(currentUser){
+    loadNotifications().catch(()=>{});
+    notificationRefreshTimer=setInterval(()=>{if(currentUser)loadNotifications().catch(()=>{})},15000);
+  }
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&currentUser)loadNotifications().catch(()=>{})});
+setTimeout(startNotificationRefresh,1000);
 if(playerDetailModal)playerDetailModal.addEventListener('click',event=>{if(event.target===playerDetailModal)closeRankingPlayer()});
 
 profilePhotoInput.addEventListener('change',async()=>{
