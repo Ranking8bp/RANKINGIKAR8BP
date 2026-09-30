@@ -41,6 +41,9 @@ const versusMe=document.getElementById('versusMe');
 const versusMyElo=document.getElementById('versusMyElo');
 const versusOpponent=document.getElementById('versusOpponent');
 const versusOpponentElo=document.getElementById('versusOpponentElo');
+const versusMyAvatar=document.getElementById('versusMyAvatar'),versusOpponentAvatar=document.getElementById('versusOpponentAvatar');
+const versusMyRank=document.getElementById('versusMyRank'),versusOpponentRank=document.getElementById('versusOpponentRank');
+const versusMyPosition=document.getElementById('versusMyPosition'),versusOpponentPosition=document.getElementById('versusOpponentPosition');
 let matchmakingTimer=null,currentRankedMatchId=null;
 const gamesPlayed=document.getElementById('gamesPlayed');
 const winRate=document.getElementById('winRate');
@@ -314,6 +317,13 @@ function showRankedMatch(match){
  versusMyElo.textContent='ELO '+String(match.my_elo||200);
  versusOpponent.textContent=String(match.opponent_name||'RIVAL').toUpperCase();
  versusOpponentElo.textContent='ELO '+String(match.opponent_elo||200);
+ if(versusMyRank)versusMyRank.textContent=String(match.my_rank_name||getRankByElo(match.my_elo).name).toUpperCase();
+ if(versusOpponentRank)versusOpponentRank.textContent=String(match.opponent_rank_name||getRankByElo(match.opponent_elo).name).toUpperCase();
+ if(versusMyPosition)versusMyPosition.textContent='RANKING #'+String(match.my_position||'--');
+ if(versusOpponentPosition)versusOpponentPosition.textContent='RANKING #'+String(match.opponent_position||'--');
+ const setVsAvatar=(el,path,name)=>{if(!el)return;el.replaceChildren();if(path){const {data}=supabaseClient.storage.from('profile-photos').getPublicUrl(path);if(data?.publicUrl){const img=document.createElement('img');img.src=data.publicUrl;img.alt=name;el.appendChild(img);return}}const s=document.createElement('span');s.textContent=String(name||'?').charAt(0).toUpperCase();el.appendChild(s)};
+ setVsAvatar(versusMyAvatar,match.my_avatar_path,currentProfile?.account_name||currentProfile?.username||'TÚ');
+ setVsAvatar(versusOpponentAvatar,match.opponent_avatar_path,match.opponent_name);
 }
 async function pollRankedMatch(){
  if(!currentUser||!supabaseClient)return;
