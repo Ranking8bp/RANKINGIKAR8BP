@@ -716,3 +716,9 @@ button{cursor:pointer}
 .inbox-panel{position:absolute;z-index:10050;top:76px;right:118px;width:min(430px,calc(100vw - 28px));max-height:min(560px,70vh);overflow:hidden;border:1px solid #526b7a;border-radius:14px;background:#050c12;box-shadow:0 18px 50px rgba(0,0,0,.72)}
 .inbox-panel .notification-list{max-height:calc(min(560px,70vh) - 45px);overflow-y:auto}.inbox-message.unread{background:#0d2635;border-left:3px solid #e6c976}
 @media(max-width:700px){.inbox-panel{position:fixed;z-index:10050;top:68px;left:10px;right:10px;width:auto;max-height:calc(100dvh - 88px)}.inbox-panel .notification-list{max-height:calc(100dvh - 135px)}}
+
+/* Seguidores del perfil de jugador: mayor legibilidad */
+.player-follow-counts{gap:38px!important}
+.player-follow-counts strong{font-size:30px!important;line-height:1!important}
+.player-follow-counts span{margin-top:7px!important;font-size:14px!important;letter-spacing:.5px!important}
+@media(max-width:520px){.player-follow-counts{gap:28px!important}.player-follow-counts strong{font-size:25px!important}.player-follow-counts span{font-size:12px!important}}
