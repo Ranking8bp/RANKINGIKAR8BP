@@ -800,3 +800,11 @@ button{cursor:pointer}
 .admin-vs-rank-badge{margin:0 2px!important}
 .admin-vs-info{margin-left:0!important;width:max-content!important;min-width:0!important}
 @media(max-width:850px){.admin-vs-player{grid-template-columns:90px 58px max-content!important;gap:7px!important;justify-content:center!important}}
+
+/* Clasificación: fondo negro para máxima legibilidad en móvil y navegador integrado */
+.ranking-table,.ranking-table tbody,.ranking-list,.ranking-list tbody{background:#000!important}
+.ranking-table tbody tr,.ranking-list tbody tr,.ranking-row{background:#000!important;color:#fff!important}
+.ranking-table tbody tr:nth-child(even),.ranking-table tbody tr:nth-child(odd),.ranking-list tbody tr:nth-child(even),.ranking-list tbody tr:nth-child(odd){background:#000!important}
+.ranking-table td,.ranking-list td,.ranking-row,.ranking-row *{color:#fff!important}
+.ranking-table td,.ranking-list td{border-color:#263845!important}
+.ranking-table tbody tr:first-child,.ranking-list tbody tr:first-child,.ranking-row:first-child{background:linear-gradient(90deg,#3a2a0b,#171208)!important}
