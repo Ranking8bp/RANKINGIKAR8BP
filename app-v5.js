@@ -1,6 +1,8 @@
 const guestTopbar=document.getElementById('guestTopbar');
 const guestEmpty=document.getElementById('guestEmpty');
 const playerDashboard=document.getElementById('playerDashboard');
+const guestRankingList=document.getElementById('guestRankingList');
+const guestRankingCount=document.getElementById('guestRankingCount');
 const loginBtn=document.getElementById('loginBtn');
 const registerBtn=document.getElementById('registerBtn');
 const logoutBtn=document.getElementById('logoutBtn');
@@ -311,8 +313,29 @@ function getFlag(value){
   return flags[c]||'🌎'
 }
 
+
+async function loadGuestRanking(){
+ if(!guestRankingList||!supabaseClient)return;
+ guestRankingList.innerHTML='<div class="ranking-loading">Cargando clasificación...</div>';
+ try{
+  const {data,error}=await supabaseClient.rpc('get_public_ranking');if(error)throw error;
+  const players=(Array.isArray(data)?data:[]).slice(0,100);guestRankingList.replaceChildren();
+  if(guestRankingCount)guestRankingCount.textContent='TOP '+Math.min(100,players.length);
+  players.forEach((player,index)=>{
+   const row=document.createElement('div');row.className='guest-ranking-row';
+   const pos=document.createElement('strong');pos.className='guest-ranking-pos';pos.textContent=String(index+1);
+   const name=document.createElement('div');name.className='guest-ranking-player';
+   const avatar=document.createElement('span');avatar.className='guest-ranking-avatar';avatar.textContent=String(player.username||player.account_name||'J').charAt(0).toUpperCase();
+   const n=document.createElement('b');n.textContent=String(player.username||player.account_name||'Jugador').toUpperCase();name.append(avatar,n);
+   const country=document.createElement('div');country.className='guest-ranking-country';country.textContent=getFlag(player.country)+' '+String(player.country||'País');
+   const elo=document.createElement('strong');elo.className='guest-ranking-elo';elo.textContent=String(Number(player.elo_points)||200);
+   row.append(pos,name,country,elo);guestRankingList.appendChild(row);
+  });
+ }catch(e){console.error('Ranking público:',e);guestRankingList.innerHTML='<div class="ranking-loading ranking-error">No se pudo cargar la clasificación.</div>'}
+}
+
 function setGuestUI(){
-  currentUser=null;currentProfile=null;guestTopbar.hidden=false;guestEmpty.hidden=false;playerDashboard.hidden=true;settingsMenu.hidden=true;clearAvatar()
+  currentUser=null;currentProfile=null;guestTopbar.hidden=false;guestEmpty.hidden=false;playerDashboard.hidden=true;settingsMenu.hidden=true;clearAvatar();loadGuestRanking().catch(()=>{})
 }
 function clearAvatar(){
   if(avatarPreviewUrl){URL.revokeObjectURL(avatarPreviewUrl);avatarPreviewUrl=''}
