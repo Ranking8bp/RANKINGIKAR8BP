@@ -11,21 +11,25 @@
     <section class="site-canvas" id="siteCanvas">
       <header class="topbar">
         <div class="topbar-spacer" aria-hidden="true"></div>
-        <div class="topbar-actions">
+
+        <div class="topbar-actions" id="guestActions">
           <button class="login-btn" id="loginBtn" type="button">Iniciar sesión</button>
           <button class="register-btn" id="registerBtn" type="button">Registrarse</button>
         </div>
+
+        <div class="user-actions" id="userActions" hidden>
+          <span class="logged-user" id="loggedUser">Jugador</span>
+          <button class="logout-btn" id="logoutBtn" type="button">Cerrar sesión</button>
+        </div>
       </header>
 
-      <section class="content-area" aria-label="Contenido principal">
-        <!-- Aquí iremos agregando las siguientes secciones del sitio. -->
-      </section>
+      <section class="content-area" aria-label="Contenido principal"></section>
     </section>
   </main>
 
   <div class="modal-backdrop" id="registerModal" aria-hidden="true">
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="registerTitle">
-      <button class="modal-close" id="closeModal" type="button" aria-label="Cerrar">×</button>
+      <button class="modal-close" id="closeRegisterModal" type="button" aria-label="Cerrar">×</button>
 
       <div class="modal-heading">
         <span class="modal-kicker">REGISTRO DE JUGADOR</span>
@@ -33,8 +37,7 @@
         <p>Ingresa los datos de la cuenta que vas a utilizar.</p>
       </div>
 
-      <form class="register-form" id="registerForm" novalidate>
-
+      <form class="form-grid" id="registerForm" novalidate>
         <label class="field">
           <span class="field-label">Usuario</span>
           <input
@@ -43,8 +46,11 @@
             type="text"
             autocomplete="username"
             placeholder="Crea tu nombre de usuario"
+            minlength="3"
+            maxlength="30"
             required
           />
+          <span class="field-note">3 a 30 caracteres. Letras, números, punto, guion o guion bajo.</span>
         </label>
 
         <label class="field">
@@ -55,10 +61,11 @@
             type="password"
             autocomplete="new-password"
             placeholder="Crea una contraseña"
-            minlength="4"
+            minlength="6"
             required
           />
         </label>
+
         <label class="field">
           <span class="field-label">ID del juego</span>
           <input
@@ -110,7 +117,7 @@
             />
             <span class="upload-icon">＋</span>
             <strong id="uploadTitle">Subir captura</strong>
-            <span id="uploadText">PNG, JPG o WEBP</span>
+            <span id="uploadText">PNG, JPG o WEBP · máximo 10 MB</span>
           </label>
 
           <div class="preview-wrap" id="previewWrap" hidden>
@@ -119,15 +126,57 @@
           </div>
         </div>
 
-        <p class="form-error" id="formError" aria-live="polite"></p>
-
-        <button class="submit-btn" type="submit">Enviar registro</button>
+        <p class="form-error" id="registerError" aria-live="polite"></p>
+        <button class="submit-btn" id="registerSubmit" type="submit">Crear cuenta</button>
       </form>
     </div>
   </div>
 
-  <div class="toast" id="toast" role="status" aria-live="polite">Datos listos para registrar.</div>
+  <div class="modal-backdrop" id="loginModal" aria-hidden="true">
+    <div class="modal-card login-card" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+      <button class="modal-close" id="closeLoginModal" type="button" aria-label="Cerrar">×</button>
 
+      <div class="modal-heading">
+        <span class="modal-kicker">ACCESO DE JUGADOR</span>
+        <h2 id="loginTitle">Iniciar sesión</h2>
+        <p>Usa el usuario y la contraseña con los que te registraste.</p>
+      </div>
+
+      <form class="form-grid" id="loginForm" novalidate>
+        <label class="field">
+          <span class="field-label">Usuario</span>
+          <input
+            id="loginUsername"
+            name="loginUsername"
+            type="text"
+            autocomplete="username"
+            placeholder="Tu usuario"
+            required
+          />
+        </label>
+
+        <label class="field">
+          <span class="field-label">Contraseña</span>
+          <input
+            id="loginPassword"
+            name="loginPassword"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Tu contraseña"
+            required
+          />
+        </label>
+
+        <p class="form-error" id="loginError" aria-live="polite"></p>
+        <button class="submit-btn" id="loginSubmit" type="submit">Entrar</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
