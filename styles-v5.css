@@ -699,3 +699,9 @@ button{cursor:pointer}
 .activity-panel .notification-panel-head{background:#081722;position:sticky;top:0;z-index:2}
 .global-activity-item{border-left:3px solid #2c7696}
 @media(max-width:700px){.activity-panel{position:fixed;z-index:100;top:68px;left:10px;right:10px;width:auto;max-height:calc(100dvh - 88px);border-radius:12px}.activity-panel .notification-list{max-height:calc(100dvh - 135px)}}
+
+/* Menús superiores: siempre por encima del contenido */
+.profile-header{z-index:10000!important;overflow:visible!important}
+.profile-header-actions{z-index:10020!important}
+.notification-panel,.activity-panel,.settings-menu{z-index:10050!important}
+@media(max-width:700px){.notification-panel,.activity-panel,.settings-menu{z-index:10050!important}}
