@@ -30,7 +30,7 @@ button{cursor:pointer}
 
 .player-profile{
   min-height:1920px;
-  padding:0 34px 132px;
+  padding:0 34px 40px;
   position:relative;
   background:#000;
 }
@@ -182,7 +182,7 @@ button{cursor:pointer}
 
 @media(max-width:700px){
   .guest-topbar{height:92px;padding:18px}.login-btn,.register-btn{height:52px;padding:0 16px;border-radius:15px;font-size:17px}.guest-empty{height:calc(100dvh - 92px)}
-  .player-profile{min-height:100dvh;padding:0 12px 95px}
+  .player-profile{min-height:100dvh;padding:0 12px 28px}
   .profile-header{height:78px;grid-template-columns:46px 1fr 46px}
   .icon-btn{width:44px;height:44px;font-size:37px}.settings-btn{font-size:32px}
   .profile-title-wrap h1{font-size:22px}.title-ornament{grid-template-columns:1fr 28px 1fr;margin-top:4px}.title-ornament b{font-size:22px}
@@ -217,4 +217,21 @@ button{cursor:pointer}
   .name-line h2{font-size:clamp(17px,6vw,23px);max-width:calc(100% - 28px)}
   .verified-mark{width:22px;height:22px;min-width:22px;flex-basis:22px}
   .country-line{font-size:14px}.country-flag{font-size:26px}
+}
+
+
+/* Perfil simplificado: ocultar bloques inferiores solicitados */
+.general-stats-card,
+.profile-links,
+.bottom-nav{
+  display:none!important;
+}
+
+/* Refuerzo por caché: ocultar copa/espadas antiguas si un HTML viejo sigue cargado */
+.win-loss-grid .result-icon{
+  display:none!important;
+}
+.win-loss-grid .result-card{
+  grid-template-columns:1fr!important;
+  text-align:center;
 }
