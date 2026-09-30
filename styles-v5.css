@@ -819,3 +819,5 @@ html,body{color-scheme:dark!important}
 .ranking-row.ranking-first,.ranking-first{background:linear-gradient(90deg,#3b2b0c,#151006)!important}
 .ranking-first *{-webkit-text-fill-color:initial}
 @media(prefers-color-scheme:light){html,body,.ranking-section,.ranking-card,.ranking-wrap,.ranking-container,#rankingList,#rankingBody,.ranking-row{background-color:#000!important;color:#fff!important}.ranking-row *{color:#fff!important;-webkit-text-fill-color:#fff!important}}
+
+.dashboard-chat-area{display:flex;justify-content:center;margin:-16px 0 26px}.dashboard-chat-btn{width:min(690px,92%);padding:17px 36px;border:1px solid #47677b;border-radius:13px;background:linear-gradient(180deg,#132c3c,#081923);color:#f4f7f9;box-shadow:0 7px 24px rgba(0,0,0,.35);font:900 17px/1 Arial,sans-serif;letter-spacing:1.7px;cursor:pointer}.dashboard-chat-btn:hover{filter:brightness(1.12);transform:translateY(-1px)}@media(max-width:520px){.dashboard-chat-area{margin:-10px 0 20px}.dashboard-chat-btn{width:92%;padding:15px 25px;font-size:15px}}
