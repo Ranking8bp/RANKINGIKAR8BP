@@ -857,14 +857,14 @@ html,body{color-scheme:dark!important}
   border-radius:50%;
   background:#fff;
   color:#18b62b;
-  font:900 34px/1 Arial,sans-serif;
   box-shadow:0 1px 3px rgba(0,0,0,.2);
 }
+.whatsapp-contact-icon svg{width:54px;height:54px;display:block}
 .whatsapp-contact-btn:active{transform:scale(.985)}
 @media(max-width:520px){
   .whatsapp-contact-area{margin:-4px 0 20px}
   .whatsapp-contact-btn{width:92%;min-height:58px;font-size:15px;gap:10px;padding-right:15px}
-  .whatsapp-contact-icon{width:46px;height:46px;min-width:46px;font-size:27px}
+  .whatsapp-contact-icon{width:46px;height:46px;min-width:46px}.whatsapp-contact-icon svg{width:43px;height:43px}
 }
 
 /* Ficha de jugador compacta para WebView móvil (TikTok incluido) */
