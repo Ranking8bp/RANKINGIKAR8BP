@@ -50,6 +50,7 @@ const playerHeartBtn=document.getElementById('playerHeartBtn');
 const playerHeartCount=document.getElementById('playerHeartCount');
 const playerHeartCountLabel=document.getElementById('playerHeartCountLabel');
 const playerFollowBtn=document.getElementById('playerFollowBtn');
+const playerPlayBtn=document.getElementById('playerPlayBtn');
 const playerMessageBtn=document.getElementById('playerMessageBtn');
 const privateMessageModal=document.getElementById('privateMessageModal');
 const privateMessageClose=document.getElementById('privateMessageClose');
@@ -904,6 +905,7 @@ if(closePlayerDetail)closePlayerDetail.addEventListener('click',closeRankingPlay
 if(playerHeartBtn)playerHeartBtn.addEventListener('click',togglePlayerHeart);
 if(playerFollowBtn)playerFollowBtn.addEventListener('click',toggleFollow);
 if(playerMessageBtn)playerMessageBtn.addEventListener('click',openPrivateMessage);
+if(playerPlayBtn)playerPlayBtn.addEventListener('click',()=>showToast('Próximamente podrás desafiar a este jugador.'));
 if(privateMessageClose)privateMessageClose.addEventListener('click',closePrivateMessage);
 if(privateMessageSend)privateMessageSend.addEventListener('click',sendPrivateMessage);
 if(privateMessageModal)privateMessageModal.addEventListener('click',e=>{if(e.target===privateMessageModal)closePrivateMessage()});
