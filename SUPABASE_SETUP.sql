@@ -343,3 +343,42 @@ $$;
 revoke all on function public.get_my_notifications() from public;
 revoke execute on function public.get_my_notifications() from anon;
 grant execute on function public.get_my_notifications() to authenticated;
+
+
+-- AMPLIAR NOTIFICACIONES: actividad en perfiles donde participe el usuario
+alter table public.notifications drop constraint if exists notifications_type_check;
+alter table public.notifications add constraint notifications_type_check check (type in ('comment','profile_heart','comment_heart','thread_comment'));
+
+create or replace function public.notify_profile_comment() returns trigger language plpgsql security definer set search_path=public as $$
+begin
+  if new.author_id<>new.profile_id then
+    insert into public.notifications(recipient_id,actor_id,type,comment_id)
+    values(new.profile_id,new.author_id,'comment',new.id);
+  end if;
+  insert into public.notifications(recipient_id,actor_id,type,comment_id)
+  select distinct c.author_id,new.author_id,'thread_comment',new.id
+  from public.profile_comments c
+  where c.profile_id=new.profile_id
+    and c.author_id<>new.author_id
+    and c.author_id<>new.profile_id
+    and not exists (
+      select 1 from public.notifications n
+      where n.recipient_id=c.author_id and n.actor_id=new.author_id
+        and n.type='thread_comment' and n.comment_id=new.id
+    );
+  return new;
+end;$$;
+
+create or replace function public.get_my_notifications()
+returns table(notification_id bigint,type text,actor_id uuid,actor_name text,comment_body text,is_read boolean,created_at timestamptz)
+language sql stable security definer set search_path=public as $$
+ select n.id,n.type,n.actor_id,coalesce(p.account_name,p.username,'Jugador'),c.body,n.is_read,n.created_at
+ from public.notifications n
+ join public.profiles p on p.id=n.actor_id
+ left join public.profile_comments c on c.id=n.comment_id
+ where n.recipient_id=auth.uid()
+ order by n.created_at desc limit 100;
+$$;
+revoke all on function public.get_my_notifications() from public;
+revoke execute on function public.get_my_notifications() from anon;
+grant execute on function public.get_my_notifications() to authenticated;
