@@ -777,3 +777,6 @@ button{cursor:pointer}
 .abandon-ranked-btn{margin:24px auto 0;padding:11px 18px;border:1px solid #843b3b;border-radius:9px;background:#351313;color:#ff8b8b;font:900 11px Arial;letter-spacing:.7px;cursor:pointer}.abandon-ranked-btn:hover{background:#4a1919}
 
 .confirmed-match-warning{margin:22px auto 4px;max-width:560px;padding:17px;border:1px solid #a8782b;border-radius:11px;background:#291d08;text-align:center}.confirmed-match-warning strong{display:block;color:#ffd66d;font:900 14px Arial;letter-spacing:.8px;margin-bottom:10px}.confirmed-match-warning span{display:block;color:#fff;font:900 11px Arial;line-height:1.55}.confirmed-match-warning span+span{color:#ff9a9a;margin-top:4px}
+
+.admin-result-title{display:block;width:100%;margin:8px 0 6px;text-align:center;color:#ffd45c;font-size:13px;letter-spacing:1px}
+.admin-match-actions .admin-winner-btn{display:inline-flex!important;visibility:visible!important;opacity:1!important;align-items:center;justify-content:center;background:#19733a!important;color:#fff!important;border:1px solid #4bc879!important;border-radius:7px!important;padding:10px 16px!important;font-weight:900!important;cursor:pointer!important}
