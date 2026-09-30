@@ -775,3 +775,5 @@ button{cursor:pointer}
 .player-waiting-room{margin:28px auto 0;padding:15px 18px;max-width:520px;border-top:1px solid #294756;display:flex;flex-direction:column;gap:7px;align-items:center}.player-waiting-room strong{color:#e7c562;font:900 12px Arial;letter-spacing:1.2px}.player-waiting-room span{padding:7px 13px;border-radius:20px;background:#112936;color:#fff;font:900 11px Arial}.player-waiting-room small{color:#8195a0;font:700 9px Arial;line-height:1.4}
 
 .abandon-ranked-btn{margin:24px auto 0;padding:11px 18px;border:1px solid #843b3b;border-radius:9px;background:#351313;color:#ff8b8b;font:900 11px Arial;letter-spacing:.7px;cursor:pointer}.abandon-ranked-btn:hover{background:#4a1919}
+
+.confirmed-match-warning{margin:22px auto 4px;max-width:560px;padding:17px;border:1px solid #a8782b;border-radius:11px;background:#291d08;text-align:center}.confirmed-match-warning strong{display:block;color:#ffd66d;font:900 14px Arial;letter-spacing:.8px;margin-bottom:10px}.confirmed-match-warning span{display:block;color:#fff;font:900 11px Arial;line-height:1.55}.confirmed-match-warning span+span{color:#ff9a9a;margin-top:4px}
