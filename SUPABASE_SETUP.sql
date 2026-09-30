@@ -162,3 +162,31 @@ $$;
 revoke all on function public.get_ranking() from public;
 revoke execute on function public.get_ranking() from anon;
 grant execute on function public.get_ranking() to authenticated;
+
+
+-- ELIMINAR LA CUENTA DEL USUARIO AUTENTICADO
+-- Borra auth.users; profiles y profile_hearts se eliminan por ON DELETE CASCADE.
+create or replace function public.delete_my_account()
+returns void
+language plpgsql
+security definer
+set search_path = public, auth
+as $$
+declare
+  v_user_id uuid := auth.uid();
+begin
+  if v_user_id is null then
+    raise exception 'No hay una sesión autenticada';
+  end if;
+
+  delete from auth.users where id = v_user_id;
+
+  if not found then
+    raise exception 'No se encontró la cuenta autenticada';
+  end if;
+end;
+$$;
+
+revoke all on function public.delete_my_account() from public;
+revoke execute on function public.delete_my_account() from anon;
+grant execute on function public.delete_my_account() to authenticated;
