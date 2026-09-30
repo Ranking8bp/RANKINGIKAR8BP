@@ -62,26 +62,26 @@ if(cloudReady){supabaseClient=window.supabase.createClient(cloudConfig.url,cloud
 
 
 const RANKS=[
-  {min:200,name:'Latón'},
-  {min:300,name:'Bronce I'},
-  {min:400,name:'Bronce II'},
-  {min:500,name:'Bronce III'},
-  {min:600,name:'Plata I'},
-  {min:700,name:'Plata II'},
-  {min:800,name:'Plata III'},
-  {min:900,name:'Oro I'},
-  {min:1000,name:'Oro II'},
-  {min:1100,name:'Oro III'},
-  {min:1200,name:'Amatista I'},
-  {min:1300,name:'Amatista II'},
-  {min:1400,name:'Amatista III'},
-  {min:1500,name:'Esmeralda I'},
-  {min:1600,name:'Esmeralda II'},
-  {min:1700,name:'Esmeralda III'},
-  {min:1800,name:'Diamante I'},
-  {min:1900,name:'Diamante II'},
-  {min:2000,name:'Diamante III'},
-  {min:2100,name:'Diamante Negro'}
+  {min:200,name:'Latón',spriteIndex:0},
+  {min:300,name:'Bronce I',spriteIndex:1},
+  {min:400,name:'Bronce II',spriteIndex:2},
+  {min:500,name:'Bronce III',spriteIndex:3},
+  {min:600,name:'Plata I',spriteIndex:4},
+  {min:700,name:'Plata II',spriteIndex:5},
+  {min:800,name:'Plata III',spriteIndex:6},
+  {min:900,name:'Oro I',spriteIndex:7},
+  {min:1000,name:'Oro II',spriteIndex:8},
+  {min:1100,name:'Oro III',spriteIndex:9},
+  {min:1200,name:'Amatista I',spriteIndex:13},
+  {min:1300,name:'Amatista II',spriteIndex:12},
+  {min:1400,name:'Amatista III',spriteIndex:19},
+  {min:1500,name:'Esmeralda I',spriteIndex:14},
+  {min:1600,name:'Esmeralda II',spriteIndex:11},
+  {min:1700,name:'Esmeralda III',spriteIndex:15},
+  {min:1800,name:'Diamante I',spriteIndex:16},
+  {min:1900,name:'Diamante II',spriteIndex:17},
+  {min:2000,name:'Diamante III',spriteIndex:10},
+  {min:2100,name:'Diamante Negro',spriteIndex:18}
 ];
 
 const RANK_SPRITE_PARTS=[
@@ -122,8 +122,9 @@ async function renderRankBadge(rank){
   rankBadgeImage.textContent=rank.name;
   rankBadgeImage.setAttribute('aria-label','Rango '+rank.name);
   rankBadgeImage.title='Rango '+rank.name;
-  const col=rank.index%5;
-  const row=Math.floor(rank.index/5);
+  const spriteIndex=Number.isInteger(rank.spriteIndex)?rank.spriteIndex:rank.index;
+  const col=spriteIndex%5;
+  const row=Math.floor(spriteIndex/5);
   try{
     const sprite=await getRankSpriteUrl();
     rankBadgeImage.style.backgroundImage='url("'+sprite+'")';
