@@ -327,6 +327,10 @@ async function loadGuestRanking(){
    const pos=document.createElement('strong');pos.className='guest-ranking-pos';pos.textContent=String(index+1);
    const name=document.createElement('div');name.className='guest-ranking-player';
    const avatar=document.createElement('span');avatar.className='guest-ranking-avatar';avatar.textContent=String(player.username||player.account_name||'J').charAt(0).toUpperCase();
+   if(player.avatar_path){
+    const {data:avatarData}=supabaseClient.storage.from('profile-photos').getPublicUrl(player.avatar_path);
+    if(avatarData?.publicUrl){const img=document.createElement('img');img.src=avatarData.publicUrl;img.alt='Foto de '+String(player.username||player.account_name||'Jugador');img.loading='lazy';img.onerror=()=>img.remove();avatar.appendChild(img)}
+   }
    const n=document.createElement('b');n.textContent=String(player.username||player.account_name||'Jugador').toUpperCase();name.append(avatar,n);
    const country=document.createElement('div');country.className='guest-ranking-country';country.textContent=getFlag(player.country)+' '+String(player.country||'País');
    const elo=document.createElement('strong');elo.className='guest-ranking-elo';elo.textContent=String(Number(player.elo_points)||200);
