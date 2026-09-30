@@ -832,3 +832,26 @@ html,body{color-scheme:dark!important}
 .general-chat-profile-link{cursor:pointer!important}.general-chat-message strong.general-chat-profile-link{text-decoration:underline;text-decoration-color:rgba(232,199,103,.45);text-underline-offset:3px}.general-chat-profile-link:hover{filter:brightness(1.2)}
 
 .push-enable-area{display:flex;justify-content:center;margin:-16px 0 25px}.push-enable-btn{width:min(690px,92%);padding:13px 25px;border:1px solid #715c2d;border-radius:11px;background:#0b171f;color:#e7c86f;font:900 13px Arial,sans-serif;letter-spacing:.8px;cursor:pointer}.push-enable-btn.enabled{border-color:#397d55;background:#102b1d;color:#9fe0b7}@media(max-width:520px){.push-enable-area{margin:-10px 0 20px}.push-enable-btn{width:92%;font-size:11px}}
+
+/* Ficha de jugador compacta para WebView móvil (TikTok incluido) */
+@media(max-width:700px){
+ .player-detail-backdrop{padding:6px!important;align-items:center!important}
+ .player-detail-card{width:min(94vw,430px)!important;max-height:94dvh!important;overflow-y:auto!important;border-radius:11px!important}
+ .player-detail-head{min-height:108px!important;padding:13px 108px 13px 13px!important;gap:10px!important}
+ .player-detail-avatar{width:68px!important;height:68px!important;flex-basis:68px!important;font-size:22px!important}
+ .player-detail-identity h3{font-size:20px!important;max-width:180px!important}
+ .player-detail-country{margin-top:6px!important;font-size:12px!important;gap:5px!important}
+ .player-detail-country span:first-child{font-size:19px!important}
+ .player-detail-rank{top:42px!important;right:7px!important;min-width:94px!important;max-width:100px!important;padding:5px!important}
+ .player-detail-rank-badge{width:52px!important;height:52px!important;margin:-2px auto 2px!important}
+ .player-detail-rank small{font-size:7px!important}.player-detail-rank strong{font-size:9px!important}
+ .player-detail-stats{padding:8px!important;gap:6px!important}
+ .player-detail-stat{min-height:66px!important;padding:7px!important}
+ .player-detail-stat small{font-size:8px!important}.player-detail-stat strong{font-size:20px!important;margin-top:5px!important}
+ .player-detail-id{min-height:58px!important}.player-detail-id strong{font-size:17px!important}
+ .player-detail-close{width:32px!important;height:32px!important;font-size:23px!important}
+ .player-heart-area{margin:0 8px 8px!important;min-height:64px!important;padding:8px!important}
+ .player-follow-area{margin:8px!important;padding:8px!important}
+ .player-play-area{padding:2px 8px 8px!important}
+ .profile-comments{margin:0 8px 8px!important;padding:10px!important}
+}
