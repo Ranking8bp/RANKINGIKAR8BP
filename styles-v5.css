@@ -677,3 +677,8 @@ button{cursor:pointer}
 .notification-copy time{display:block;margin-top:6px;color:#6f818e;font:600 9px/1 Arial,sans-serif}
 .notification-empty{padding:24px 14px;text-align:center;color:#7d8d98;font:600 12px Arial,sans-serif}
 @media(max-width:700px){.profile-header-actions{right:10px;gap:4px}.notification-panel{top:58px;right:8px}.profile-title-wrap h1{font-size:clamp(16px,5vw,24px)}}
+
+.notification-item[role="button"]{cursor:pointer}
+.notification-item[role="button"]:hover{background:#102635}
+.notification-target-flash{animation:notificationTargetFlash 2.2s ease}
+@keyframes notificationTargetFlash{0%,100%{box-shadow:none}20%,70%{box-shadow:0 0 0 2px #e6c35a,0 0 24px rgba(230,195,90,.45)}}
