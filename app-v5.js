@@ -8,6 +8,11 @@ const loginBtn=document.getElementById('loginBtn');
 const registerBtn=document.getElementById('registerBtn');
 const logoutBtn=document.getElementById('logoutBtn');
 const deleteAccountBtn=document.getElementById('deleteAccountBtn');
+const adminModeBtn=document.getElementById('adminModeBtn');
+const adminPanel=document.getElementById('adminPanel');
+const adminCloseBtn=document.getElementById('adminCloseBtn');
+const adminRefreshBtn=document.getElementById('adminRefreshBtn');
+const adminMatchList=document.getElementById('adminMatchList');
 const backBtn=document.getElementById('backBtn');
 const settingsBtn=document.getElementById('settingsBtn');
 const settingsMenu=document.getElementById('settingsMenu');
@@ -327,6 +332,25 @@ async function closeRankedMatchmaking(){
  clearInterval(matchmakingTimer);matchmakingTimer=null;
  if(matchmakingModal)matchmakingModal.hidden=true;
  if(!currentRankedMatchId&&currentUser&&supabaseClient)await supabaseClient.rpc('cancel_ranked_matchmaking');
+}
+
+
+async function setupAdminMode(){
+ if(!currentUser||!supabaseClient||!adminModeBtn)return;
+ try{const {data,error}=await supabaseClient.from('profiles').select('is_admin').eq('id',currentUser.id).single();if(error)throw error;adminModeBtn.hidden=!data?.is_admin}catch(e){adminModeBtn.hidden=true}
+}
+async function loadAdminMatches(){
+ if(!adminMatchList||!supabaseClient)return;adminMatchList.innerHTML='<div class="admin-empty">Cargando...</div>';
+ try{
+  const {data,error}=await supabaseClient.rpc('admin_get_ranked_matches');if(error)throw error;adminMatchList.replaceChildren();
+  const rows=Array.isArray(data)?data:[];if(!rows.length){adminMatchList.innerHTML='<div class="admin-empty">No hay emparejamientos.</div>';return}
+  rows.forEach(m=>{const row=document.createElement('article');row.className='admin-match '+m.status;
+   const title=document.createElement('div');title.className='admin-match-vs';title.innerHTML='<strong></strong><b>VS</b><strong></strong>';title.children[0].textContent=m.player1_name+' · '+m.player1_elo+' ELO';title.children[2].textContent=m.player2_name+' · '+m.player2_elo+' ELO';
+   const meta=document.createElement('small');meta.textContent='#'+m.match_id+' · '+String(m.status).toUpperCase()+' · '+formatCommentDate(m.created_at);row.append(title,meta);
+   if(m.status==='matched'){const actions=document.createElement('div');actions.className='admin-match-actions';
+    [[m.player1_id,'GANA '+m.player1_name],[m.player2_id,'GANA '+m.player2_name]].forEach(([id,label])=>{const b=document.createElement('button');b.textContent=label;b.onclick=async()=>{if(!confirm('¿Confirmar ganador? Se aplicará +15 ELO al ganador y -15 ELO al perdedor.'))return;const {error}=await supabaseClient.rpc('admin_resolve_ranked_match',{p_match_id:m.match_id,p_winner_id:id});if(error){showToast('No se pudo guardar.');return}await loadAdminMatches();showToast('Resultado aplicado.')}});const cancel=document.createElement('button');cancel.className='cancel';cancel.textContent='ANULAR VS';cancel.onclick=async()=>{if(!confirm('¿Anular este VS sin cambiar ELO?'))return;const {error}=await supabaseClient.rpc('admin_cancel_ranked_match',{p_match_id:m.match_id});if(error){showToast('No se pudo anular.');return}await loadAdminMatches();showToast('VS anulado.')};actions.append(cancel);row.append(actions)}
+   adminMatchList.append(row)})
+ }catch(e){console.error(e);adminMatchList.innerHTML='<div class="admin-empty">No se pudo cargar el modo administrador.</div>'}
 }
 
 function normalizeUsername(value){return value.trim().toLowerCase()}
@@ -972,6 +996,9 @@ settingsBtn.addEventListener('click',()=>{settingsMenu.hidden=!settingsMenu.hidd
 if(closePlayerDetail)closePlayerDetail.addEventListener('click',closeRankingPlayer);
 if(playerHeartBtn)playerHeartBtn.addEventListener('click',togglePlayerHeart);
 if(playerFollowBtn)playerFollowBtn.addEventListener('click',toggleFollow);
+if(adminModeBtn)adminModeBtn.addEventListener('click',async()=>{adminPanel.hidden=false;settingsMenu.hidden=true;await loadAdminMatches()});
+if(adminCloseBtn)adminCloseBtn.addEventListener('click',()=>adminPanel.hidden=true);
+if(adminRefreshBtn)adminRefreshBtn.addEventListener('click',loadAdminMatches);
 if(dashboardPlayBtn)dashboardPlayBtn.addEventListener('click',startRankedMatchmaking);
 if(matchmakingClose)matchmakingClose.addEventListener('click',closeRankedMatchmaking);
 if(playerMessageBtn)playerMessageBtn.addEventListener('click',openPrivateMessage);
