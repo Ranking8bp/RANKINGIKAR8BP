@@ -11,37 +11,32 @@
   --red:#e95d5d;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{min-height:100%;background:#02070d;font-family:Georgia,"Times New Roman",serif}
+html,body{min-height:100%;background:#000;font-family:Georgia,"Times New Roman",serif}
 body{overflow-x:hidden}
 body.modal-open{overflow:hidden}
 button,input{font:inherit}
 button{cursor:pointer}
 [hidden]{display:none!important}
 
-.viewport-shell{min-height:100dvh;display:flex;justify-content:center;background:#02070d}
-.site-canvas{width:min(100vw,1080px);min-height:100dvh;background:#06101a;color:var(--text);position:relative;overflow:hidden}
+.viewport-shell{min-height:100dvh;display:flex;justify-content:center;background:#000}
+.site-canvas{width:min(100vw,1080px);min-height:100dvh;background:#000;color:var(--text);position:relative;overflow:hidden}
 
 .guest-topbar{height:130px;padding:30px 42px;display:flex;justify-content:space-between;align-items:center;background:#07111c;border-bottom:1px solid #16283a}
 .topbar-actions{display:flex;gap:16px}
 .login-btn,.register-btn{height:68px;padding:0 28px;border-radius:18px;font-family:Arial,sans-serif;font-size:27px;font-weight:900}
 .login-btn{background:#111c27;color:#fff;border:1px solid #31465b}
 .register-btn{background:#fff;color:#0d141c;border:0}
-.guest-empty{height:calc(100dvh - 130px);background:radial-gradient(circle at 50% 10%,#0d2b47 0,transparent 40%),linear-gradient(#081522,#02070d)}
+.guest-empty{height:calc(100dvh - 130px);background:#000}
 
 .player-profile{
   min-height:1920px;
   padding:0 34px 132px;
   position:relative;
-  background:
-    radial-gradient(circle at 12% 13%,rgba(34,73,109,.32),transparent 25%),
-    radial-gradient(circle at 88% 18%,rgba(8,32,56,.7),transparent 22%),
-    linear-gradient(180deg,#081725 0%,#06111b 43%,#07111a 100%);
+  background:#000;
 }
 .profile-page-bg{
-  position:absolute;inset:0;pointer-events:none;opacity:.6;
-  background:
-    linear-gradient(90deg,transparent 0 5%,rgba(85,117,147,.05) 5% 6%,transparent 6% 94%,rgba(85,117,147,.05) 94% 95%,transparent 95%),
-    radial-gradient(ellipse at 50% 22%,transparent 0 48%,rgba(0,0,0,.25) 70%);
+  position:absolute;inset:0;pointer-events:none;opacity:0;
+  background:none;
 }
 
 .profile-header{
