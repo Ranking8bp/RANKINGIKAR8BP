@@ -27,6 +27,16 @@ const countryName=document.getElementById('countryName');
 const dashboardElo=document.getElementById('dashboardElo');
 const dashboardWins=document.getElementById('dashboardWins');
 const dashboardLosses=document.getElementById('dashboardLosses');
+const dashboardPlayBtn=document.getElementById('dashboardPlayBtn');
+const matchmakingModal=document.getElementById('matchmakingModal');
+const matchmakingClose=document.getElementById('matchmakingClose');
+const matchmakingSearching=document.getElementById('matchmakingSearching');
+const matchmakingVersus=document.getElementById('matchmakingVersus');
+const versusMe=document.getElementById('versusMe');
+const versusMyElo=document.getElementById('versusMyElo');
+const versusOpponent=document.getElementById('versusOpponent');
+const versusOpponentElo=document.getElementById('versusOpponentElo');
+let matchmakingTimer=null,currentRankedMatchId=null;
 const gamesPlayed=document.getElementById('gamesPlayed');
 const winRate=document.getElementById('winRate');
 const currentStreak=document.getElementById('currentStreak');
@@ -288,6 +298,35 @@ async function renderPlayerDetailRankBadge(rank){
     console.error('No se pudo cargar la insignia del perfil:',error);
     playerDetailRankBadge.style.backgroundImage='none';
   }
+}
+
+
+function showRankedMatch(match){
+ if(!matchmakingModal)return;
+ currentRankedMatchId=match.match_id;
+ matchmakingSearching.hidden=true;matchmakingVersus.hidden=false;
+ versusMe.textContent=String(currentProfile?.account_name||currentProfile?.username||'TÚ').toUpperCase();
+ versusMyElo.textContent='ELO '+String(match.my_elo||200);
+ versusOpponent.textContent=String(match.opponent_name||'RIVAL').toUpperCase();
+ versusOpponentElo.textContent='ELO '+String(match.opponent_elo||200);
+}
+async function pollRankedMatch(){
+ if(!currentUser||!supabaseClient)return;
+ try{const {data,error}=await supabaseClient.rpc('get_my_active_ranked_match');if(error)throw error;const m=Array.isArray(data)?data[0]:data;if(m){clearInterval(matchmakingTimer);matchmakingTimer=null;showRankedMatch(m)}}catch(e){console.error(e)}
+}
+async function startRankedMatchmaking(){
+ if(!currentUser||!supabaseClient)return;
+ matchmakingModal.hidden=false;matchmakingSearching.hidden=false;matchmakingVersus.hidden=true;
+ try{
+  const {data,error}=await supabaseClient.rpc('join_ranked_matchmaking');if(error)throw error;const m=Array.isArray(data)?data[0]:data;
+  if(m?.matched){showRankedMatch(m);return}
+  clearInterval(matchmakingTimer);matchmakingTimer=setInterval(pollRankedMatch,1500);
+ }catch(e){console.error(e);matchmakingModal.hidden=true;showToast('No se pudo iniciar la búsqueda de rival.')}
+}
+async function closeRankedMatchmaking(){
+ clearInterval(matchmakingTimer);matchmakingTimer=null;
+ if(matchmakingModal)matchmakingModal.hidden=true;
+ if(!currentRankedMatchId&&currentUser&&supabaseClient)await supabaseClient.rpc('cancel_ranked_matchmaking');
 }
 
 function normalizeUsername(value){return value.trim().toLowerCase()}
@@ -933,6 +972,8 @@ settingsBtn.addEventListener('click',()=>{settingsMenu.hidden=!settingsMenu.hidd
 if(closePlayerDetail)closePlayerDetail.addEventListener('click',closeRankingPlayer);
 if(playerHeartBtn)playerHeartBtn.addEventListener('click',togglePlayerHeart);
 if(playerFollowBtn)playerFollowBtn.addEventListener('click',toggleFollow);
+if(dashboardPlayBtn)dashboardPlayBtn.addEventListener('click',startRankedMatchmaking);
+if(matchmakingClose)matchmakingClose.addEventListener('click',closeRankedMatchmaking);
 if(playerMessageBtn)playerMessageBtn.addEventListener('click',openPrivateMessage);
 if(playerPlayBtn)playerPlayBtn.addEventListener('click',()=>showToast('Próximamente podrás desafiar a este jugador.'));
 if(privateMessageClose)privateMessageClose.addEventListener('click',closePrivateMessage);
