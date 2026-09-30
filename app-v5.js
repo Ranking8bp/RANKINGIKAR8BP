@@ -3,6 +3,7 @@ const guestEmpty=document.getElementById('guestEmpty');
 const playerDashboard=document.getElementById('playerDashboard');
 const guestRankingList=document.getElementById('guestRankingList');
 const guestRankingCount=document.getElementById('guestRankingCount');
+const guestRankShowcase=document.getElementById('guestRankShowcase');
 const loginBtn=document.getElementById('loginBtn');
 const registerBtn=document.getElementById('registerBtn');
 const logoutBtn=document.getElementById('logoutBtn');
@@ -315,9 +316,25 @@ function getFlag(value){
 }
 
 
+
+async function renderGuestRankShowcase(){
+ if(!guestRankShowcase||guestRankShowcase.dataset.ready)return;
+ guestRankShowcase.dataset.ready='1';
+ try{
+  const sprite=await getRankSpriteUrl();
+  const order=[13,12,19,14,11,15,16,17,10,18,0,1,2,3,4,5,6,7,8,9];
+  order.forEach(spriteIndex=>{
+   const badge=document.createElement('span');badge.className='guest-showcase-badge';
+   badge.style.backgroundImage='url("'+sprite+'")';
+   badge.style.backgroundPosition=((spriteIndex%5)*25)+'% '+(Math.floor(spriteIndex/5)*(100/3))+'%';
+   guestRankShowcase.appendChild(badge);
+  });
+ }catch(e){console.error('No se pudieron cargar los rangos públicos:',e)}
+}
+
 async function loadGuestRanking(){
  if(!guestRankingList||!supabaseClient)return;
- guestRankingList.innerHTML='<div class="ranking-loading">Cargando clasificación...</div>';
+ guestRankingList.innerHTML='<div class="ranking-loading">Cargando clasificación...</div>';renderGuestRankShowcase().catch(()=>{});
  try{
   const {data,error}=await supabaseClient.rpc('get_public_ranking');if(error)throw error;
   const players=(Array.isArray(data)?data:[]).slice(0,100);guestRankingList.replaceChildren();
