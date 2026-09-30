@@ -761,3 +761,5 @@ button{cursor:pointer}
 .dashboard-play-area{margin:12px 0 28px!important}
 .dashboard-play-btn{width:min(690px,92%)!important;min-width:0!important;padding:30px 48px!important;border-radius:18px!important;font-size:30px!important;letter-spacing:2.5px!important;box-shadow:0 10px 34px rgba(211,169,78,.32)!important}
 @media(max-width:520px){.dashboard-play-btn{width:92%!important;padding:24px 30px!important;font-size:25px!important;border-radius:16px!important}}
+
+.guest-rank-showcase{width:min(1080px,100%);margin:0 auto 24px;display:grid;grid-template-columns:repeat(10,1fr);gap:8px 5px;align-items:center;padding:12px 8px;background:#000;border-radius:12px}.guest-showcase-badge{display:block;width:100%;aspect-ratio:1/1;background-repeat:no-repeat;background-size:500% 400%;background-position:center}@media(max-width:720px){.guest-rank-showcase{grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:14px;padding:7px}}
