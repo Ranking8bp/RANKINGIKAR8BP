@@ -808,3 +808,14 @@ button{cursor:pointer}
 .ranking-table td,.ranking-list td,.ranking-row,.ranking-row *{color:#fff!important}
 .ranking-table td,.ranking-list td{border-color:#263845!important}
 .ranking-table tbody tr:first-child,.ranking-list tbody tr:first-child,.ranking-row:first-child{background:linear-gradient(90deg,#3a2a0b,#171208)!important}
+
+/* TikTok WebView / modo claro forzado: clasificación siempre oscura */
+html,body{color-scheme:dark!important}
+.ranking-section,.ranking-card,.ranking-wrap,.ranking-container,#rankingList,#rankingBody{background:#000!important}
+.ranking-row{background-color:#000!important;background-image:none!important;color:#fff!important}
+.ranking-row:nth-child(n){background-color:#000!important;color:#fff!important}
+.ranking-row>*{color:#fff!important}
+.ranking-row .ranking-name,.ranking-row .ranking-country,.ranking-row .ranking-elo,.ranking-row b,.ranking-row strong,.ranking-row span{color:#fff!important;-webkit-text-fill-color:#fff!important}
+.ranking-row.ranking-first,.ranking-first{background:linear-gradient(90deg,#3b2b0c,#151006)!important}
+.ranking-first *{-webkit-text-fill-color:initial}
+@media(prefers-color-scheme:light){html,body,.ranking-section,.ranking-card,.ranking-wrap,.ranking-container,#rankingList,#rankingBody,.ranking-row{background-color:#000!important;color:#fff!important}.ranking-row *{color:#fff!important;-webkit-text-fill-color:#fff!important}}
