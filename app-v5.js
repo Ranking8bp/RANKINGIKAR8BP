@@ -935,8 +935,16 @@ async function openRankingPlayer(player){
   playerDetailCountry.textContent=country;
   playerDetailGameId.textContent=gameId;
   playerDetailElo.textContent=String(elo);
-  playerDetailWins.textContent=String(wins);
-  playerDetailLosses.textContent=String(losses);
+  const isAdminProfile=String(player?.username||'').toLowerCase()==='ikar8bp'||player?.is_admin===true;
+  const winStat=playerDetailWins?.closest('.player-detail-stat');
+  const lossStat=playerDetailLosses?.closest('.player-detail-stat');
+  if(isAdminProfile){
+    if(winStat){winStat.hidden=false;const label=winStat.querySelector('small');if(label)label.textContent='ADMIN';playerDetailWins.textContent='ADMIN';}
+    if(lossStat)lossStat.hidden=true;
+  }else{
+    if(winStat){winStat.hidden=false;const label=winStat.querySelector('small');if(label)label.textContent='VICTORIAS';playerDetailWins.textContent=String(wins);}
+    if(lossStat){lossStat.hidden=false;const label=lossStat.querySelector('small');if(label)label.textContent='DERROTAS';playerDetailLosses.textContent=String(losses);}
+  }
 
   if(playerDetailRank){
     const rankName=playerDetailRank.querySelector('strong');
