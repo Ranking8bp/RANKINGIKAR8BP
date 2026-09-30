@@ -46,6 +46,11 @@ const profileCommentInput=document.getElementById('profileCommentInput');
 const profileCommentSubmit=document.getElementById('profileCommentSubmit');
 const profileCommentsList=document.getElementById('profileCommentsList');
 const profileCommentCount=document.getElementById('profileCommentCount');
+const notificationBtn=document.getElementById('notificationBtn');
+const notificationBadge=document.getElementById('notificationBadge');
+const notificationPanel=document.getElementById('notificationPanel');
+const notificationList=document.getElementById('notificationList');
+const markNotificationsRead=document.getElementById('markNotificationsRead');
 
 const registerModal=document.getElementById('registerModal');
 const closeRegisterModalBtn=document.getElementById('closeRegisterModal');
@@ -419,6 +424,57 @@ async function togglePlayerHeart(){
 }
 
 
+
+function updateNotificationBadge(count){
+  if(!notificationBadge)return;
+  const n=Number(count)||0;
+  notificationBadge.textContent=n>99?'99+':String(n);
+  notificationBadge.hidden=n<1;
+}
+function renderNotifications(items){
+  if(!notificationList)return;
+  notificationList.replaceChildren();
+  if(!items.length){
+    const e=document.createElement('div');e.className='notification-empty';e.textContent='No tienes notificaciones.';notificationList.appendChild(e);return;
+  }
+  items.forEach(n=>{
+    const item=document.createElement('article');item.className='notification-item'+(n.is_read?'':' unread');
+    const icon=document.createElement('span');icon.className='notification-type-icon';icon.textContent=n.type==='comment'?'💬':'♥';
+    const box=document.createElement('div');box.className='notification-copy';
+    const p=document.createElement('p');
+    if(n.type==='comment'){
+      p.append(document.createTextNode(String(n.actor_name||'Alguien')+' comentó en tu perfil: '));
+      const q=document.createElement('b');q.textContent='“'+String(n.comment_body||'')+'”';p.appendChild(q);
+    }else{
+      p.textContent=String(n.actor_name||'Alguien')+(n.type==='comment_heart'?' dio corazón a tu comentario.':' dio corazón a tu perfil.');
+    }
+    const t=document.createElement('time');t.textContent=formatCommentDate(n.created_at);
+    box.append(p,t);item.append(icon,box);notificationList.appendChild(item);
+  });
+}
+async function loadNotifications(){
+  if(!currentUser||!supabaseClient)return;
+  try{
+    const {data,error}=await supabaseClient.rpc('get_my_notifications');
+    if(error)throw error;
+    const items=Array.isArray(data)?data:[];
+    renderNotifications(items);
+    updateNotificationBadge(items.filter(x=>!x.is_read).length);
+  }catch(error){console.error('Error cargando notificaciones:',error)}
+}
+async function markAllNotificationsRead(){
+  if(!currentUser||!supabaseClient)return;
+  const {error}=await supabaseClient.from('notifications').update({is_read:true}).eq('recipient_id',currentUser.id).eq('is_read',false);
+  if(error){console.error(error);showToast('No se pudieron marcar como leídas.');return}
+  await loadNotifications();
+}
+async function toggleNotifications(){
+  if(!notificationPanel)return;
+  const opening=notificationPanel.hidden;
+  notificationPanel.hidden=!opening;
+  if(settingsMenu)settingsMenu.hidden=true;
+  if(opening)await loadNotifications();
+}
 function formatCommentDate(value){
   try{return new Intl.DateTimeFormat('es',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(value))}
   catch{return ''}
@@ -690,6 +746,8 @@ settingsBtn.addEventListener('click',()=>{settingsMenu.hidden=!settingsMenu.hidd
 if(closePlayerDetail)closePlayerDetail.addEventListener('click',closeRankingPlayer);
 if(playerHeartBtn)playerHeartBtn.addEventListener('click',togglePlayerHeart);
 if(profileCommentForm)profileCommentForm.addEventListener('submit',submitProfileComment);
+if(notificationBtn)notificationBtn.addEventListener('click',toggleNotifications);
+if(markNotificationsRead)markNotificationsRead.addEventListener('click',markAllNotificationsRead);
 if(playerDetailModal)playerDetailModal.addEventListener('click',event=>{if(event.target===playerDetailModal)closeRankingPlayer()});
 
 profilePhotoInput.addEventListener('change',async()=>{
