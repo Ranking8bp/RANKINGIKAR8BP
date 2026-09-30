@@ -48,6 +48,12 @@ const playerHeartBtn=document.getElementById('playerHeartBtn');
 const playerHeartCount=document.getElementById('playerHeartCount');
 const playerHeartCountLabel=document.getElementById('playerHeartCountLabel');
 const playerFollowBtn=document.getElementById('playerFollowBtn');
+const playerMessageBtn=document.getElementById('playerMessageBtn');
+const privateMessageModal=document.getElementById('privateMessageModal');
+const privateMessageClose=document.getElementById('privateMessageClose');
+const privateMessageTo=document.getElementById('privateMessageTo');
+const privateMessageInput=document.getElementById('privateMessageInput');
+const privateMessageSend=document.getElementById('privateMessageSend');
 const playerFollowersCount=document.getElementById('playerFollowersCount');
 const playerFollowingCount=document.getElementById('playerFollowingCount');
 const profileCommentForm=document.getElementById('profileCommentForm');
@@ -653,6 +659,22 @@ async function loadFollowStats(player){
   if(playerFollowBtn){const own=player.player_id===currentUser?.id;playerFollowBtn.hidden=own;playerFollowBtn.dataset.following=s?.viewer_follows?'1':'0';playerFollowBtn.dataset.friend=s?.is_friend?'1':'0';playerFollowBtn.textContent=s?.is_friend?'AMIGOS':(s?.viewer_follows?'SIGUIENDO':'SEGUIR');playerFollowBtn.classList.toggle('following',!!s?.viewer_follows);playerFollowBtn.classList.toggle('friends',!!s?.is_friend)}
  }catch(e){console.error('Error seguidores:',e)}
 }
+function openPrivateMessage(){
+ if(!currentDetailPlayer||currentDetailPlayer.player_id===currentUser?.id||!privateMessageModal)return;
+ privateMessageTo.textContent='Para: '+String(currentDetailPlayer.username||currentDetailPlayer.account_name||'Jugador');
+ privateMessageInput.value='';privateMessageModal.hidden=false;setTimeout(()=>privateMessageInput.focus(),50);
+}
+function closePrivateMessage(){if(privateMessageModal)privateMessageModal.hidden=true}
+async function sendPrivateMessage(){
+ const target=currentDetailPlayer?.player_id,body=privateMessageInput?.value.trim();
+ if(!target||!body||!currentUser||!supabaseClient)return;
+ privateMessageSend.disabled=true;
+ try{
+  const {error}=await supabaseClient.from('private_messages').insert({sender_id:currentUser.id,recipient_id:target,body});if(error)throw error;
+  closePrivateMessage();showToast('Mensaje privado enviado.');
+ }catch(e){console.error(e);showToast('No se pudo enviar el mensaje.')}
+ finally{privateMessageSend.disabled=false}
+}
 async function toggleFollow(){
  const player=currentDetailPlayer;if(!currentUser||!supabaseClient||!player?.player_id||player.player_id===currentUser.id)return;
  const following=playerFollowBtn?.dataset.following==='1';
@@ -836,6 +858,10 @@ settingsBtn.addEventListener('click',()=>{settingsMenu.hidden=!settingsMenu.hidd
 if(closePlayerDetail)closePlayerDetail.addEventListener('click',closeRankingPlayer);
 if(playerHeartBtn)playerHeartBtn.addEventListener('click',togglePlayerHeart);
 if(playerFollowBtn)playerFollowBtn.addEventListener('click',toggleFollow);
+if(playerMessageBtn)playerMessageBtn.addEventListener('click',openPrivateMessage);
+if(privateMessageClose)privateMessageClose.addEventListener('click',closePrivateMessage);
+if(privateMessageSend)privateMessageSend.addEventListener('click',sendPrivateMessage);
+if(privateMessageModal)privateMessageModal.addEventListener('click',e=>{if(e.target===privateMessageModal)closePrivateMessage()});
 if(profileCommentForm)profileCommentForm.addEventListener('submit',submitProfileComment);
 function closeHeaderMenus(except=null){
   const menus=[notificationPanel,activityPanel,settingsMenu];
