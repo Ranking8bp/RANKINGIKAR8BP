@@ -487,3 +487,21 @@ $$;
 revoke all on function public.get_follow_stats(uuid) from public;
 revoke execute on function public.get_follow_stats(uuid) from anon;
 grant execute on function public.get_follow_stats(uuid) to authenticated;
+
+
+-- ESTADO DE AMISTAD: SEGUIMIENTO MUTUO
+drop function if exists public.get_follow_stats(uuid);
+create function public.get_follow_stats(p_profile_id uuid)
+returns table(followers bigint,following bigint,viewer_follows boolean,follows_viewer boolean,is_friend boolean)
+language sql stable security definer set search_path=public as $$
+ select
+  (select count(*) from public.profile_follows where following_id=p_profile_id),
+  (select count(*) from public.profile_follows where follower_id=p_profile_id),
+  exists(select 1 from public.profile_follows where follower_id=auth.uid() and following_id=p_profile_id),
+  exists(select 1 from public.profile_follows where follower_id=p_profile_id and following_id=auth.uid()),
+  exists(select 1 from public.profile_follows where follower_id=auth.uid() and following_id=p_profile_id)
+  and exists(select 1 from public.profile_follows where follower_id=p_profile_id and following_id=auth.uid());
+$$;
+revoke all on function public.get_follow_stats(uuid) from public;
+revoke execute on function public.get_follow_stats(uuid) from anon;
+grant execute on function public.get_follow_stats(uuid) to authenticated;
