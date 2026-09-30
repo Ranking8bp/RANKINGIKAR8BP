@@ -690,3 +690,5 @@ button{cursor:pointer}
 .player-follow-counts{display:flex;gap:24px}.player-follow-counts div{text-align:center}.player-follow-counts strong{display:block;color:#fff;font:900 18px Arial,sans-serif}.player-follow-counts span{display:block;margin-top:3px;color:#93a6b2;font:700 10px Arial,sans-serif;text-transform:uppercase}
 .player-follow-btn{min-width:110px;padding:10px 16px;border:1px solid #d3a94e;border-radius:9px;background:#d3a94e;color:#101010;font:900 11px Arial,sans-serif;cursor:pointer}.player-follow-btn.following{background:#152631;color:#e7edf0;border-color:#526b7a}
 @media(max-width:520px){.player-follow-area{gap:12px}.player-follow-counts{gap:14px}.player-follow-btn{min-width:92px;padding:9px 11px}}
+
+.player-follow-btn.friends{border-color:#4fa978;background:#153b2a;color:#bff1d2}
