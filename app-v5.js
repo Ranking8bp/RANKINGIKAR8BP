@@ -421,9 +421,8 @@ async function loadAdminMatches(){
   if(!rows.length){adminMatchList.innerHTML='<div class="admin-empty">No hay emparejamientos.</div>';return}
   for(const m of rows){
    const row=document.createElement('article');row.className='admin-match '+m.status;
-   const title=document.createElement('div');title.className='admin-match-vs';title.innerHTML='<strong></strong><b>VS</b><strong></strong>';
-   title.children[0].textContent=m.player1_name+' · ID '+(m.player1_game_id||'--')+' · '+m.player1_elo+' ELO';
-   title.children[2].textContent=m.player2_name+' · ID '+(m.player2_game_id||'--')+' · '+m.player2_elo+' ELO';
+   const title=document.createElement('div');title.className='admin-match-vs admin-match-vs-rich';
+   const makePlayer=(side)=>{const name=m[side+'_name'],elo=Number(m[side+'_elo']||200),gameId=m[side+'_game_id']||'--',pos=m[side+'_position']||'--',rank=getRankByElo(elo),avatar=m[side+'_avatar_path'];const card=document.createElement('div');card.className='admin-vs-player';const av=document.createElement('div');av.className='admin-vs-avatar';if(avatar){const {data:u}=supabaseClient.storage.from('profile-photos').getPublicUrl(avatar);if(u?.publicUrl)av.style.backgroundImage='url("'+u.publicUrl+'")'}if(!avatar)av.textContent=String(name||'?').charAt(0).toUpperCase();const info=document.createElement('div');info.className='admin-vs-info';const nm=document.createElement('strong');nm.textContent=name;const id=document.createElement('span');id.textContent='ID '+gameId;const rp=document.createElement('span');rp.textContent='RANKING #'+pos;const el=document.createElement('span');el.textContent=elo+' ELO';const badge=document.createElement('div');badge.className='admin-vs-rank-badge';renderRankBadge(badge,elo);const rn=document.createElement('b');rn.textContent=rank.name;info.append(nm,id,rp,el,rn);card.append(av,badge,info);return card};title.append(makePlayer('player1'));const vs=document.createElement('b');vs.className='admin-vs-word';vs.textContent='VS';title.append(vs,makePlayer('player2'));
    const meta=document.createElement('small');meta.textContent='#'+m.match_id+' · '+String(m.status).toUpperCase()+' · '+formatCommentDate(m.created_at);
    row.append(title,meta);
    if(m.status==='matched'){
