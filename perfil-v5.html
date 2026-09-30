@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />\n  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />\n  <meta http-equiv="Pragma" content="no-cache" />\n  <meta http-equiv="Expires" content="0" />
   <title>RANKING IKAR8BP</title>
-  <link rel="stylesheet" href="styles-v5.css?v=20260930-messagefix2" />
+  <link rel="stylesheet" href="styles-v5.css?v=20260930-chat1" />
 </head>
 <body>
   <main class="viewport-shell">
@@ -37,6 +37,11 @@
           <div class="inbox-panel" id="inboxPanel" hidden>
             <div class="notification-panel-head"><strong>BANDEJA DE ENTRADA ✉️</strong><button id="refreshInboxBtn" type="button">Actualizar</button></div>
             <div class="notification-list" id="inboxList"><div class="notification-empty">No tienes mensajes.</div></div>
+          </div>
+          <div class="conversation-panel" id="conversationPanel" hidden>
+            <div class="conversation-head"><button id="conversationBackBtn" type="button">‹</button><strong id="conversationTitle">CONVERSACIÓN</strong><button id="conversationCloseBtn" type="button">×</button></div>
+            <div class="conversation-messages" id="conversationMessages"></div>
+            <div class="conversation-compose"><textarea id="conversationInput" maxlength="1000" rows="2" placeholder="Escribe un mensaje..."></textarea><button id="conversationSendBtn" type="button">ENVIAR</button></div>
           </div>
           <div class="activity-panel" id="activityPanel" hidden>
             <div class="notification-panel-head"><strong>ACTIVIDAD GENERAL 🌎</strong><button id="refreshActivityBtn" type="button">Actualizar</button></div>
@@ -311,6 +316,6 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config-v3.js?v=20260930-0305"></script>
-  <script src="app-v5.js?v=20260930-messagefix2"></script>
+  <script src="app-v5.js?v=20260930-chat1"></script>
 </body>
 </html>
