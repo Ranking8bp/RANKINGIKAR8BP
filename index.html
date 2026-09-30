@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />\n  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />\n  <meta http-equiv="Pragma" content="no-cache" />\n  <meta http-equiv="Expires" content="0" />
   <title>RANKING IKAR8BP</title>
-  <link rel="stylesheet" href="styles-v5.css?v=20260930-hearts2" />
+  <link rel="stylesheet" href="styles-v5.css?v=20260930-comments2" />
 </head>
 <body>
   <main class="viewport-shell">
@@ -31,6 +31,7 @@
           <button class="icon-btn settings-btn" id="settingsBtn" type="button" aria-label="Configuración">⚙</button>
           <div class="settings-menu" id="settingsMenu" hidden>
             <button id="logoutBtn" type="button">Cerrar sesión</button>
+            <button id="deleteAccountBtn" type="button" style="color:#ff5b5b">Eliminar cuenta</button>
           </div>
         </header>
 
@@ -170,6 +171,7 @@
 
       <div class="player-detail-head">
         <div class="player-detail-rank" id="playerDetailRank">
+          <div class="player-detail-rank-badge" id="playerDetailRankBadge" role="img" aria-label="Insignia de rango"></div>
           <small>RANGO</small>
           <strong>LATÓN</strong>
         </div>
@@ -211,6 +213,20 @@
           <strong id="playerHeartCount">0</strong>
           <span id="playerHeartCountLabel">jugadores le dieron un corazón</span>
         </div>
+
+      <section class="profile-comments" id="profileComments">
+        <div class="profile-comments-title">
+          <strong>COMENTARIOS</strong>
+          <span id="profileCommentCount">0</span>
+        </div>
+        <form class="profile-comment-form" id="profileCommentForm">
+          <textarea id="profileCommentInput" maxlength="500" rows="3" placeholder="Escribe un comentario público..." required></textarea>
+          <button id="profileCommentSubmit" type="submit">PUBLICAR</button>
+        </form>
+        <div class="profile-comments-list" id="profileCommentsList">
+          <div class="profile-comments-empty">Cargando comentarios...</div>
+        </div>
+      </section>
       </div>
     </section>
   </div>
@@ -254,6 +270,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config-v3.js?v=20260930-0305"></script>
-  <script src="app-v5.js?v=20260930-hearts2"></script>
+  <script src="app-v5.js?v=20260930-comments2"></script>
 </body>
 </html>
