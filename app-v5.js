@@ -999,7 +999,19 @@ if(playerFollowBtn)playerFollowBtn.addEventListener('click',toggleFollow);
 if(adminModeBtn)adminModeBtn.addEventListener('click',async()=>{adminPanel.hidden=false;settingsMenu.hidden=true;await loadAdminMatches()});
 if(adminCloseBtn)adminCloseBtn.addEventListener('click',()=>adminPanel.hidden=true);
 if(adminRefreshBtn)adminRefreshBtn.addEventListener('click',loadAdminMatches);
-if(dashboardPlayBtn)dashboardPlayBtn.addEventListener('click',startRankedMatchmaking);
+if(dashboardPlayBtn)dashboardPlayBtn.addEventListener('click',async()=>{
+  try{
+    const {data,error}=await supabaseClient.from('profiles').select('is_admin').eq('id',currentUser.id).single();
+    if(error)throw error;
+    if(data?.is_admin){
+      if(adminPanel)adminPanel.hidden=false;
+      if(settingsMenu)settingsMenu.hidden=true;
+      await loadAdminMatches();
+      return;
+    }
+  }catch(e){console.error('Comprobación admin:',e)}
+  await startRankedMatchmaking();
+});
 if(matchmakingClose)matchmakingClose.addEventListener('click',closeRankedMatchmaking);
 if(playerMessageBtn)playerMessageBtn.addEventListener('click',openPrivateMessage);
 if(playerPlayBtn)playerPlayBtn.addEventListener('click',()=>showToast('Próximamente podrás desafiar a este jugador.'));
