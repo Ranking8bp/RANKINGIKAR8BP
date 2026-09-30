@@ -44,7 +44,6 @@ const registerError=document.getElementById('registerError');
 const username=document.getElementById('username');
 const password=document.getElementById('password');
 const gameId=document.getElementById('gameId');
-const accountName=document.getElementById('accountName');
 const country=document.getElementById('country');
 const loginModal=document.getElementById('loginModal');
 const closeLoginModalBtn=document.getElementById('closeLoginModal');
@@ -513,10 +512,10 @@ registerForm.addEventListener('submit',async event=>{
   event.preventDefault();registerError.textContent='';
   if(!cloudReady){registerError.textContent='La nube todavía no está configurada.';return}
 
-  const usernameValue=username.value.trim(),passwordValue=password.value,idValue=gameId.value.trim(),nameValue=accountName.value.trim(),countryValue=country.value.trim();
+  const usernameValue=username.value.trim(),passwordValue=password.value,idValue=gameId.value.trim(),countryValue=country.value.trim();
   if(!validUsername(usernameValue)){registerError.textContent='El usuario solo puede tener letras, números, punto, guion o guion bajo.';return}
   if(passwordValue.length<6){registerError.textContent='La contraseña debe tener al menos 6 caracteres.';return}
-  if(!idValue||!nameValue||!countryValue){registerError.textContent='Completa todos los datos.';return}
+  if(!idValue||!countryValue){registerError.textContent='Completa todos los datos.';return}
 
   setRegisterBusy(true);
   try{
@@ -528,7 +527,7 @@ registerForm.addEventListener('submit',async event=>{
 
     const userId=loginData.user.id;
     const {data:newProfile,error:profileError}=await supabaseClient.from('profiles').insert({
-      id:userId,username:normalizeUsername(usernameValue),game_id:idValue,account_name:nameValue,country:countryValue,screenshot_path:null,avatar_path:null
+      id:userId,username:normalizeUsername(usernameValue),game_id:idValue,account_name:usernameValue.trim(),country:countryValue,screenshot_path:null,avatar_path:null
     }).select('id, username, game_id, account_name, country, screenshot_path, avatar_path, rank_name, elo_points, wins, losses, created_at').single();
     if(profileError)throw new Error('No se pudo guardar el perfil: '+profileError.message);
 
