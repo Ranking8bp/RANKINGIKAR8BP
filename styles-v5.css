@@ -855,3 +855,23 @@ html,body{color-scheme:dark!important}
  .player-play-area{padding:2px 8px 8px!important}
  .profile-comments{margin:0 8px 8px!important;padding:10px!important}
 }
+
+/* Normalización agresiva para navegadores internos móviles (TikTok WebView) */
+@media(max-width:700px){
+ html{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!important}
+ .player-detail-card,.player-detail-card *{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!important}
+ .player-detail-card{font-size:12px!important}
+ .player-detail-card button,.player-detail-card input,.player-detail-card textarea,.player-detail-card select{font-size:12px!important}
+ .player-detail-card h1,.player-detail-card h2,.player-detail-card h3,.player-detail-card h4{font-size:18px!important;line-height:1.1!important}
+ .player-detail-card p,.player-detail-card span,.player-detail-card label,.player-detail-card div{line-height:1.25}
+ .player-detail-card small{font-size:8px!important}
+ .player-detail-identity h3{font-size:18px!important}
+ .player-detail-country{font-size:11px!important}
+ .player-detail-stat small{font-size:8px!important}.player-detail-stat strong{font-size:18px!important}
+ .player-detail-id strong{font-size:15px!important}
+ .player-detail-rank small{font-size:7px!important}.player-detail-rank strong{font-size:9px!important}
+ .player-heart-btn,.player-message-btn,.player-follow-btn{font-size:10px!important}
+ .profile-comments,.profile-comments *{text-size-adjust:100%!important;-webkit-text-size-adjust:100%!important}
+ .profile-comments h3,.profile-comments h4{font-size:14px!important}
+ .profile-comments p,.profile-comments textarea,.profile-comments button,.profile-comments strong,.profile-comments span{font-size:10px!important}
+}
