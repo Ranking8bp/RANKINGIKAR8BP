@@ -121,6 +121,7 @@ as $$
 $$;
 
 revoke all on function public.get_ranking() from public;
+revoke execute on function public.get_ranking() from anon;
 grant execute on function public.get_ranking() to authenticated;
 
 drop policy if exists "profile_photos_select_ranking" on storage.objects;
