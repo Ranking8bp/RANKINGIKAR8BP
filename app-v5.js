@@ -41,6 +41,11 @@ const playerDetailRankBadge=document.getElementById('playerDetailRankBadge');
 const playerHeartBtn=document.getElementById('playerHeartBtn');
 const playerHeartCount=document.getElementById('playerHeartCount');
 const playerHeartCountLabel=document.getElementById('playerHeartCountLabel');
+const profileCommentForm=document.getElementById('profileCommentForm');
+const profileCommentInput=document.getElementById('profileCommentInput');
+const profileCommentSubmit=document.getElementById('profileCommentSubmit');
+const profileCommentsList=document.getElementById('profileCommentsList');
+const profileCommentCount=document.getElementById('profileCommentCount');
 
 const registerModal=document.getElementById('registerModal');
 const closeRegisterModalBtn=document.getElementById('closeRegisterModal');
@@ -413,6 +418,97 @@ async function togglePlayerHeart(){
   }
 }
 
+
+function formatCommentDate(value){
+  try{return new Intl.DateTimeFormat('es',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(value))}
+  catch{return ''}
+}
+
+function renderProfileComments(comments){
+  if(!profileCommentsList)return;
+  profileCommentsList.replaceChildren();
+  profileCommentCount.textContent=String(comments.length);
+  if(!comments.length){
+    const empty=document.createElement('div');
+    empty.className='profile-comments-empty';
+    empty.textContent='Todavía no hay comentarios. Sé el primero en comentar.';
+    profileCommentsList.appendChild(empty);
+    return;
+  }
+  comments.forEach(comment=>{
+    const item=document.createElement('article');
+    item.className='profile-comment-item';
+    const head=document.createElement('div');head.className='profile-comment-head';
+    const author=document.createElement('strong');author.textContent=String(comment.author_name||'Jugador').toUpperCase();
+    const date=document.createElement('time');date.textContent=formatCommentDate(comment.created_at);
+    head.append(author,date);
+    const body=document.createElement('p');body.textContent=comment.body;
+    const actions=document.createElement('div');actions.className='profile-comment-actions';
+    const heart=document.createElement('button');heart.type='button';heart.className='comment-heart-btn'+(comment.viewer_liked?' liked':'');
+    heart.innerHTML='<span>♥</span> <b>'+Number(comment.heart_count||0)+'</b>';
+    heart.setAttribute('aria-label',comment.viewer_liked?'Quitar corazón':'Dar corazón');
+    heart.addEventListener('click',()=>toggleCommentHeart(comment,heart));
+    actions.appendChild(heart);
+    item.append(head,body,actions);
+    profileCommentsList.appendChild(item);
+  });
+}
+
+async function loadProfileComments(){
+  if(!currentDetailPlayer?.player_id||!supabaseClient||!profileCommentsList)return;
+  const targetId=currentDetailPlayer.player_id;
+  profileCommentsList.innerHTML='<div class="profile-comments-empty">Cargando comentarios...</div>';
+  try{
+    const {data,error}=await supabaseClient.rpc('get_profile_comments',{p_profile_id:targetId});
+    if(error)throw error;
+    if(currentDetailPlayer?.player_id!==targetId)return;
+    renderProfileComments(Array.isArray(data)?data:[]);
+  }catch(error){
+    console.error('Error cargando comentarios:',error);
+    profileCommentsList.innerHTML='<div class="profile-comments-empty">No se pudieron cargar los comentarios.</div>';
+  }
+}
+
+async function toggleCommentHeart(comment,button){
+  if(!currentUser||!supabaseClient||!comment?.comment_id||button.disabled)return;
+  button.disabled=true;
+  try{
+    if(comment.viewer_liked){
+      const {error}=await supabaseClient.from('profile_comment_hearts').delete().eq('comment_id',comment.comment_id).eq('user_id',currentUser.id);
+      if(error)throw error;
+      comment.viewer_liked=false;comment.heart_count=Math.max(0,Number(comment.heart_count||0)-1);
+    }else{
+      const {error}=await supabaseClient.from('profile_comment_hearts').insert({comment_id:comment.comment_id,user_id:currentUser.id});
+      if(error)throw error;
+      comment.viewer_liked=true;comment.heart_count=Number(comment.heart_count||0)+1;
+    }
+    button.classList.toggle('liked',comment.viewer_liked);
+    button.querySelector('b').textContent=String(comment.heart_count);
+    button.setAttribute('aria-label',comment.viewer_liked?'Quitar corazón':'Dar corazón');
+  }catch(error){console.error(error);showToast('No se pudo actualizar el corazón.')}
+  finally{button.disabled=false}
+}
+
+async function submitProfileComment(event){
+  event.preventDefault();
+  if(!currentUser||!currentDetailPlayer?.player_id||!supabaseClient)return;
+  const body=profileCommentInput.value.trim();
+  if(!body)return;
+  profileCommentSubmit.disabled=true;
+  try{
+    const {error}=await supabaseClient.from('profile_comments').insert({
+      profile_id:currentDetailPlayer.player_id,
+      author_id:currentUser.id,
+      body
+    });
+    if(error)throw error;
+    profileCommentInput.value='';
+    showToast('Comentario publicado.');
+    await loadProfileComments();
+  }catch(error){console.error(error);showToast('No se pudo publicar el comentario.')}
+  finally{profileCommentSubmit.disabled=false}
+}
+
 function closeRankingPlayer(){
   if(!playerDetailModal)return;
   currentDetailPlayer=null;
@@ -459,6 +555,7 @@ async function openRankingPlayer(player){
   document.body.classList.add('player-detail-open');
 
   loadPlayerHeartState(player).catch(error=>console.error('Error cargando corazones:',error));
+  loadProfileComments().catch(error=>console.error('Error cargando comentarios:',error));
 
   if(player?.avatar_path&&supabaseClient){
     try{
@@ -592,6 +689,7 @@ backBtn.addEventListener('click',()=>showToast('Perfil del jugador'));
 settingsBtn.addEventListener('click',()=>{settingsMenu.hidden=!settingsMenu.hidden});
 if(closePlayerDetail)closePlayerDetail.addEventListener('click',closeRankingPlayer);
 if(playerHeartBtn)playerHeartBtn.addEventListener('click',togglePlayerHeart);
+if(profileCommentForm)profileCommentForm.addEventListener('submit',submitProfileComment);
 if(playerDetailModal)playerDetailModal.addEventListener('click',event=>{if(event.target===playerDetailModal)closeRankingPlayer()});
 
 profilePhotoInput.addEventListener('change',async()=>{
