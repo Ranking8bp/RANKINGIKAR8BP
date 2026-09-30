@@ -13,6 +13,9 @@ const adminPanel=document.getElementById('adminPanel');
 const adminCloseBtn=document.getElementById('adminCloseBtn');
 const adminRefreshBtn=document.getElementById('adminRefreshBtn');
 const adminMatchList=document.getElementById('adminMatchList');
+const adminPlayerList=document.getElementById('adminPlayerList');
+const adminVsTab=document.getElementById('adminVsTab');
+const adminPlayersTab=document.getElementById('adminPlayersTab');
 const backBtn=document.getElementById('backBtn');
 const settingsBtn=document.getElementById('settingsBtn');
 const settingsMenu=document.getElementById('settingsMenu');
@@ -344,6 +347,21 @@ async function closeRankedMatchmaking(){
  if(!currentRankedMatchId&&currentUser&&supabaseClient)await supabaseClient.rpc('cancel_ranked_matchmaking');
 }
 
+
+
+async function loadAdminPlayers(){
+ if(!adminPlayerList||!supabaseClient)return;adminPlayerList.innerHTML='<div class="admin-empty">Cargando jugadores...</div>';
+ try{
+  const {data,error}=await supabaseClient.rpc('get_ranking');if(error)throw error;const players=Array.isArray(data)?data:[];adminPlayerList.replaceChildren();
+  players.forEach((p,index)=>{const card=document.createElement('article');card.className='admin-player-card';
+   const head=document.createElement('div');head.className='admin-player-head';const av=document.createElement('div');av.className='admin-edit-avatar';av.textContent=String(p.account_name||p.username||'?').charAt(0).toUpperCase();if(p.avatar_path){const {data:u}=supabaseClient.storage.from('profile-photos').getPublicUrl(p.avatar_path);if(u?.publicUrl){const im=document.createElement('img');im.src=u.publicUrl;av.replaceChildren(im)}}const title=document.createElement('div');title.innerHTML='<strong></strong><span></span>';title.children[0].textContent=p.account_name||p.username||'Jugador';title.children[1].textContent='Ranking #'+(index+1)+' · '+p.player_id;head.append(av,title);card.append(head);
+   const fields=document.createElement('div');fields.className='admin-edit-grid';const defs=[['Nombre','account_name',p.account_name||p.username||''],['ID juego','game_id',p.game_id||''],['País','country',p.country||''],['ELO','elo_points',p.elo_points??200,'number'],['Victorias','wins',p.wins??0,'number'],['Derrotas','losses',p.losses??0,'number'],['Rango','rank_name',p.rank_name||getRankByElo(p.elo_points).name]];
+   const inputs={};defs.forEach(([label,key,val,type])=>{const l=document.createElement('label');l.textContent=label;const i=document.createElement('input');i.type=type||'text';i.value=val;l.append(i);fields.append(l);inputs[key]=i});card.append(fields);
+   const save=document.createElement('button');save.className='admin-save-player';save.textContent='GUARDAR CAMBIOS';save.onclick=async()=>{save.disabled=true;const args={p_user_id:p.player_id,p_account_name:inputs.account_name.value,p_game_id:inputs.game_id.value,p_country:inputs.country.value,p_elo:Number(inputs.elo_points.value)||0,p_wins:Number(inputs.wins.value)||0,p_losses:Number(inputs.losses.value)||0,p_rank_name:inputs.rank_name.value};const {error:e}=await supabaseClient.rpc('admin_update_profile',args);save.disabled=false;if(e){console.error(e);showToast('No se pudieron guardar los cambios.');return}showToast('Perfil actualizado.');await loadAdminPlayers()};card.append(save);adminPlayerList.append(card)})
+ }catch(e){console.error(e);adminPlayerList.innerHTML='<div class="admin-empty">No se pudieron cargar los jugadores.</div>'}
+}
+function showAdminVs(){if(adminMatchList)adminMatchList.hidden=false;if(adminPlayerList)adminPlayerList.hidden=true;loadAdminMatches()}
+function showAdminPlayers(){if(adminMatchList)adminMatchList.hidden=true;if(adminPlayerList)adminPlayerList.hidden=false;loadAdminPlayers()}
 
 async function setupAdminMode(){
  if(!currentUser||!supabaseClient||!adminModeBtn)return;
@@ -1008,7 +1026,9 @@ if(playerHeartBtn)playerHeartBtn.addEventListener('click',togglePlayerHeart);
 if(playerFollowBtn)playerFollowBtn.addEventListener('click',toggleFollow);
 if(adminModeBtn)adminModeBtn.addEventListener('click',async()=>{adminPanel.hidden=false;settingsMenu.hidden=true;await loadAdminMatches()});
 if(adminCloseBtn)adminCloseBtn.addEventListener('click',()=>adminPanel.hidden=true);
-if(adminRefreshBtn)adminRefreshBtn.addEventListener('click',loadAdminMatches);
+if(adminRefreshBtn)adminRefreshBtn.addEventListener('click',()=>adminPlayerList&&!adminPlayerList.hidden?loadAdminPlayers():loadAdminMatches());
+if(adminVsTab)adminVsTab.addEventListener('click',showAdminVs);
+if(adminPlayersTab)adminPlayersTab.addEventListener('click',showAdminPlayers);
 if(dashboardPlayBtn)dashboardPlayBtn.addEventListener('click',async()=>{
   try{
     const {data,error}=await supabaseClient.from('profiles').select('is_admin').eq('id',currentUser.id).single();
