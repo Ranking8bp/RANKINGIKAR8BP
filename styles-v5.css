@@ -685,3 +685,8 @@ button{cursor:pointer}
 
 .notification-target-focus{position:relative;z-index:4;animation:notificationTargetFocus 5s ease!important;outline:3px solid #f3cc55!important;outline-offset:4px;transform:scale(1.025)}
 @keyframes notificationTargetFocus{0%,12%,28%,44%{background:#3b3212;box-shadow:0 0 0 3px #f3cc55,0 0 35px rgba(243,204,85,.85)}6%,20%,36%,55%,100%{background:inherit;box-shadow:0 0 0 1px rgba(243,204,85,.25)}}
+
+.player-follow-area{display:flex;align-items:center;justify-content:center;gap:20px;margin:14px 0 8px;padding:12px;border:1px solid #263b49;border-radius:12px;background:#07131c}
+.player-follow-counts{display:flex;gap:24px}.player-follow-counts div{text-align:center}.player-follow-counts strong{display:block;color:#fff;font:900 18px Arial,sans-serif}.player-follow-counts span{display:block;margin-top:3px;color:#93a6b2;font:700 10px Arial,sans-serif;text-transform:uppercase}
+.player-follow-btn{min-width:110px;padding:10px 16px;border:1px solid #d3a94e;border-radius:9px;background:#d3a94e;color:#101010;font:900 11px Arial,sans-serif;cursor:pointer}.player-follow-btn.following{background:#152631;color:#e7edf0;border-color:#526b7a}
+@media(max-width:520px){.player-follow-area{gap:12px}.player-follow-counts{gap:14px}.player-follow-btn{min-width:92px;padding:9px 11px}}
