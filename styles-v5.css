@@ -830,3 +830,5 @@ html,body{color-scheme:dark!important}
 .general-chat-backdrop[hidden]{display:none!important}
 
 .general-chat-profile-link{cursor:pointer!important}.general-chat-message strong.general-chat-profile-link{text-decoration:underline;text-decoration-color:rgba(232,199,103,.45);text-underline-offset:3px}.general-chat-profile-link:hover{filter:brightness(1.2)}
+
+.push-enable-area{display:flex;justify-content:center;margin:-16px 0 25px}.push-enable-btn{width:min(690px,92%);padding:13px 25px;border:1px solid #715c2d;border-radius:11px;background:#0b171f;color:#e7c86f;font:900 13px Arial,sans-serif;letter-spacing:.8px;cursor:pointer}.push-enable-btn.enabled{border-color:#397d55;background:#102b1d;color:#9fe0b7}@media(max-width:520px){.push-enable-area{margin:-10px 0 20px}.push-enable-btn{width:92%;font-size:11px}}
