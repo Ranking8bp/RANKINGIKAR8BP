@@ -413,17 +413,40 @@ async function setupAdminMode(){
  try{const {data,error}=await supabaseClient.from('profiles').select('is_admin').eq('id',currentUser.id).single();if(error)throw error;adminModeBtn.hidden=!data?.is_admin}catch(e){adminModeBtn.hidden=true}
 }
 async function loadAdminMatches(){
- if(!adminMatchList||!supabaseClient)return;adminMatchList.innerHTML='<div class="admin-empty">Cargando...</div>';
+ if(!adminMatchList||!supabaseClient)return;
+ adminMatchList.innerHTML='<div class="admin-empty">Cargando...</div>';
  try{
-  const {data,error}=await supabaseClient.rpc('admin_get_ranked_matches');if(error)throw error;adminMatchList.replaceChildren();
-  const rows=Array.isArray(data)?data:[];if(!rows.length){adminMatchList.innerHTML='<div class="admin-empty">No hay emparejamientos.</div>';return}
-  rows.forEach(m=>{const row=document.createElement('article');row.className='admin-match '+m.status;
-   const title=document.createElement('div');title.className='admin-match-vs';title.innerHTML='<strong></strong><b>VS</b><strong></strong>';title.children[0].textContent=m.player1_name+' · ID '+(m.player1_game_id||'--')+' · '+m.player1_elo+' ELO';title.children[2].textContent=m.player2_name+' · ID '+(m.player2_game_id||'--')+' · '+m.player2_elo+' ELO';
-   const meta=document.createElement('small');meta.textContent='#'+m.match_id+' · '+String(m.status).toUpperCase()+' · '+formatCommentDate(m.created_at);row.append(title,meta);
-   if(m.status==='matched'){const actions=document.createElement('div');actions.className='admin-match-actions';
-    const confirmVs=document.createElement('button');confirmVs.className='confirm-vs';confirmVs.textContent='CONFIRMAR VS';confirmVs.onclick=async()=>{if(!confirm('¿Confirmar este VS? Después de confirmarlo los jugadores ya no podrán abandonar.'))return;const {error}=await supabaseClient.rpc('admin_confirm_ranked_match',{p_match_id:m.match_id});if(error){showToast('No se pudo confirmar el VS.');return}confirmVs.remove();actions.querySelectorAll('.admin-winner-btn').forEach(x=>{x.hidden=false;x.style.display='inline-flex'});showToast('VS confirmado. Ahora selecciona quién ganó.');};if(!m.admin_confirmed)actions.append(confirmVs);
-    [[m.player1_id,'GANA '+m.player1_name],[m.player2_id,'GANA '+m.player2_name]].forEach(([id,label])=>{const b=document.createElement('button');b.className='admin-winner-btn';b.textContent=label;b.onclick=async()=>{if(!confirm('¿Confirmar ganador? Se aplicará +15 ELO al ganador y -15 ELO al perdedor.'))return;const {error}=await supabaseClient.rpc('admin_resolve_ranked_match',{p_match_id:m.match_id,p_winner_id:id});if(error){showToast('No se pudo guardar.');return}await loadAdminMatches();showToast('Resultado aplicado.')}});actions.querySelectorAll('.admin-winner-btn').forEach(b=>actions.append(b));const cancel=document.createElement('button');cancel.className='cancel';cancel.textContent='ANULAR VS';cancel.onclick=async()=>{if(!confirm('¿Anular este VS sin cambiar ELO?'))return;const {error}=await supabaseClient.rpc('admin_cancel_ranked_match',{p_match_id:m.match_id});if(error){showToast('No se pudo anular.');return}await loadAdminMatches();showToast('VS anulado.')};actions.append(cancel);row.append(actions)}
-   adminMatchList.append(row)})
+  const {data,error}=await supabaseClient.rpc('admin_get_ranked_matches');if(error)throw error;
+  const rows=Array.isArray(data)?data:[];adminMatchList.replaceChildren();
+  if(!rows.length){adminMatchList.innerHTML='<div class="admin-empty">No hay emparejamientos.</div>';return}
+  for(const m of rows){
+   const row=document.createElement('article');row.className='admin-match '+m.status;
+   const title=document.createElement('div');title.className='admin-match-vs';title.innerHTML='<strong></strong><b>VS</b><strong></strong>';
+   title.children[0].textContent=m.player1_name+' · ID '+(m.player1_game_id||'--')+' · '+m.player1_elo+' ELO';
+   title.children[2].textContent=m.player2_name+' · ID '+(m.player2_game_id||'--')+' · '+m.player2_elo+' ELO';
+   const meta=document.createElement('small');meta.textContent='#'+m.match_id+' · '+String(m.status).toUpperCase()+' · '+formatCommentDate(m.created_at);
+   row.append(title,meta);
+   if(m.status==='matched'){
+    const actions=document.createElement('div');actions.className='admin-match-actions';
+    if(!m.admin_confirmed){
+     const confirmBtn=document.createElement('button');confirmBtn.className='confirm-vs';confirmBtn.textContent='CONFIRMAR VS';
+     confirmBtn.onclick=async()=>{if(!confirm('¿Confirmar este VS? Después de confirmarlo los jugadores ya no podrán abandonar.'))return;const {error}=await supabaseClient.rpc('admin_confirm_ranked_match',{p_match_id:m.match_id});if(error){showToast('No se pudo confirmar el VS.');return}await loadAdminMatches();showToast('VS confirmado. Ahora selecciona quién ganó.')};
+     actions.appendChild(confirmBtn);
+    }else{
+     const winnerTitle=document.createElement('strong');winnerTitle.className='admin-result-title';winnerTitle.textContent='DEFINIR GANADOR';
+     actions.appendChild(winnerTitle);
+     for(const [id,name] of [[m.player1_id,m.player1_name],[m.player2_id,m.player2_name]]){
+      const winBtn=document.createElement('button');winBtn.className='admin-winner-btn';winBtn.textContent='GANA '+name;
+      winBtn.onclick=async()=>{if(!confirm('¿Confirmar a '+name+' como ganador? Se aplicará +15 ELO al ganador y -15 ELO al perdedor.'))return;const {error}=await supabaseClient.rpc('admin_resolve_ranked_match',{p_match_id:m.match_id,p_winner_id:id});if(error){showToast('No se pudo guardar el resultado.');return}await loadAdminMatches();showToast('Resultado aplicado.')};
+      actions.appendChild(winBtn);
+     }
+    }
+    const cancel=document.createElement('button');cancel.className='cancel';cancel.textContent='ANULAR VS';
+    cancel.onclick=async()=>{if(!confirm('¿Anular este VS sin cambiar ELO?'))return;const {error}=await supabaseClient.rpc('admin_cancel_ranked_match',{p_match_id:m.match_id});if(error){showToast('No se pudo anular.');return}await loadAdminMatches();showToast('VS anulado.')};
+    actions.appendChild(cancel);row.appendChild(actions);
+   }
+   adminMatchList.appendChild(row);
+  }
  }catch(e){console.error(e);adminMatchList.innerHTML='<div class="admin-empty">No se pudo cargar el modo administrador.</div>'}
 }
 
