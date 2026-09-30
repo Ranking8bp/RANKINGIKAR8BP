@@ -424,3 +424,165 @@ button{cursor:pointer}
   .ranking-elo{font-size:15px}
   .ranking-loading{min-height:62px;font-size:11px}
 }
+
+
+/* Ficha emergente del jugador desde la clasificación */
+.ranking-row{
+  width:100%;
+  border-left:0;
+  border-right:0;
+  border-top:0;
+  font-family:inherit;
+  cursor:pointer;
+  text-align:left;
+  appearance:none;
+}
+.ranking-row:focus-visible{
+  outline:2px solid #f0c95f;
+  outline-offset:-3px;
+}
+@media(hover:hover) and (pointer:fine){
+  .ranking-row:hover{background-color:rgba(255,255,255,.035)}
+  .ranking-first:hover{background:linear-gradient(90deg,rgba(160,105,18,.58),rgba(74,49,12,.32),rgba(161,107,18,.45))}
+}
+
+.player-detail-open{overflow:hidden}
+.player-detail-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:5000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:rgba(0,0,0,.82);
+  backdrop-filter:blur(7px);
+}
+.player-detail-backdrop.open{display:flex}
+.player-detail-card{
+  width:min(92vw,620px);
+  position:relative;
+  border:1px solid #ae873f;
+  border-radius:18px;
+  overflow:hidden;
+  background:linear-gradient(180deg,#071522 0%,#02070c 100%);
+  box-shadow:0 24px 70px rgba(0,0,0,.7),0 0 28px rgba(190,144,55,.12);
+}
+.player-detail-close{
+  position:absolute;
+  top:12px;
+  right:14px;
+  z-index:2;
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:50%;
+  background:rgba(255,255,255,.07);
+  color:#fff;
+  font:400 31px/1 Arial,sans-serif;
+  cursor:pointer;
+}
+.player-detail-head{
+  min-height:190px;
+  padding:28px 74px 26px 30px;
+  display:flex;
+  align-items:center;
+  gap:24px;
+  border-bottom:1px solid #263a4a;
+  background:radial-gradient(circle at 12% 20%,rgba(190,144,55,.16),transparent 42%);
+}
+.player-detail-avatar{
+  width:116px;
+  height:116px;
+  flex:0 0 116px;
+  border-radius:50%;
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+  border:3px solid #c79c44;
+  background:#0a1824;
+  color:#e6c976;
+  font:900 40px/1 Arial,sans-serif;
+  box-shadow:0 0 0 5px rgba(199,156,68,.12);
+}
+.player-detail-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.player-detail-identity{min-width:0}
+.player-detail-identity h3{
+  margin:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:#f4f0e8;
+  font-size:34px;
+  line-height:1.05;
+}
+.player-detail-country{
+  margin-top:13px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:#dce3e8;
+  font:800 20px/1.1 Arial,sans-serif;
+}
+.player-detail-country span:first-child{font-size:32px}
+.player-detail-stats{
+  padding:20px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.player-detail-stat{
+  min-width:0;
+  min-height:112px;
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #2b465b;
+  border-radius:12px;
+  background:#07111a;
+  text-align:center;
+}
+.player-detail-stat small{
+  color:#8496a5;
+  font:800 12px/1.2 Arial,sans-serif;
+  letter-spacing:.7px;
+}
+.player-detail-stat strong{
+  width:100%;
+  margin-top:8px;
+  overflow-wrap:anywhere;
+  color:#f4eee4;
+  font-size:32px;
+  line-height:1;
+}
+.player-detail-id{
+  grid-column:1 / -1;
+  min-height:90px;
+  border-color:#755f34;
+}
+.player-detail-id strong{
+  color:#f0c95f;
+  font-size:27px;
+  letter-spacing:1px;
+}
+.player-detail-win{border-color:#167d50;background:linear-gradient(145deg,#062319,#071710)}
+.player-detail-loss{border-color:#a2343c;background:linear-gradient(145deg,#281014,#17090b)}
+
+@media(max-width:700px){
+  .player-detail-backdrop{padding:14px}
+  .player-detail-card{width:min(96vw,520px);border-radius:12px}
+  .player-detail-close{top:9px;right:9px;width:38px;height:38px;font-size:28px}
+  .player-detail-head{min-height:138px;padding:20px 52px 20px 18px;gap:15px}
+  .player-detail-avatar{width:82px;height:82px;flex-basis:82px;border-width:2px;font-size:28px}
+  .player-detail-identity h3{font-size:clamp(22px,7vw,30px)}
+  .player-detail-country{margin-top:9px;font-size:16px;gap:7px}
+  .player-detail-country span:first-child{font-size:24px}
+  .player-detail-stats{padding:12px;gap:8px}
+  .player-detail-stat{min-height:88px;padding:12px;border-radius:8px}
+  .player-detail-stat small{font-size:10px}
+  .player-detail-stat strong{font-size:26px}
+  .player-detail-id{min-height:76px}
+  .player-detail-id strong{font-size:21px}
+}

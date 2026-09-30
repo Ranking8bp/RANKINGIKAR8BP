@@ -25,6 +25,16 @@ const dashboardMessage=document.getElementById('dashboardMessage');
 const rankBadgeImage=document.getElementById('rankBadgeImage');
 const rankingList=document.getElementById('rankingList');
 const rankingCount=document.getElementById('rankingCount');
+const playerDetailModal=document.getElementById('playerDetailModal');
+const closePlayerDetail=document.getElementById('closePlayerDetail');
+const playerDetailAvatar=document.getElementById('playerDetailAvatar');
+const playerDetailName=document.getElementById('playerDetailName');
+const playerDetailFlag=document.getElementById('playerDetailFlag');
+const playerDetailCountry=document.getElementById('playerDetailCountry');
+const playerDetailGameId=document.getElementById('playerDetailGameId');
+const playerDetailElo=document.getElementById('playerDetailElo');
+const playerDetailWins=document.getElementById('playerDetailWins');
+const playerDetailLosses=document.getElementById('playerDetailLosses');
 
 const registerModal=document.getElementById('registerModal');
 const closeRegisterModalBtn=document.getElementById('closeRegisterModal');
@@ -313,9 +323,62 @@ function createRankingAvatar(player){
   return wrap;
 }
 
+
+function closeRankingPlayer(){
+  if(!playerDetailModal)return;
+  playerDetailModal.classList.remove('open');
+  playerDetailModal.setAttribute('aria-hidden','true');
+  document.body.classList.remove('player-detail-open');
+}
+
+async function openRankingPlayer(player){
+  if(!playerDetailModal)return;
+
+  const displayName=String(player?.username||player?.account_name||'Jugador').toUpperCase();
+  const country=player?.country||'País';
+  const elo=Number.isFinite(Number(player?.elo_points))?Number(player.elo_points):200;
+  const wins=Number.isFinite(Number(player?.wins))?Number(player.wins):0;
+  const losses=Number.isFinite(Number(player?.losses))?Number(player.losses):0;
+  const gameId=String(player?.game_id||'—');
+
+  playerDetailName.textContent=displayName;
+  playerDetailFlag.textContent=getFlag(country);
+  playerDetailCountry.textContent=country;
+  playerDetailGameId.textContent=gameId;
+  playerDetailElo.textContent=String(elo);
+  playerDetailWins.textContent=String(wins);
+  playerDetailLosses.textContent=String(losses);
+
+  playerDetailAvatar.replaceChildren();
+  const fallback=document.createElement('span');
+  fallback.textContent=displayName.charAt(0)||'J';
+  playerDetailAvatar.appendChild(fallback);
+
+  playerDetailModal.classList.add('open');
+  playerDetailModal.setAttribute('aria-hidden','false');
+  document.body.classList.add('player-detail-open');
+
+  if(player?.avatar_path&&supabaseClient){
+    try{
+      const {data,error}=await supabaseClient.storage.from('profile-photos').createSignedUrl(player.avatar_path,3600);
+      if(!error&&data?.signedUrl&&playerDetailModal.classList.contains('open')){
+        const img=document.createElement('img');
+        img.src=data.signedUrl;
+        img.alt='Foto de '+displayName;
+        img.onload=()=>playerDetailAvatar.replaceChildren(img);
+      }
+    }catch(error){
+      console.error('No se pudo cargar la foto del jugador:',error);
+    }
+  }
+}
+
 function buildRankingRow(player,index){
-  const row=document.createElement('div');
+  const row=document.createElement('button');
+  row.type='button';
   row.className='ranking-row'+(index===0?' ranking-first':index===1?' ranking-second':index===2?' ranking-third':'');
+  row.setAttribute('aria-label','Ver perfil de '+String(player?.username||player?.account_name||'Jugador'));
+  row.addEventListener('click',()=>openRankingPlayer(player));
   
   const position=document.createElement('div');
   position.className='ranking-position';
@@ -405,9 +468,11 @@ registerBtn.addEventListener('click',()=>{registerError.textContent='';openModal
 closeRegisterModalBtn.addEventListener('click',()=>closeModal(registerModal));
 closeLoginModalBtn.addEventListener('click',()=>closeModal(loginModal));
 [registerModal,loginModal].forEach(modal=>modal.addEventListener('click',e=>{if(e.target===modal)closeModal(modal)}));
-window.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal(registerModal);closeModal(loginModal);settingsMenu.hidden=true}});
+window.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal(registerModal);closeModal(loginModal);closeRankingPlayer();settingsMenu.hidden=true}});
 backBtn.addEventListener('click',()=>showToast('Perfil del jugador'));
 settingsBtn.addEventListener('click',()=>{settingsMenu.hidden=!settingsMenu.hidden});
+if(closePlayerDetail)closePlayerDetail.addEventListener('click',closeRankingPlayer);
+if(playerDetailModal)playerDetailModal.addEventListener('click',event=>{if(event.target===playerDetailModal)closeRankingPlayer()});
 
 accountScreenshot.addEventListener('change',()=>{
   registerError.textContent='';const file=accountScreenshot.files?.[0];
