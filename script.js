@@ -273,31 +273,33 @@ registerForm.addEventListener('submit', async (event) => {
   setRegisterBusy(true);
 
   try {
-    const internalEmail = usernameToInternalEmail(usernameValue);
-
-    const { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({
-      email: internalEmail,
-      password: passwordValue,
-      options: {
-        data: {
-          username: usernameValue
-        }
+    const { data: registerData, error: registerFunctionError } = await supabaseClient.functions.invoke('register-user', {
+      body: {
+        username: usernameValue,
+        password: passwordValue
       }
     });
 
-    if (signUpError) {
-      const msg = (signUpError.message || '').toLowerCase();
-      if (msg.includes('already') || msg.includes('registered') || msg.includes('exists')) {
-        throw new Error('Ese nombre de usuario ya está registrado.');
-      }
-      throw signUpError;
+    if (registerFunctionError) {
+      throw new Error(registerData?.error || 'No se pudo crear la cuenta.');
     }
 
-    if (!signUpData.session || !signUpData.user) {
-      throw new Error('Supabase está pidiendo confirmación por correo. Desactiva "Confirm email" para este proyecto.');
+    if (!registerData?.ok) {
+      throw new Error(registerData?.error || 'No se pudo crear la cuenta.');
     }
 
-    const userId = signUpData.user.id;
+    const internalEmail = usernameToInternalEmail(usernameValue);
+
+    const { data: loginData, error: loginAfterRegisterError } = await supabaseClient.auth.signInWithPassword({
+      email: internalEmail,
+      password: passwordValue
+    });
+
+    if (loginAfterRegisterError || !loginData?.session || !loginData?.user) {
+      throw new Error('La cuenta se creó, pero no se pudo iniciar la sesión automáticamente.');
+    }
+
+    const userId = loginData.user.id;
     const filePath = `${userId}/${Date.now()}-${safeFileName(screenshot.name || 'captura.jpg')}`;
 
     const { error: uploadError } = await supabaseClient.storage
