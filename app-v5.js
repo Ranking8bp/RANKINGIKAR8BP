@@ -637,7 +637,7 @@ async function loadFollowStats(player){
   const s=Array.isArray(data)?data[0]:data;
   if(playerFollowersCount)playerFollowersCount.textContent=String(s?.followers||0);
   if(playerFollowingCount)playerFollowingCount.textContent=String(s?.following||0);
-  if(playerFollowBtn){const own=player.player_id===currentUser?.id;playerFollowBtn.hidden=own;playerFollowBtn.dataset.following=s?.viewer_follows?'1':'0';playerFollowBtn.textContent=s?.viewer_follows?'SIGUIENDO':'SEGUIR';playerFollowBtn.classList.toggle('following',!!s?.viewer_follows)}
+  if(playerFollowBtn){const own=player.player_id===currentUser?.id;playerFollowBtn.hidden=own;playerFollowBtn.dataset.following=s?.viewer_follows?'1':'0';playerFollowBtn.dataset.friend=s?.is_friend?'1':'0';playerFollowBtn.textContent=s?.is_friend?'AMIGOS':(s?.viewer_follows?'SIGUIENDO':'SEGUIR');playerFollowBtn.classList.toggle('following',!!s?.viewer_follows);playerFollowBtn.classList.toggle('friends',!!s?.is_friend)}
  }catch(e){console.error('Error seguidores:',e)}
 }
 async function toggleFollow(){
