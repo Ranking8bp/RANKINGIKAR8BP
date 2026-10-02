@@ -198,7 +198,7 @@ function bindAuthModalsEarly(){
       const userId=loginData.user.id;
       const {data:newProfile,error:profileError}=await supabaseClient.from('profiles').insert({
         id:userId,username:normalizeUsername(usernameValue),game_id:idValue,account_name:usernameValue.trim(),country:countryValue,screenshot_path:null,avatar_path:null
-      }).select('id, username, game_id, account_name, country, screenshot_path, avatar_path, rank_name, elo_points, wins, losses, created_at').single();
+      }).select('id, username, game_id, account_name, country, screenshot_path, avatar_path, rank_name, elo_points, wins, losses, is_admin, is_moderator, created_at').single();
       if(profileError)throw new Error('No se pudo guardar el perfil: '+profileError.message);
       registerForm.reset();
       close(registerModal);
@@ -536,7 +536,7 @@ function showAdminPlayers(){if(adminMatchList)adminMatchList.hidden=true;if(admi
 
 async function setupModeratorMode(){
  if(!currentUser||!supabaseClient||!moderatorAdminBtn)return;
- try{const {data,error}=await supabaseClient.rpc('current_user_is_moderator');if(error)throw error;moderatorAdminBtn.hidden=data!==true}catch(e){console.error('No se pudo comprobar rol moderador:',e);moderatorAdminBtn.hidden=true}
+ try{let enabled=currentProfile?.is_moderator===true;if(!enabled){const {data,error}=await supabaseClient.rpc('current_user_is_moderator');if(error)throw error;enabled=(data===true||data==='true'||data===1)}moderatorAdminBtn.hidden=!enabled;moderatorAdminBtn.style.display=enabled?'block':'none'}catch(e){console.error('No se pudo comprobar rol moderador:',e);moderatorAdminBtn.hidden=true;moderatorAdminBtn.style.display='none'}
 }
 async function loadModeratorMatches(){
  if(!moderatorMatchList||!supabaseClient)return;
