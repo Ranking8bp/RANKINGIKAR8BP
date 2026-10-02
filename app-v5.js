@@ -9,6 +9,11 @@ const registerBtn=document.getElementById('registerBtn');
 const logoutBtn=document.getElementById('logoutBtn');
 const deleteAccountBtn=document.getElementById('deleteAccountBtn');
 const adminModeBtn=document.getElementById('adminModeBtn');
+const moderatorAdminBtn=document.getElementById('moderatorAdminBtn');
+const moderatorPanel=document.getElementById('moderatorPanel');
+const moderatorCloseBtn=document.getElementById('moderatorCloseBtn');
+const moderatorRefreshBtn=document.getElementById('moderatorRefreshBtn');
+const moderatorMatchList=document.getElementById('moderatorMatchList');
 const adminPanel=document.getElementById('adminPanel');
 const adminCloseBtn=document.getElementById('adminCloseBtn');
 const adminRefreshBtn=document.getElementById('adminRefreshBtn');
@@ -521,6 +526,30 @@ async function loadAdminPlayers(){
 function showAdminVs(){if(adminMatchList)adminMatchList.hidden=false;if(adminPlayerList)adminPlayerList.hidden=true;loadAdminMatches()}
 function showAdminPlayers(){if(adminMatchList)adminMatchList.hidden=true;if(adminPlayerList)adminPlayerList.hidden=false;loadAdminPlayers()}
 
+async function setupModeratorMode(){
+ if(!currentUser||!supabaseClient||!moderatorAdminBtn)return;
+ try{const {data,error}=await supabaseClient.from('profiles').select('is_moderator').eq('id',currentUser.id).single();if(error)throw error;moderatorAdminBtn.hidden=!data?.is_moderator}catch(e){moderatorAdminBtn.hidden=true}
+}
+async function loadModeratorMatches(){
+ if(!moderatorMatchList||!supabaseClient)return;
+ moderatorMatchList.innerHTML='<div class="admin-empty">Cargando...</div>';
+ try{
+  const {data,error}=await supabaseClient.rpc('moderator_get_ranked_matches');if(error)throw error;
+  const rows=(Array.isArray(data)?data:[]).filter(m=>m.status==='matched');moderatorMatchList.replaceChildren();
+  if(!rows.length){moderatorMatchList.innerHTML='<div class="admin-empty">No hay VS pendientes.</div>';return}
+  for(const m of rows){
+   const row=document.createElement('article');row.className='admin-match matched';
+   const head=document.createElement('div');head.className='moderator-vs-title';const p1=document.createElement('strong');p1.textContent=m.player1_name;const vs=document.createElement('b');vs.textContent=' VS ';const p2=document.createElement('strong');p2.textContent=m.player2_name;const num=document.createElement('small');num.textContent='#'+m.match_id;head.append(p1,vs,p2,num);row.append(head);
+   const evidence=document.createElement('div');evidence.className='moderator-evidence';
+   for(const [label,path] of [['VIDEO '+m.player1_name,m.player1_video_path],['VIDEO '+m.player2_name,m.player2_video_path]]){const b=document.createElement('button');b.type='button';b.textContent=label;b.disabled=!path;b.onclick=async()=>{if(!path)return;const {data:u,error:e}=await supabaseClient.storage.from('ranked-match-videos').createSignedUrl(path,600);if(e||!u?.signedUrl){showToast('No se pudo abrir el video.');return}window.open(u.signedUrl,'_blank')};evidence.append(b)}
+   const chatBtn=document.createElement('button');chatBtn.type='button';chatBtn.textContent='VER CHAT';const chat=document.createElement('div');chat.className='moderator-chat';chat.hidden=true;chatBtn.onclick=async()=>{chat.hidden=!chat.hidden;if(chat.hidden)return;chat.textContent='Cargando chat...';const {data,error}=await supabaseClient.rpc('moderator_get_ranked_chat',{p_match_id:m.match_id});if(error){chat.textContent='No se pudo cargar el chat.';return}chat.replaceChildren();for(const x of data||[]){const line=document.createElement('p');const who=document.createElement('b');who.textContent=(x.sender_name||'Jugador')+': ';line.append(who,document.createTextNode(x.message||''));chat.append(line)}if(!data?.length)chat.textContent='Sin mensajes.'};evidence.append(chatBtn);row.append(evidence,chat);
+   const actions=document.createElement('div');actions.className='admin-match-actions';const title=document.createElement('strong');title.className='admin-result-title';title.textContent='DEFINIR GANADOR';actions.append(title);
+   for(const [id,name] of [[m.player1_id,m.player1_name],[m.player2_id,m.player2_name]]){const b=document.createElement('button');b.className='admin-winner-btn';b.textContent='GANA '+name;b.onclick=async()=>{if(!confirm('¿Confirmar a '+name+' como ganador?'))return;const {error}=await supabaseClient.rpc('moderator_resolve_ranked_match',{p_match_id:m.match_id,p_winner_id:id});if(error){showToast('No se pudo guardar el resultado.');return}showToast('Resultado aplicado.');await loadModeratorMatches()};actions.append(b)}
+   row.append(actions);moderatorMatchList.append(row);
+  }
+ }catch(e){console.error(e);moderatorMatchList.innerHTML='<div class="admin-empty">No se pudo cargar la moderación.</div>'}
+}
+
 async function setupAdminMode(){
  if(!currentUser||!supabaseClient||!adminModeBtn)return;
  try{const {data,error}=await supabaseClient.from('profiles').select('is_admin').eq('id',currentUser.id).single();if(error)throw error;adminModeBtn.hidden=!data?.is_admin}catch(e){adminModeBtn.hidden=true}
@@ -688,6 +717,7 @@ async function setPlayerUI(profile,user){
   const avatarTask=profile?.avatar_path?loadAvatar(profile.avatar_path):Promise.resolve(clearAvatar());
   const followTask=loadDashboardFollowStats(profile?.id||user?.id);
   await Promise.allSettled([rankingTask,rankTask,avatarTask,followTask]);
+  await setupModeratorMode();
 }
 
 
@@ -1221,6 +1251,9 @@ settingsBtn.addEventListener('click',()=>{settingsMenu.hidden=!settingsMenu.hidd
 if(closePlayerDetail)closePlayerDetail.addEventListener('click',closeRankingPlayer);
 if(playerHeartBtn)playerHeartBtn.addEventListener('click',togglePlayerHeart);
 if(playerFollowBtn)playerFollowBtn.addEventListener('click',toggleFollow);
+if(moderatorAdminBtn)moderatorAdminBtn.addEventListener('click',async()=>{moderatorPanel.hidden=false;await loadModeratorMatches()});
+if(moderatorCloseBtn)moderatorCloseBtn.addEventListener('click',()=>moderatorPanel.hidden=true);
+if(moderatorRefreshBtn)moderatorRefreshBtn.addEventListener('click',loadModeratorMatches);
 if(adminModeBtn)adminModeBtn.addEventListener('click',async()=>{adminPanel.hidden=false;settingsMenu.hidden=true;await loadAdminMatches()});
 if(adminCloseBtn)adminCloseBtn.addEventListener('click',()=>adminPanel.hidden=true);
 if(adminRefreshBtn)adminRefreshBtn.addEventListener('click',()=>adminPlayerList&&!adminPlayerList.hidden?loadAdminPlayers():loadAdminMatches());
