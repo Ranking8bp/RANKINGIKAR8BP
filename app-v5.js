@@ -83,6 +83,7 @@ const playerHeartCountLabel=document.getElementById('playerHeartCountLabel');
 const playerFollowBtn=document.getElementById('playerFollowBtn');
 const playerPlayBtn=document.getElementById('playerPlayBtn');
 const playerMessageBtn=document.getElementById('playerMessageBtn');
+const playerModeratorBtn=document.getElementById('playerModeratorBtn');
 const privateMessageModal=document.getElementById('privateMessageModal');
 const privateMessageClose=document.getElementById('privateMessageClose');
 const privateMessageTo=document.getElementById('privateMessageTo');
@@ -1108,6 +1109,13 @@ async function openRankingPlayer(player){
   }
 
   updateHeartUI(player?.heart_count||0,false,player?.player_id===currentUser?.id);
+  if(playerModeratorBtn){
+    const ikarCanModerate=String(currentProfile?.username||'').toLowerCase()==='ikar8bp'&&currentProfile?.is_admin===true&&player?.player_id!==currentUser?.id&&!isAdminProfile;
+    playerModeratorBtn.hidden=!ikarCanModerate;
+    if(ikarCanModerate){
+      try{const {data:roleData}=await supabaseClient.from('profiles').select('is_moderator').eq('id',player.player_id).single();playerModeratorBtn.dataset.enabled=roleData?.is_moderator?'1':'0';playerModeratorBtn.textContent=roleData?.is_moderator?'QUITAR MODERADOR':'CONVERTIR EN MODERADOR'}catch{playerModeratorBtn.hidden=true}
+    }
+  }
 
   playerDetailAvatar.replaceChildren();
   const fallback=document.createElement('span');
@@ -1275,6 +1283,13 @@ if(dashboardPlayBtn)dashboardPlayBtn.addEventListener('click',async()=>{
 if(matchmakingClose)matchmakingClose.addEventListener('click',closeRankedMatchmaking);
 if(abandonRankedBtn)abandonRankedBtn.addEventListener('click',abandonRankedMatch);
 if(playerMessageBtn)playerMessageBtn.addEventListener('click',openPrivateMessage);
+if(playerModeratorBtn)playerModeratorBtn.addEventListener('click',async()=>{
+ if(!currentDetailPlayer||playerModeratorBtn.hidden)return;
+ const enabled=playerModeratorBtn.dataset.enabled!=='1';
+ if(!confirm(enabled?'¿Convertir este jugador en MODERADOR? Podrá seguir jugando normalmente.':'¿Quitar el rol de MODERADOR a este jugador?'))return;
+ playerModeratorBtn.disabled=true;
+ try{const {error}=await supabaseClient.rpc('ikar_set_moderator',{p_player_id:currentDetailPlayer.player_id,p_enabled:enabled});if(error)throw error;playerModeratorBtn.dataset.enabled=enabled?'1':'0';playerModeratorBtn.textContent=enabled?'QUITAR MODERADOR':'CONVERTIR EN MODERADOR';showToast(enabled?'Jugador convertido en MODERADOR.':'Rol de MODERADOR retirado.')}catch(e){console.error(e);showToast('No se pudo cambiar el rol de moderador.')}finally{playerModeratorBtn.disabled=false}
+});
 if(playerPlayBtn)playerPlayBtn.addEventListener('click',()=>showToast('Próximamente podrás desafiar a este jugador.'));
 if(privateMessageClose)privateMessageClose.addEventListener('click',closePrivateMessage);
 if(privateMessageSend)privateMessageSend.addEventListener('click',sendPrivateMessage);
