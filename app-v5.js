@@ -1113,7 +1113,7 @@ async function openRankingPlayer(player){
     const ikarCanModerate=String(currentProfile?.username||'').toLowerCase()==='ikar8bp'&&currentProfile?.is_admin===true&&player?.player_id!==currentUser?.id&&!isAdminProfile;
     playerModeratorBtn.hidden=!ikarCanModerate;
     if(ikarCanModerate){
-      try{const {data:roleData}=await supabaseClient.from('profiles').select('is_moderator').eq('id',player.player_id).single();playerModeratorBtn.dataset.enabled=roleData?.is_moderator?'1':'0';playerModeratorBtn.textContent=roleData?.is_moderator?'QUITAR MODERADOR':'CONVERTIR EN MODERADOR'}catch{playerModeratorBtn.hidden=true}
+      try{const {data:roleEnabled,error:roleError}=await supabaseClient.rpc('ikar_get_moderator_status',{p_player_id:player.player_id});if(roleError)throw roleError;playerModeratorBtn.dataset.enabled=roleEnabled?'1':'0';playerModeratorBtn.textContent=roleEnabled?'QUITAR MODERADOR':'CONVERTIR EN MODERADOR'}catch(e){console.error('No se pudo consultar rol moderador:',e);playerModeratorBtn.hidden=true}
     }
   }
 
