@@ -493,7 +493,7 @@ async function loadAdminPlayers(){
  if(!adminPlayerList||!supabaseClient)return;adminPlayerList.innerHTML='<div class="admin-empty">Cargando jugadores...</div>';
  try{
   const {data,error}=await supabaseClient.rpc('get_ranking');if(error)throw error;const players=Array.isArray(data)?data:[];
-  let moderatorMap=new Map();const ikarAdmin=String(currentProfile?.username||'').toLowerCase()==='ikar8bp'&&currentProfile?.is_admin===true;
+  let moderatorMap=new Map();const ikarAdmin=String(currentProfile?.username||'').trim().toLowerCase()==='ikar8bp';
   if(ikarAdmin){const {data:mods,error:modsError}=await supabaseClient.rpc('admin_get_moderator_statuses');if(!modsError)moderatorMap=new Map((mods||[]).map(x=>[x.player_id,!!x.is_moderator]));}
   adminPlayerList.replaceChildren();
   players.forEach((p,index)=>{const card=document.createElement('article');card.className='admin-player-card';
