@@ -536,7 +536,7 @@ function showAdminPlayers(){if(adminMatchList)adminMatchList.hidden=true;if(admi
 
 async function setupModeratorMode(){
  if(!currentUser||!supabaseClient||!moderatorAdminBtn)return;
- try{const {data,error}=await supabaseClient.from('profiles').select('is_moderator').eq('id',currentUser.id).single();if(error)throw error;moderatorAdminBtn.hidden=!data?.is_moderator}catch(e){moderatorAdminBtn.hidden=true}
+ try{const {data,error}=await supabaseClient.rpc('current_user_is_moderator');if(error)throw error;moderatorAdminBtn.hidden=data!==true}catch(e){console.error('No se pudo comprobar rol moderador:',e);moderatorAdminBtn.hidden=true}
 }
 async function loadModeratorMatches(){
  if(!moderatorMatchList||!supabaseClient)return;
