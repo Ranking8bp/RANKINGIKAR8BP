@@ -102,3 +102,22 @@
     transform:translateY(18px)!important;
   }
 }
+
+
+/* Corrección fuerte: mover visualmente hacia abajo insignia + TODO el bloque ELO */
+#playerDashboard .rank-hero-card{
+  align-items:stretch!important;
+}
+#playerDashboard .rank-art,
+#playerDashboard .elo-block{
+  position:relative!important;
+  top:42px!important;
+  transform:none!important;
+}
+@media(max-width:700px){
+  #playerDashboard .rank-art,
+  #playerDashboard .elo-block{
+    top:24px!important;
+    transform:none!important;
+  }
+}
