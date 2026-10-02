@@ -539,7 +539,9 @@ async function setupModeratorMode(){
  const username=String(currentProfile?.username||'').trim().toLowerCase();
  const isIkar=username==='ikar8bp';
  moderatorAdminBtn.hidden=!isIkar;
- moderatorAdminBtn.style.display=isIkar?'block':'none';
+ moderatorAdminBtn.classList.toggle('ikar-moderar-visible',isIkar);
+ if(isIkar)moderatorAdminBtn.style.setProperty('display','flex','important');
+ else moderatorAdminBtn.style.setProperty('display','none','important');
 }
 
 async function loadModeratorMatches(){
@@ -709,10 +711,10 @@ async function setPlayerUI(profile,user){
   const rankHero=document.querySelector('#playerDashboard .rank-hero-card');
   const winLossGrid=document.querySelector('#playerDashboard .win-loss-grid');
   if(isAdminDashboard){
-    if(rankHero){rankHero.hidden=true;rankHero.style.display='none';rankHero.classList.remove('admin-only-card');rankHero.replaceChildren();}
+    if(rankHero){rankHero.hidden=true;rankHero.classList.remove('admin-only-card');rankHero.classList.add('ikar-hide-rank-card');rankHero.style.setProperty('display','none','important');rankHero.replaceChildren();}
     if(winLossGrid)winLossGrid.hidden=true;
   }else{
-    if(rankHero){rankHero.hidden=false;rankHero.style.display='';rankHero.classList.remove('admin-only-card');}
+    if(rankHero){rankHero.hidden=false;rankHero.classList.remove('admin-only-card','ikar-hide-rank-card');rankHero.style.removeProperty('display');}
     if(winLossGrid)winLossGrid.hidden=false;
     dashboardElo.textContent=elo;
     dashboardWins.textContent=wins;
