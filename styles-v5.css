@@ -1037,3 +1037,21 @@ html,body{color-scheme:dark!important}
 #playerDetailModal .player-detail-stat.admin-profile-label{grid-column:1/-1!important;width:100%!important;min-height:76px!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:10px!important}#playerDetailModal .player-detail-stat.admin-profile-label strong{font-size:clamp(18px,5vw,30px)!important;line-height:1!important;white-space:nowrap!important;word-break:normal!important;overflow-wrap:normal!important;letter-spacing:1px!important}
 
 .site-legal-footer{display:flex!important;flex-wrap:wrap!important;justify-content:center!important;gap:10px 22px!important;padding:28px 16px 38px!important;background:#02070c!important;border-top:1px solid rgba(211,169,78,.25)!important}.site-legal-footer a{color:#aeb9c2!important;font-size:12px!important;text-decoration:none!important}.site-legal-footer a:hover{color:#d3a94e!important;text-decoration:underline!important}
+
+/* Perfil: insignia a la derecha del nombre, sin tarjeta de fondo */
+.player-detail-head{padding-right:58px}
+.player-detail-identity{min-width:0;flex:1}
+.player-detail-name-row{display:flex;align-items:center;gap:10px;min-width:0}
+.player-detail-name-row h3{min-width:0;margin:0}
+.player-detail-rank{
+  position:static;min-width:0;max-width:none;padding:0;border:0;border-radius:0;
+  background:transparent;box-shadow:none;display:flex;align-items:center;gap:5px;flex:0 0 auto
+}
+.player-detail-rank-badge{width:58px;height:58px;margin:0;background-color:transparent}
+.player-detail-rank small,.player-detail-rank strong{display:none}
+@media(max-width:700px){
+  .player-detail-head{padding-right:52px}
+  .player-detail-name-row{gap:7px}
+  .player-detail-rank{position:static;min-width:0;max-width:none;padding:0}
+  .player-detail-rank-badge{width:48px;height:48px;margin:0}
+}
