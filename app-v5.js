@@ -709,10 +709,10 @@ async function setPlayerUI(profile,user){
   const rankHero=document.querySelector('#playerDashboard .rank-hero-card');
   const winLossGrid=document.querySelector('#playerDashboard .win-loss-grid');
   if(isAdminDashboard){
-    if(rankHero){rankHero.hidden=true;rankHero.classList.remove('admin-only-card');}
+    if(rankHero){rankHero.hidden=true;rankHero.style.display='none';rankHero.classList.remove('admin-only-card');rankHero.replaceChildren();}
     if(winLossGrid)winLossGrid.hidden=true;
   }else{
-    if(rankHero){rankHero.hidden=false;rankHero.classList.remove('admin-only-card');}
+    if(rankHero){rankHero.hidden=false;rankHero.style.display='';rankHero.classList.remove('admin-only-card');}
     if(winLossGrid)winLossGrid.hidden=false;
     dashboardElo.textContent=elo;
     dashboardWins.textContent=wins;
