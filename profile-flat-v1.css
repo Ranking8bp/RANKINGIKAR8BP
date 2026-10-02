@@ -89,3 +89,16 @@
   #playerDetailModal .player-heart-area{margin:0!important;padding:8px 14px!important}
   #playerDetailModal .profile-comments{margin:8px 0 0!important;padding:8px 0!important}
 }
+
+
+/* Ajuste 2026-10-02: bajar insignia y todo el bloque derecho del rango */
+#playerDashboard .rank-hero-card .rank-art,
+#playerDashboard .rank-hero-card .elo-block{
+  transform:translateY(28px)!important;
+}
+@media(max-width:700px){
+  #playerDashboard .rank-hero-card .rank-art,
+  #playerDashboard .rank-hero-card .elo-block{
+    transform:translateY(18px)!important;
+  }
+}
