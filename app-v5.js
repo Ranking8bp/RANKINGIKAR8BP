@@ -493,15 +493,14 @@ async function loadAdminPlayers(){
  if(!adminPlayerList||!supabaseClient)return;adminPlayerList.innerHTML='<div class="admin-empty">Cargando jugadores...</div>';
  try{
   const {data,error}=await supabaseClient.rpc('get_ranking');if(error)throw error;const players=Array.isArray(data)?data:[];
-  let moderatorMap=new Map();const ikarAdmin=String(currentProfile?.username||'').trim().toLowerCase()==='ikar8bp';
-  if(ikarAdmin){const {data:mods,error:modsError}=await supabaseClient.rpc('admin_get_moderator_statuses');if(!modsError)moderatorMap=new Map((mods||[]).map(x=>[x.player_id,!!x.is_moderator]));}
+  let moderatorMap=new Map();const {data:mods,error:modsError}=await supabaseClient.rpc('admin_get_moderator_statuses');if(!modsError)moderatorMap=new Map((mods||[]).map(x=>[x.player_id,!!x.is_moderator]));
   adminPlayerList.replaceChildren();
   players.forEach((p,index)=>{const card=document.createElement('article');card.className='admin-player-card';
    const head=document.createElement('div');head.className='admin-player-head';const av=document.createElement('div');av.className='admin-edit-avatar';av.textContent=String(p.account_name||p.username||'?').charAt(0).toUpperCase();if(p.avatar_path){const {data:u}=supabaseClient.storage.from('profile-photos').getPublicUrl(p.avatar_path);if(u?.publicUrl){const im=document.createElement('img');im.src=u.publicUrl;av.replaceChildren(im)}}const title=document.createElement('div');title.innerHTML='<strong></strong><span></span>';title.children[0].textContent=p.account_name||p.username||'Jugador';title.children[1].textContent='Ranking #'+(index+1)+' · '+p.player_id;head.append(av,title);card.append(head);
    const fields=document.createElement('div');fields.className='admin-edit-grid';const defs=[['Nombre','account_name',p.account_name||p.username||''],['ID juego','game_id',p.game_id||''],['País','country',p.country||''],['ELO','elo_points',p.elo_points??200,'number'],['Victorias','wins',p.wins??0,'number'],['Derrotas','losses',p.losses??0,'number'],['Rango','rank_name',p.rank_name||getRankByElo(p.elo_points).name]];
    const inputs={};defs.forEach(([label,key,val,type])=>{const l=document.createElement('label');l.textContent=label;const i=document.createElement('input');i.type=type||'text';i.value=val;l.append(i);fields.append(l);inputs[key]=i});
    const passwordLabel=document.createElement('label');passwordLabel.textContent='Nueva clave';const passwordInput=document.createElement('input');passwordInput.type='password';passwordInput.autocomplete='new-password';passwordInput.placeholder='Dejar vacío = no cambiar';passwordInput.minLength=6;passwordLabel.append(passwordInput);fields.append(passwordLabel);inputs.password=passwordInput;
-   if(ikarAdmin&&p.player_id!==currentUser?.id&&p.is_admin!==true){
+   if(p.player_id!==currentUser?.id){
     const modLabel=document.createElement('label');modLabel.textContent='MOD';
     const modSelect=document.createElement('select');modSelect.innerHTML='<option value="false">NO</option><option value="true">SÍ</option>';modSelect.value=moderatorMap.get(p.player_id)?'true':'false';modLabel.append(modSelect);fields.append(modLabel);inputs.is_moderator=modSelect;
    }
