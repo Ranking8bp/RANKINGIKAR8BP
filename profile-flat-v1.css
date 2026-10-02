@@ -1,0 +1,91 @@
+/* Perfil sin etiquetas/tarjetas: elementos libres y dimensiones estables entre navegadores */
+#playerDetailModal .player-detail-card{
+  background:#050b12!important;
+}
+#playerDetailModal .player-detail-head,
+#playerDetailModal .player-follow-area,
+#playerDetailModal .player-detail-stats,
+#playerDetailModal .player-heart-area,
+#playerDetailModal .profile-comments,
+#playerDetailModal .player-detail-stat{
+  background:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+#playerDetailModal .player-detail-head{overflow:visible!important}
+#playerDetailModal .player-detail-avatar{
+  aspect-ratio:1/1!important;
+  flex:none!important;
+  border-radius:50%!important;
+  overflow:hidden!important;
+}
+#playerDetailModal .player-detail-avatar img{
+  width:100%!important;height:100%!important;object-fit:cover!important;border-radius:50%!important;
+}
+#playerDetailModal .player-detail-rank,
+#playerDetailModal .player-detail-rank-badge{
+  background-color:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+#playerDetailModal .player-detail-rank-badge{
+  aspect-ratio:1/1!important;
+  flex:none!important;
+  background-repeat:no-repeat!important;
+}
+#playerDetailModal .player-follow-area,
+#playerDetailModal .player-detail-stats,
+#playerDetailModal .player-heart-area,
+#playerDetailModal .profile-comments{
+  overflow:visible!important;
+}
+#playerDetailModal .player-detail-stat{
+  min-width:0!important;
+}
+#playerDetailModal .player-detail-stat small,
+#playerDetailModal .player-detail-stat strong{
+  white-space:nowrap!important;
+}
+@media(max-width:700px){
+  #playerDetailModal .player-detail-card{
+    width:calc(100vw - 28px)!important;
+    max-width:390px!important;
+    overflow-x:hidden!important;
+  }
+  #playerDetailModal .player-detail-head{
+    padding:14px 44px 10px 14px!important;
+    display:flex!important;
+    align-items:center!important;
+    gap:10px!important;
+  }
+  #playerDetailModal .player-detail-avatar{
+    width:64px!important;height:64px!important;flex:0 0 64px!important;
+  }
+  #playerDetailModal .player-detail-identity{max-width:none!important;min-width:0!important}
+  #playerDetailModal .player-detail-name-row{
+    display:flex!important;align-items:center!important;gap:7px!important;min-width:0!important;
+  }
+  #playerDetailModal .player-detail-identity h3{
+    max-width:190px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+  }
+  #playerDetailModal .player-detail-rank{
+    position:static!important;width:auto!important;min-width:0!important;max-width:none!important;padding:0!important;
+  }
+  #playerDetailModal .player-detail-rank-badge{
+    width:48px!important;height:48px!important;margin:0!important;
+  }
+  #playerDetailModal .player-follow-area{padding:8px 14px!important;margin:0!important}
+  #playerDetailModal .player-detail-stats{
+    display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;padding:10px 8px!important;gap:2px!important;
+  }
+  #playerDetailModal .player-detail-stat{
+    min-height:54px!important;padding:4px 2px!important;text-align:center!important;
+  }
+  #playerDetailModal .player-detail-stat small{font-size:7px!important}
+  #playerDetailModal .player-detail-stat strong{font-size:16px!important}
+  #playerDetailModal .player-detail-id strong{font-size:12px!important}
+  #playerDetailModal .player-heart-area{margin:0!important;padding:8px 14px!important}
+  #playerDetailModal .profile-comments{margin:8px 0 0!important;padding:8px 0!important}
+}
