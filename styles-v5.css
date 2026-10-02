@@ -1061,3 +1061,5 @@ html,body{color-scheme:dark!important}
 .moderator-admin-btn:active{transform:scale(.985)}
 .moderator-vs-title{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:10px}.moderator-vs-title small{width:100%;text-align:center;opacity:.65}
 .moderator-evidence{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0}.moderator-evidence button{padding:9px 12px;border-radius:9px;border:1px solid rgba(255,255,255,.2);font-weight:800}.moderator-chat{max-height:220px;overflow:auto;padding:10px;border-radius:10px;background:rgba(0,0,0,.25);margin:8px 0}.moderator-chat p{margin:6px 0}
+
+.player-moderator-btn{background:#d71920!important;color:#fff!important;border:0!important;font-weight:900!important}
