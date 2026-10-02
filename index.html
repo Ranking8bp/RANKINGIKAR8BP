@@ -206,14 +206,16 @@
       <button type="button" class="player-detail-close" id="closePlayerDetail" aria-label="Cerrar">×</button>
 
       <div class="player-detail-head">
-        <div class="player-detail-rank" id="playerDetailRank">
-          <div class="player-detail-rank-badge" id="playerDetailRankBadge" role="img" aria-label="Insignia de rango"></div>
-          <small>RANGO</small>
-          <strong>LATÓN</strong>
-        </div>
         <div class="player-detail-avatar" id="playerDetailAvatar"><span>J</span></div>
         <div class="player-detail-identity">
-          <h3 id="playerDetailName">JUGADOR</h3>
+          <div class="player-detail-name-row">
+            <h3 id="playerDetailName">JUGADOR</h3>
+            <div class="player-detail-rank" id="playerDetailRank" aria-label="Rango">
+              <div class="player-detail-rank-badge" id="playerDetailRankBadge" role="img" aria-label="Insignia de rango"></div>
+              <small>RANGO</small>
+              <strong>LATÓN</strong>
+            </div>
+          </div>
           <div class="player-detail-country">
             <span id="playerDetailFlag">🌎</span>
             <span id="playerDetailCountry">País</span>
