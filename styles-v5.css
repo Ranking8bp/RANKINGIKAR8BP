@@ -1032,7 +1032,7 @@ html,body{color-scheme:dark!important}
  #playerDetailModal .profile-comment-item *{max-width:100%!important;overflow-wrap:anywhere!important}
 }
 
-#playerDashboard .rank-hero-card.admin-only-card{min-height:150px!important;display:flex!important;align-items:center!important;justify-content:center!important;background:linear-gradient(180deg,#071522,#02070c)!important}.admin-only-title{font-size:clamp(28px,7vw,52px)!important;font-weight:1000!important;letter-spacing:3px!important;color:#d3a94e!important;text-align:center!important}
+
 
 #playerDetailModal .player-detail-stat.admin-profile-label{grid-column:1/-1!important;width:100%!important;min-height:76px!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:10px!important}#playerDetailModal .player-detail-stat.admin-profile-label strong{font-size:clamp(18px,5vw,30px)!important;line-height:1!important;white-space:nowrap!important;word-break:normal!important;overflow-wrap:normal!important;letter-spacing:1px!important}
 
@@ -1063,3 +1063,7 @@ html,body{color-scheme:dark!important}
 .moderator-evidence{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0}.moderator-evidence button{padding:9px 12px;border-radius:9px;border:1px solid rgba(255,255,255,.2);font-weight:800}.moderator-chat{max-height:220px;overflow:auto;padding:10px;border-radius:10px;background:rgba(0,0,0,.25);margin:8px 0}.moderator-chat p{margin:6px 0}
 
 .player-moderator-btn{background:#d71920!important;color:#fff!important;border:0!important;font-weight:900!important}
+
+/* Ikar admin dashboard overrides */
+#playerDashboard .rank-hero-card.ikar-hide-rank-card{display:none!important}
+#playerDashboard .moderator-admin-btn.ikar-moderar-visible{display:flex!important;align-items:center!important;justify-content:center!important}
