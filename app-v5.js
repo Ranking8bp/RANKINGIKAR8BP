@@ -535,9 +535,13 @@ function showAdminVs(){if(adminMatchList)adminMatchList.hidden=false;if(adminPla
 function showAdminPlayers(){if(adminMatchList)adminMatchList.hidden=true;if(adminPlayerList)adminPlayerList.hidden=false;loadAdminPlayers()}
 
 async function setupModeratorMode(){
- if(!currentUser||!supabaseClient||!moderatorAdminBtn)return;
- try{let enabled=currentProfile?.is_moderator===true;if(!enabled){const {data,error}=await supabaseClient.rpc('current_user_is_moderator');if(error)throw error;enabled=(data===true||data==='true'||data===1)}moderatorAdminBtn.hidden=!enabled;moderatorAdminBtn.style.display=enabled?'block':'none'}catch(e){console.error('No se pudo comprobar rol moderador:',e);moderatorAdminBtn.hidden=true;moderatorAdminBtn.style.display='none'}
+ if(!currentUser||!moderatorAdminBtn)return;
+ const username=String(currentProfile?.username||'').trim().toLowerCase();
+ const isIkar=username==='ikar8bp';
+ moderatorAdminBtn.hidden=!isIkar;
+ moderatorAdminBtn.style.display=isIkar?'block':'none';
 }
+
 async function loadModeratorMatches(){
  if(!moderatorMatchList||!supabaseClient)return;
  moderatorMatchList.innerHTML='<div class="admin-empty">Cargando...</div>';
