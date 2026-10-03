@@ -446,7 +446,11 @@ function showRankedMatch(match){
  setVsAvatar(versusOpponentAvatar,match.opponent_avatar_path,match.opponent_name);
  if(confirmedMatchWarning)confirmedMatchWarning.hidden=!match.admin_confirmed;if(abandonRankedBtn){abandonRankedBtn.hidden=!!match.admin_confirmed;abandonRankedBtn.disabled=!!match.admin_confirmed}if(matchmakingClose){matchmakingClose.hidden=!!match.admin_confirmed;matchmakingClose.disabled=!!match.admin_confirmed}
  updatePendingMatchesCount();
- clearInterval(pendingMatchesTimer);pendingMatchesTimer=setInterval(()=>{updatePendingMatchesCount();watchCurrentRankedMatch()},2000);
+ clearInterval(pendingMatchesTimer);pendingMatchesTimer=setInterval(()=>{
+    if(document.hidden||!currentUser)return;
+    updatePendingMatchesCount();
+    watchCurrentRankedMatch();
+  },8000);
 }
 async function watchCurrentRankedMatch(){
  if(!currentRankedMatchId||!supabaseClient)return;
@@ -476,8 +480,8 @@ async function startRankedMatchmaking(){
  try{
   const {data,error}=await supabaseClient.rpc('join_ranked_matchmaking');if(error)throw error;const m=Array.isArray(data)?data[0]:data;
   if(m?.matched){showRankedMatch(m);return}
-  clearInterval(matchmakingTimer);matchmakingTimer=setInterval(pollRankedMatch,1500);
-  clearInterval(matchmakingHeartbeatTimer);matchmakingHeartbeatTimer=setInterval(heartbeatRankedSearch,3000);heartbeatRankedSearch();
+  clearInterval(matchmakingTimer);matchmakingTimer=setInterval(()=>{if(!document.hidden)pollRankedMatch()},3000);
+  clearInterval(matchmakingHeartbeatTimer);matchmakingHeartbeatTimer=setInterval(()=>{if(!document.hidden)heartbeatRankedSearch()},10000);heartbeatRankedSearch();
  }catch(e){console.error(e);matchmakingModal.hidden=true;showToast('No se pudo iniciar la búsqueda de rival.')}
 }
 async function closeRankedMatchmaking(){
@@ -1388,7 +1392,7 @@ function startNotificationRefresh(){
   if(notificationRefreshTimer)clearInterval(notificationRefreshTimer);
   if(currentUser){
     loadNotifications().catch(()=>{});
-    notificationRefreshTimer=setInterval(()=>{if(currentUser)loadNotifications().catch(()=>{})},15000);
+    notificationRefreshTimer=setInterval(()=>{if(currentUser&&!document.hidden)loadNotifications().catch(()=>{})},30000);
   }
 }
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&currentUser)loadNotifications().catch(()=>{})});
@@ -1487,7 +1491,7 @@ async function loadGeneralChat(){
  for(const m of rows){const item=document.createElement('div');item.className='general-chat-message'+(m.user_id===currentUser?.id?' mine':'');const av=document.createElement('div');av.className='general-chat-avatar';if(m.avatar_path){const {data:u}=supabaseClient.storage.from('profile-photos').getPublicUrl(m.avatar_path);if(u?.publicUrl)av.style.backgroundImage='url("'+u.publicUrl+'")'}if(!m.avatar_path)av.textContent=String(m.author_name||'?').charAt(0).toUpperCase();const openChatProfile=async()=>{try{const {data,error}=await supabaseClient.rpc('get_profile_by_id',{p_player_id:m.user_id});if(error)throw error;const player=Array.isArray(data)?data[0]:null;if(player){closeGeneralChat();openRankingPlayer(player)}else showToast('No se encontró ese perfil.')}catch(err){console.error(err);showToast('No se pudo abrir el perfil.')}};av.classList.add('general-chat-profile-link');av.setAttribute('role','button');av.tabIndex=0;av.addEventListener('click',openChatProfile);av.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openChatProfile()}});const box=document.createElement('div');const head=document.createElement('strong');head.textContent=m.author_name;head.classList.add('general-chat-profile-link');head.setAttribute('role','button');head.tabIndex=0;head.addEventListener('click',openChatProfile);head.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openChatProfile()}});const body=document.createElement('p');body.textContent=m.body;const time=document.createElement('small');time.textContent=formatCommentDate(m.created_at);box.append(head,body,time);item.append(av,box);generalChatMessages.append(item)}
  generalChatMessages.scrollTop=generalChatMessages.scrollHeight;
 }
-function openGeneralChat(){if(!currentUser){showToast('Inicia sesión para usar el chat.');return}generalChatModal.hidden=false;loadGeneralChat();clearInterval(generalChatTimer);generalChatTimer=setInterval(loadGeneralChat,2500);setTimeout(()=>generalChatInput?.focus(),50)}
+function openGeneralChat(){if(!currentUser){showToast('Inicia sesión para usar el chat.');return}generalChatModal.hidden=false;loadGeneralChat();clearInterval(generalChatTimer);generalChatTimer=setInterval(()=>{if(!document.hidden)loadGeneralChat()},5000);setTimeout(()=>generalChatInput?.focus(),50)}
 function closeGeneralChat(){generalChatModal.hidden=true;clearInterval(generalChatTimer);generalChatTimer=null}
 dashboardChatBtn?.addEventListener('click',openGeneralChat);generalChatClose?.addEventListener('click',closeGeneralChat);
 generalChatForm?.addEventListener('submit',async e=>{e.preventDefault();const body=generalChatInput.value.trim();if(!body||!currentUser)return;const {error}=await supabaseClient.from('general_chat_messages').insert({user_id:currentUser.id,body});if(error){showToast('No se pudo enviar el mensaje.');return}generalChatInput.value='';await loadGeneralChat()});
