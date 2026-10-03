@@ -1214,25 +1214,29 @@ async function loadRanking(attempt=0){
   }
 
   try{
-    const {data:sessionData}=await supabaseClient.auth.getSession();
-    if(!sessionData?.session){
-      if(attempt<8){
-        await new Promise(resolve=>setTimeout(resolve,250));
-        return loadRanking(attempt+1);
-      }
-      throw new Error('La sesión todavía no está disponible.');
+    // La clasificación nunca debe depender de Auth. Si hay sesión usamos la
+    // versión completa; si Auth falla o no hay sesión, usamos el ranking público.
+    let session=null;
+    try{
+      const {data}=await supabaseClient.auth.getSession();
+      session=data?.session||null;
+    }catch(e){
+      console.warn('Auth no disponible al cargar ranking; usando ranking público.',e);
     }
 
-    const {data,error}=await supabaseClient.rpc('get_ranking');
-    if(error){
-      if(attempt<8&&(error.code==='42501'||/jwt|session|permission|authorized/i.test(error.message||''))){
-        await new Promise(resolve=>setTimeout(resolve,250));
-        return loadRanking(attempt+1);
+    let data,error;
+    if(session){
+      ({data,error}=await supabaseClient.rpc('get_ranking'));
+      if(error){
+        console.warn('get_ranking falló; usando get_public_ranking.',error);
+        ({data,error}=await supabaseClient.rpc('get_public_ranking'));
       }
-      throw error;
+    }else{
+      ({data,error}=await supabaseClient.rpc('get_public_ranking'));
     }
+    if(error)throw error;
 
-    const players=Array.isArray(data)?data:[];
+    const players=(Array.isArray(data)?data:[]).slice(0,100);
     rankingList.replaceChildren();
     rankingCount.textContent=players.length+' '+(players.length===1?'JUGADOR':'JUGADORES');
 
