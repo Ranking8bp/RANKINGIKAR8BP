@@ -1257,12 +1257,29 @@ async function getProfile(userId){
   return data
 }
 
-async function restoreSession(){
+async function restoreSession(attempt=0){
   if(!cloudReady){setGuestUI();return}
-  const {data,error}=await supabaseClient.auth.getSession();
-  if(error||!data.session){setGuestUI();return}
-  const profile=await getProfile(data.session.user.id);
-  await setPlayerUI(profile,data.session.user)
+  try{
+    const {data,error}=await supabaseClient.auth.getSession();
+    if(error){
+      console.warn('Error temporal restaurando sesión:',error);
+      if(attempt<5){
+        await new Promise(resolve=>setTimeout(resolve,800*(attempt+1)));
+        return restoreSession(attempt+1);
+      }
+      // Un error de red/Auth NO debe borrar una sesión local válida ni expulsar al jugador.
+      return;
+    }
+    if(!data?.session){setGuestUI();return}
+    const profile=await getProfile(data.session.user.id);
+    await setPlayerUI(profile,data.session.user)
+  }catch(error){
+    console.warn('Fallo temporal restaurando sesión:',error);
+    if(attempt<5){
+      await new Promise(resolve=>setTimeout(resolve,800*(attempt+1)));
+      return restoreSession(attempt+1);
+    }
+  }
 }
 
 /* Los controles de autenticación se enlazan al inicio mediante bindAuthModalsEarly(). */
@@ -1445,8 +1462,17 @@ if(deleteAccountBtn)deleteAccountBtn.addEventListener('click',async()=>{
 
 if(cloudReady){
   supabaseClient.auth.onAuthStateChange(async(event,session)=>{
-    if(!session||event==='SIGNED_OUT'){setGuestUI();return}
-    if(event==='SIGNED_IN'||event==='INITIAL_SESSION'||event==='TOKEN_REFRESHED'){const profile=await getProfile(session.user.id);await setPlayerUI(profile,session.user)}
+    // Solo un SIGNED_OUT real debe sacar al jugador. Un refresh fallido o evento
+    // transitorio sin sesión no debe convertir automáticamente la interfaz a invitado.
+    if(event==='SIGNED_OUT'){setGuestUI();return}
+    if(!session){
+      console.warn('Auth temporalmente sin sesión; se conserva la interfaz actual.',event);
+      return;
+    }
+    if(event==='SIGNED_IN'||event==='INITIAL_SESSION'||event==='TOKEN_REFRESHED'){
+      const profile=await getProfile(session.user.id);
+      await setPlayerUI(profile,session.user)
+    }
   })
 }
 restoreSession();
