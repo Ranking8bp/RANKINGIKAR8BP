@@ -428,9 +428,17 @@ async function abandonRankedMatch(){
  }catch(e){console.error(e);const msg=String(e?.message||'');if(msg.includes('match locked')){showToast('VS confirmado por el administrador. Ya no puedes abandonar.');if(abandonRankedBtn){abandonRankedBtn.disabled=true;abandonRankedBtn.textContent='VS CONFIRMADO · NO SE PUEDE ABANDONAR'}}else showToast('No se pudo abandonar el emparejamiento.')}
 }
 
+function mountPlayerVsSafety(){
+ if(!playerVsSafety)return;
+ const chat=document.querySelector('.ranked-match-chat,.ranked-chat,.match-chat,[id*="rankedChat"],[id*="matchChat"],[class*="chat-vs"],[class*="vs-chat"]');
+ const mount=document.getElementById('vsSafetyMount');
+ if(chat&&chat.parentNode){chat.insertAdjacentElement('afterend',playerVsSafety)}
+ else if(mount&&playerVsSafety.parentNode!==mount)mount.appendChild(playerVsSafety);
+}
 async function refreshPlayerVsSafety(){
+ mountPlayerVsSafety();
  if(!currentRankedMatchId||!supabaseClient||!playerVsSafety)return;
- try{const {data,error}=await supabaseClient.rpc('get_ranked_player_action_status',{p_match_id:currentRankedMatchId});if(error)throw error;const st=Array.isArray(data)?data[0]:data;if(!st||!st.both_messaged){playerVsSafety.hidden=true;return}playerVsSafety.hidden=false;const locked=!!st.players_playing;if(playerCancelVsBtn)playerCancelVsBtn.hidden=locked;if(playerPlayingBtn)playerPlayingBtn.hidden=locked;if(playerVsSafetyNotice)playerVsSafetyNotice.hidden=locked;if(playerPlayingLocked)playerPlayingLocked.hidden=!locked;if(abandonRankedBtn)abandonRankedBtn.hidden=true;}catch(e){console.error('Estado seguridad VS:',e)}
+ try{const {data,error}=await supabaseClient.rpc('get_ranked_player_action_status',{p_match_id:currentRankedMatchId});if(error)throw error;const st=Array.isArray(data)?data[0]:data;if(!st||!st.both_messaged){playerVsSafety.hidden=true;return}playerVsSafety.hidden=false;mountPlayerVsSafety();const locked=!!st.players_playing;if(playerCancelVsBtn)playerCancelVsBtn.hidden=locked;if(playerPlayingBtn)playerPlayingBtn.hidden=locked;if(playerVsSafetyNotice)playerVsSafetyNotice.hidden=locked;if(playerPlayingLocked)playerPlayingLocked.hidden=!locked;if(abandonRankedBtn)abandonRankedBtn.hidden=true;}catch(e){console.error('Estado seguridad VS:',e)}
 }
 async function cancelVsByPlayers(){
  if(!currentRankedMatchId||!supabaseClient)return;if(!confirm('¿ANULAR ESTE VS? Solo hazlo si todavía NO han comenzado a jugar.'))return;
