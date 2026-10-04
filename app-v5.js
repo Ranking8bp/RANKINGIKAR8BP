@@ -53,6 +53,7 @@ const versusOpponent=document.getElementById('versusOpponent');
 const versusOpponentElo=document.getElementById('versusOpponentElo');
 const versusMyAvatar=document.getElementById('versusMyAvatar'),versusOpponentAvatar=document.getElementById('versusOpponentAvatar');
 const versusMyRank=document.getElementById('versusMyRank'),versusOpponentRank=document.getElementById('versusOpponentRank');
+const versusMyRankBadge=document.getElementById('versusMyRankBadge'),versusOpponentRankBadge=document.getElementById('versusOpponentRankBadge');
 const versusMyPosition=document.getElementById('versusMyPosition'),versusOpponentPosition=document.getElementById('versusOpponentPosition');
 const pendingMatchesCount=document.getElementById('pendingMatchesCount');
 const abandonRankedBtn=document.getElementById('abandonRankedBtn');
@@ -441,6 +442,8 @@ function showRankedMatch(match){
  versusOpponentElo.textContent='ELO '+String(match.opponent_elo||200);
  if(versusMyRank)versusMyRank.textContent=String(match.my_rank_name||getRankByElo(match.my_elo).name).toUpperCase();
  if(versusOpponentRank)versusOpponentRank.textContent=String(match.opponent_rank_name||getRankByElo(match.opponent_elo).name).toUpperCase();
+ const renderVsRankBadge=async(el,elo)=>{if(!el)return;const rank=getRankByElo(Number(elo)||200),spriteIndex=Number.isInteger(rank.spriteIndex)?rank.spriteIndex:rank.index,col=spriteIndex%5,row=Math.floor(spriteIndex/5);el.title='Rango '+rank.name;el.setAttribute('aria-label','Insignia '+rank.name);try{const sprite=await getRankSpriteUrl();el.style.backgroundImage='url("'+sprite+'")';el.style.backgroundPosition=(col*25)+'% '+(row*(100/3))+'%'}catch(e){console.error('No se pudo cargar insignia VS',e);el.style.backgroundImage='none'}};
+ renderVsRankBadge(versusMyRankBadge,match.my_elo);renderVsRankBadge(versusOpponentRankBadge,match.opponent_elo);
  if(versusMyPosition)versusMyPosition.textContent='RANKING #'+String(match.my_position||'--');
  if(versusOpponentPosition)versusOpponentPosition.textContent='RANKING #'+String(match.opponent_position||'--');
  const setVsAvatar=(el,path,name)=>{if(!el)return;el.replaceChildren();if(path){const {data}=supabaseClient.storage.from('profile-photos').getPublicUrl(path);if(data?.publicUrl){const img=document.createElement('img');img.src=data.publicUrl;img.alt=name;el.appendChild(img);return}}const s=document.createElement('span');s.textContent=String(name||'?').charAt(0).toUpperCase();el.appendChild(s)};
