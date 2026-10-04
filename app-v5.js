@@ -445,10 +445,13 @@ async function refreshPlayerVsSafety(){
   const ready=Boolean(st&&st.both_messaged);
   const locked=Boolean(st&&st.players_playing);
   playerVsSafety.hidden=!ready;
+  playerVsSafety.style.display=ready?'block':'none';
   if(!ready)return;
   mountPlayerVsSafety();
-  if(playerCancelVsBtn){playerCancelVsBtn.hidden=locked;playerCancelVsBtn.disabled=locked}
-  if(playerPlayingBtn){playerPlayingBtn.hidden=locked;playerPlayingBtn.disabled=locked}
+  playerVsSafety.hidden=false;
+  playerVsSafety.style.display='block';
+  if(playerCancelVsBtn){playerCancelVsBtn.hidden=locked;playerCancelVsBtn.disabled=locked;playerCancelVsBtn.style.display=locked?'none':'inline-flex'}
+  if(playerPlayingBtn){playerPlayingBtn.hidden=locked;playerPlayingBtn.disabled=locked;playerPlayingBtn.style.display=locked?'none':'inline-flex'}
   if(playerVsSafetyNotice)playerVsSafetyNotice.hidden=locked;
   if(playerPlayingLocked)playerPlayingLocked.hidden=!locked;
   if(abandonRankedBtn)abandonRankedBtn.hidden=true;
@@ -491,7 +494,7 @@ function showRankedMatch(match){
     updatePendingMatchesCount();
     refreshPlayerVsSafety();
     watchCurrentRankedMatch();
-  },8000);
+  },2000);
 }
 async function watchCurrentRankedMatch(){
  if(!currentRankedMatchId||!supabaseClient)return;
