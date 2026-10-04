@@ -438,7 +438,21 @@ function mountPlayerVsSafety(){
 async function refreshPlayerVsSafety(){
  mountPlayerVsSafety();
  if(!currentRankedMatchId||!supabaseClient||!playerVsSafety)return;
- try{const {data,error}=await supabaseClient.rpc('get_ranked_player_action_status',{p_match_id:currentRankedMatchId});if(error)throw error;const st=Array.isArray(data)?data[0]:data;if(!st||!st.both_messaged){playerVsSafety.hidden=true;return}playerVsSafety.hidden=false;mountPlayerVsSafety();const locked=!!st.players_playing;if(playerCancelVsBtn)playerCancelVsBtn.hidden=locked;if(playerPlayingBtn)playerPlayingBtn.hidden=locked;if(playerVsSafetyNotice)playerVsSafetyNotice.hidden=locked;if(playerPlayingLocked)playerPlayingLocked.hidden=!locked;if(abandonRankedBtn)abandonRankedBtn.hidden=true;}catch(e){console.error('Estado seguridad VS:',e)}
+ try{
+  const {data,error}=await supabaseClient.rpc('get_ranked_player_action_status',{p_match_id:currentRankedMatchId});
+  if(error)throw error;
+  const st=Array.isArray(data)?data[0]:data;
+  const ready=Boolean(st&&st.both_messaged);
+  const locked=Boolean(st&&st.players_playing);
+  playerVsSafety.hidden=!ready;
+  if(!ready)return;
+  mountPlayerVsSafety();
+  if(playerCancelVsBtn){playerCancelVsBtn.hidden=locked;playerCancelVsBtn.disabled=locked}
+  if(playerPlayingBtn){playerPlayingBtn.hidden=locked;playerPlayingBtn.disabled=locked}
+  if(playerVsSafetyNotice)playerVsSafetyNotice.hidden=locked;
+  if(playerPlayingLocked)playerPlayingLocked.hidden=!locked;
+  if(abandonRankedBtn)abandonRankedBtn.hidden=true;
+ }catch(e){console.error('Estado seguridad VS:',e)}
 }
 async function cancelVsByPlayers(){
  if(!currentRankedMatchId||!supabaseClient)return;if(!confirm('¿ANULAR ESTE VS? Solo hazlo si todavía NO han comenzado a jugar.'))return;
