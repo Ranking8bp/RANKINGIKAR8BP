@@ -1067,3 +1067,7 @@ html,body{color-scheme:dark!important}
 /* Ikar admin dashboard overrides */
 #playerDashboard .rank-hero-card.ikar-hide-rank-card{display:none!important}
 #playerDashboard .moderator-admin-btn.ikar-moderar-visible{display:flex!important;align-items:center!important;justify-content:center!important}
+
+/* Insignias grandes en tarjetas VS */
+.versus-rank-badge{width:112px;height:112px;margin:10px auto 0;background-repeat:no-repeat;background-size:500% 400%;background-position:center;filter:drop-shadow(0 5px 9px rgba(0,0,0,.5));flex:0 0 auto}
+@media(max-width:600px){.versus-rank-badge{width:86px;height:86px;margin-top:8px}}
