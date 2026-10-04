@@ -723,7 +723,7 @@ async function loadGuestRanking(){
  try{
   const {data,error}=await supabaseClient.rpc('get_public_ranking');if(error)throw error;
   const players=(Array.isArray(data)?data:[]).slice(0,100);guestRankingList.replaceChildren();
-  if(guestRankingCount)guestRankingCount.textContent='TOP '+Math.min(100,players.length);
+  if(guestRankingCount){const {count}=await supabaseClient.from('profiles').select('id',{count:'exact',head:true}).eq('is_admin',false);guestRankingCount.textContent='JUGADORES REGISTRADOS: '+(Number.isFinite(count)?count:players.length);}
   players.forEach((player,index)=>{
    const row=document.createElement('div');row.className='guest-ranking-row';
    const pos=document.createElement('strong');pos.className='guest-ranking-pos';pos.textContent=String(index+1);
