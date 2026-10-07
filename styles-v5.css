@@ -1073,3 +1073,16 @@ html,body{color-scheme:dark!important}
 @media(max-width:600px){.versus-rank-badge{width:86px;height:86px;margin-top:8px}}
 
 .player-vs-safety{max-width:560px;margin:18px auto 4px;padding:15px;border:1px solid #a77e30;border-radius:12px;background:#101c23;text-align:center}.player-vs-safety p{margin:0 0 12px;color:#ffd978;font:800 11px/1.45 Arial}.player-vs-safety-actions{display:flex;gap:10px;justify-content:center}.player-vs-safety-actions button{padding:12px 14px;border-radius:9px;font:900 11px Arial;cursor:pointer}.player-vs-safety-actions #playerCancelVsBtn{border:1px solid #d04b4b;background:#4a1717;color:#ff9b9b}.player-vs-safety-actions #playerPlayingBtn{border:1px solid #38a968;background:#116331;color:#fff}.player-vs-safety>strong{display:block;color:#76e39c;font:900 11px/1.45 Arial}@media(max-width:600px){.player-vs-safety-actions{flex-direction:column}.player-vs-safety-actions button{width:100%}}
+
+
+/* RANGOS 60: PNG individuales. Nunca usar dimensiones del sprite antiguo. */
+.rank-badge-image,
+.player-detail-rank-badge,
+.guest-ranking-rank-badge,
+.guest-showcase-badge,
+.versus-rank-badge,
+.admin-vs-rank-badge{
+  background-size:contain!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+}
