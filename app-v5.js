@@ -240,26 +240,66 @@ bindAuthModalsEarly();
 
 
 const RANKS=[
-  {min:0,name:'Latón',spriteIndex:0},
-  {min:230,name:'Bronce I',spriteIndex:1},
-  {min:300,name:'Bronce II',spriteIndex:2},
-  {min:380,name:'Bronce III',spriteIndex:3},
-  {min:470,name:'Plata I',spriteIndex:4},
-  {min:570,name:'Plata II',spriteIndex:5},
-  {min:680,name:'Plata III',spriteIndex:6},
-  {min:800,name:'Oro I',spriteIndex:7},
-  {min:930,name:'Oro II',spriteIndex:8},
-  {min:1070,name:'Oro III',spriteIndex:9},
-  {min:1220,name:'Amatista I',spriteIndex:13},
-  {min:1380,name:'Amatista II',spriteIndex:12},
-  {min:1550,name:'Amatista III',spriteIndex:19},
-  {min:1730,name:'Esmeralda I',spriteIndex:14},
-  {min:1920,name:'Esmeralda II',spriteIndex:11},
-  {min:2120,name:'Esmeralda III',spriteIndex:15},
-  {min:2330,name:'Diamante I',spriteIndex:16},
-  {min:2550,name:'Diamante II',spriteIndex:17},
-  {min:2770,name:'Diamante III',spriteIndex:10},
-  {min:3000,name:'Diamante Negro',spriteIndex:18}
+  {min:0,name:'Latón I',image:'rangos/LatonI.png'},
+  {min:25,name:'Latón II',image:'rangos/LatonII.png'},
+  {min:50,name:'Latón III',image:'rangos/LatonIII.png'},
+  {min:100,name:'Latón IV',image:'rangos/LatonIV.png'},
+  {min:150,name:'Latón V',image:'rangos/LatonV.png'},
+  {min:200,name:'Bronce I',image:'rangos/bronceI.png'},
+  {min:275,name:'Bronce II',image:'rangos/BronceII.png'},
+  {min:350,name:'Bronce III',image:'rangos/BronceIII.png'},
+  {min:450,name:'Bronce IV',image:'rangos/BronceIV.png'},
+  {min:550,name:'Bronce V',image:'rangos/BronceV.png'},
+  {min:675,name:'Plata I',image:'rangos/PlataI.png'},
+  {min:800,name:'Plata II',image:'rangos/PlataII.png'},
+  {min:950,name:'Plata III',image:'rangos/PlataIII.png'},
+  {min:1125,name:'Plata IV',image:'rangos/PlataIV.png'},
+  {min:1300,name:'Plata V',image:'rangos/PlataV.png'},
+  {min:1500,name:'Oro I',image:'rangos/OroI.png'},
+  {min:1700,name:'Oro II',image:'rangos/OroII.png'},
+  {min:1925,name:'Oro III',image:'rangos/OroIII.png'},
+  {min:2175,name:'Oro IV',image:'rangos/OroIV.png'},
+  {min:2425,name:'Oro V',image:'rangos/OroV.png'},
+  {min:2700,name:'Platino I',image:'rangos/PlatinoI.png'},
+  {min:3000,name:'Platino II',image:'rangos/PlatinoII.png'},
+  {min:3300,name:'Platino III',image:'rangos/PlatinoIII.png'},
+  {min:3625,name:'Platino IV',image:'rangos/PlatinoIV.png'},
+  {min:3975,name:'Platino V',image:'rangos/PlatinoV.png'},
+  {min:4350,name:'Titanio I',image:'rangos/TitanioI.png'},
+  {min:4725,name:'Titanio II',image:'rangos/TitanioII.png'},
+  {min:5125,name:'Titanio III',image:'rangos/TitanioIII.png'},
+  {min:5550,name:'Titanio IV',image:'rangos/TitanioIV.png'},
+  {min:6000,name:'Titanio V',image:'rangos/TitanioV.png'},
+  {min:6475,name:'Diamante I',image:'rangos/DiamanteI.png'},
+  {min:6950,name:'Diamante II',image:'rangos/DiamanteII.png'},
+  {min:7450,name:'Diamante III',image:'rangos/DiamanteIII.png'},
+  {min:7975,name:'Diamante IV',image:'rangos/DiamanteIV.png'},
+  {min:8525,name:'Diamante V',image:'rangos/DiamanteV.png'},
+  {min:9100,name:'Diamante Negro I',image:'rangos/DiamantenegroI.png'},
+  {min:9700,name:'Diamante Negro II',image:'rangos/DiamantenegroII.png'},
+  {min:10325,name:'Diamante Negro III',image:'rangos/DiamantenegroIII.png'},
+  {min:10975,name:'Diamante Negro IV',image:'rangos/DiamantenegroIV.png'},
+  {min:11625,name:'Diamante Negro V',image:'rangos/DiamantenegroV.png'},
+  {min:12300,name:'Élite I',image:'rangos/EliteI.png'},
+  {min:13000,name:'Élite II',image:'rangos/EliteII.png'},
+  {min:13725,name:'Élite III',image:'rangos/EliteIII.png'},
+  {min:14475,name:'Élite IV',image:'rangos/EliteIV.png'},
+  {min:15250,name:'Élite V',image:'rangos/EliteV.png'},
+  {min:16050,name:'Maestro I',image:'rangos/MaestroI.png'},
+  {min:16875,name:'Maestro II',image:'rangos/MaestroII.png'},
+  {min:17725,name:'Maestro III',image:'rangos/MaestroIII.png'},
+  {min:18600,name:'Maestro IV',image:'rangos/MaestroIV.png'},
+  {min:19500,name:'Maestro V',image:'rangos/MaestroV.png'},
+  {min:20425,name:'Gran Maestro I',image:'rangos/GranmaestroI.png'},
+  {min:21375,name:'Gran Maestro II',image:'rangos/GranmaestroII.png'},
+  {min:22350,name:'Gran Maestro III',image:'rangos/GranmaestroIII.png'},
+  {min:23350,name:'Gran Maestro IV',image:'rangos/GranmaestroIV.png'},
+  {min:24375,name:'Gran Maestro V',image:'rangos/GranmaestroV.png'},
+  {min:25425,name:'MÍTICO I',image:'rangos/MiticoI.png'},
+  {min:26525,name:'MÍTICO II',image:'rangos/MiticoII.png'},
+  {min:27650,name:'MÍTICO III',image:'rangos/MiticoIII.png'},
+  {min:28800,name:'MÍTICO IV',image:'rangos/MiticoIV.png'},
+  {min:30000,name:'MÍTICO V',image:'rangos/MiticoV.png'}
 ];
 
 const RANK_SPRITE_PARTS=[
@@ -275,7 +315,7 @@ const RANK_SPRITE_PARTS=[
 let rankSpritePromise=null;
 
 function getRankByElo(value){
-  const elo=Number.isFinite(Number(value))?Number(value):200;
+  const elo=Number.isFinite(Number(value))?Math.max(0,Number(value)):0;
   let index=0;
   for(let i=0;i<RANKS.length;i++){
     if(elo>=RANKS[i].min)index=i;
@@ -284,138 +324,17 @@ function getRankByElo(value){
   return {...RANKS[index],index};
 }
 
-function makeRankSpriteTransparent(dataUrl){
-  return new Promise((resolve,reject)=>{
-    const img=new Image();
-    img.onload=()=>{
-      try{
-        const width=img.naturalWidth||img.width;
-        const height=img.naturalHeight||img.height;
-        const canvas=document.createElement('canvas');
-        canvas.width=width;
-        canvas.height=height;
-        const ctx=canvas.getContext('2d',{willReadFrequently:true});
-        ctx.clearRect(0,0,width,height);
-        ctx.drawImage(img,0,0);
-
-        const frame=ctx.getImageData(0,0,width,height);
-        const pixels=frame.data;
-        const visited=new Uint8Array(width*height);
-        const columns=5;
-        const rows=4;
-        const cellWidth=Math.floor(width/columns);
-        const cellHeight=Math.floor(height/rows);
-        const darkLimit=26;
-
-        const isBackgroundDark=index=>{
-          const p=index*4;
-          return pixels[p]<=darkLimit&&pixels[p+1]<=darkLimit&&pixels[p+2]<=darkLimit;
-        };
-
-        for(let row=0;row<rows;row++){
-          for(let col=0;col<columns;col++){
-            const x0=col*cellWidth;
-            const y0=row*cellHeight;
-            const x1=col===columns-1?width:(col+1)*cellWidth;
-            const y1=row===rows-1?height:(row+1)*cellHeight;
-            const queue=new Int32Array((x1-x0)*(y1-y0));
-            let head=0;
-            let tail=0;
-
-            const add=(x,y)=>{
-              if(x<x0||x>=x1||y<y0||y>=y1)return;
-              const index=y*width+x;
-              if(visited[index]||!isBackgroundDark(index))return;
-              visited[index]=1;
-              queue[tail++]=index;
-            };
-
-            for(let x=x0;x<x1;x++){
-              add(x,y0);
-              add(x,y1-1);
-            }
-            for(let y=y0;y<y1;y++){
-              add(x0,y);
-              add(x1-1,y);
-            }
-
-            while(head<tail){
-              const index=queue[head++];
-              const p=index*4;
-              pixels[p+3]=0;
-              const x=index%width;
-              const y=Math.floor(index/width);
-              add(x-1,y);
-              add(x+1,y);
-              add(x,y-1);
-              add(x,y+1);
-            }
-          }
-        }
-
-        ctx.putImageData(frame,0,0);
-        resolve(canvas.toDataURL('image/png'));
-      }catch(error){
-        reject(error);
-      }
-    };
-    img.onerror=()=>reject(new Error('No se pudo procesar la hoja de insignias.'));
-    img.src=dataUrl;
-  });
+function applyRankBadge(el,rank){
+  if(!el||!rank)return;
+  el.textContent=''; el.setAttribute('aria-label','Insignia '+rank.name); el.title='Rango '+rank.name;
+  el.style.backgroundImage='url(\"'+rank.image+'\")'; el.style.backgroundPosition='center';
+  el.style.backgroundRepeat='no-repeat'; el.style.backgroundSize='contain';
 }
-
-function getRankSpriteUrl(){
-  if(!rankSpritePromise){
-    rankSpritePromise=Promise.all(RANK_SPRITE_PARTS.map(async path=>{
-      const response=await fetch(path,{cache:'force-cache'});
-      if(!response.ok)throw new Error('No se pudo cargar '+path);
-      return (await response.text()).trim();
-    }))
-      .then(parts=>'data:image/webp;base64,'+parts.join(''))
-      .then(makeRankSpriteTransparent);
-  }
-  return rankSpritePromise;
+async function renderRankBadge(arg1,arg2){
+  if(arg1 instanceof HTMLElement){applyRankBadge(arg1,getRankByElo(arg2));return}
+  applyRankBadge(rankBadgeImage,arg1);
 }
-
-async function renderRankBadge(rank){
-  if(!rankBadgeImage)return;
-  rankBadgeImage.textContent=rank.name;
-  rankBadgeImage.setAttribute('aria-label','Rango '+rank.name);
-  rankBadgeImage.title='Rango '+rank.name;
-  const spriteIndex=Number.isInteger(rank.spriteIndex)?rank.spriteIndex:rank.index;
-  const col=spriteIndex%5;
-  const row=Math.floor(spriteIndex/5);
-  try{
-    const sprite=await getRankSpriteUrl();
-    rankBadgeImage.style.backgroundImage='url("'+sprite+'")';
-    rankBadgeImage.style.backgroundPosition=(col*25)+'% '+(row*(100/3))+'%';
-    rankBadgeImage.textContent='';
-  }catch(error){
-    console.error('No se pudo cargar la insignia de rango:',error);
-    rankBadgeImage.style.backgroundImage='none';
-  }
-}
-
-async function renderPlayerDetailRankBadge(rank){
-  if(!playerDetailRankBadge)return;
-  const spriteIndex=Number.isInteger(rank.spriteIndex)?rank.spriteIndex:rank.index;
-  const col=spriteIndex%5;
-  const row=Math.floor(spriteIndex/5);
-  playerDetailRankBadge.setAttribute('aria-label','Insignia '+rank.name);
-  playerDetailRankBadge.title='Rango '+rank.name;
-  try{
-    const sprite=await getRankSpriteUrl();
-    if(!currentDetailPlayer)return;
-    playerDetailRankBadge.style.backgroundImage='url("'+sprite+'")';
-    playerDetailRankBadge.style.backgroundPosition=(col*25)+'% '+(row*(100/3))+'%';
-  }catch(error){
-    console.error('No se pudo cargar la insignia del perfil:',error);
-    playerDetailRankBadge.style.backgroundImage='none';
-  }
-}
-
-
-
+async function renderPlayerDetailRankBadge(rank){applyRankBadge(playerDetailRankBadge,rank)}
 
 async function abandonRankedMatch(){
  if(!currentRankedMatchId||!supabaseClient)return;
@@ -478,9 +397,9 @@ function showRankedMatch(match){
  versusMyElo.textContent='ELO '+String(match.my_elo||200);
  versusOpponent.textContent=String(match.opponent_name||'RIVAL').toUpperCase();
  versusOpponentElo.textContent='ELO '+String(match.opponent_elo||200);
- if(versusMyRank)versusMyRank.textContent=String(match.my_rank_name||getRankByElo(match.my_elo).name).toUpperCase();
- if(versusOpponentRank)versusOpponentRank.textContent=String(match.opponent_rank_name||getRankByElo(match.opponent_elo).name).toUpperCase();
- const renderVsRankBadge=async(el,elo)=>{if(!el)return;const rank=getRankByElo(Number(elo)||200),spriteIndex=Number.isInteger(rank.spriteIndex)?rank.spriteIndex:rank.index,col=spriteIndex%5,row=Math.floor(spriteIndex/5);el.title='Rango '+rank.name;el.setAttribute('aria-label','Insignia '+rank.name);try{const sprite=await getRankSpriteUrl();el.style.backgroundImage='url("'+sprite+'")';el.style.backgroundPosition=(col*25)+'% '+(row*(100/3))+'%'}catch(e){console.error('No se pudo cargar insignia VS',e);el.style.backgroundImage='none'}};
+ if(versusMyRank)versusMyRank.textContent=getRankByElo(match.my_elo).name.toUpperCase();
+ if(versusOpponentRank)versusOpponentRank.textContent=getRankByElo(match.opponent_elo).name.toUpperCase();
+ const renderVsRankBadge=async(el,elo)=>{if(!el)return;applyRankBadge(el,getRankByElo(elo));};
  renderVsRankBadge(versusMyRankBadge,match.my_elo);renderVsRankBadge(versusOpponentRankBadge,match.opponent_elo);
  if(versusMyPosition)versusMyPosition.textContent='RANKING #'+String(match.my_position||'--');
  if(versusOpponentPosition)versusOpponentPosition.textContent='RANKING #'+String(match.opponent_position||'--');
@@ -708,16 +627,7 @@ function getFlag(value){
 async function renderGuestRankShowcase(){
  if(!guestRankShowcase||guestRankShowcase.dataset.ready)return;
  guestRankShowcase.dataset.ready='1';
- try{
-  const sprite=await getRankSpriteUrl();
-  const order=[13,12,19,14,11,15,16,17,10,18,0,1,2,3,4,5,6,7,8,9];
-  order.forEach(spriteIndex=>{
-   const badge=document.createElement('span');badge.className='guest-showcase-badge';
-   badge.style.backgroundImage='url("'+sprite+'")';
-   badge.style.backgroundPosition=((spriteIndex%5)*25)+'% '+(Math.floor(spriteIndex/5)*(100/3))+'%';
-   guestRankShowcase.appendChild(badge);
-  });
- }catch(e){console.error('No se pudieron cargar los rangos públicos:',e)}
+ RANKS.forEach(rank=>{const badge=document.createElement('span');badge.className='guest-showcase-badge';applyRankBadge(badge,rank);guestRankShowcase.appendChild(badge)});
 }
 
 async function loadGuestRanking(){
@@ -739,10 +649,10 @@ async function loadGuestRanking(){
    const info=document.createElement('div');info.className='guest-ranking-player-info';
    const n=document.createElement('b');n.textContent=String(player.username||player.account_name||'Jugador').toUpperCase();
    const rank=getRankByElo(player.elo_points);const rankLine=document.createElement('span');rankLine.className='guest-ranking-rank';rankLine.textContent=rank.name.toUpperCase();
-   const miniBadge=document.createElement('span');miniBadge.className='guest-ranking-rank-badge';const spriteIndex=Number.isInteger(rank.spriteIndex)?rank.spriteIndex:rank.index;miniBadge.style.backgroundPosition=((spriteIndex%5)*25)+'% '+(Math.floor(spriteIndex/5)*(100/3))+'%';getRankSpriteUrl().then(sprite=>miniBadge.style.backgroundImage='url("'+sprite+'")').catch(()=>{});
+   const miniBadge=document.createElement('span');miniBadge.className='guest-ranking-rank-badge';applyRankBadge(miniBadge,rank);
    info.append(n,rankLine);name.append(avatar,miniBadge,info);
    const country=document.createElement('div');country.className='guest-ranking-country';country.textContent=getFlag(player.country)+' '+String(player.country||'País');
-   const elo=document.createElement('strong');elo.className='guest-ranking-elo';elo.textContent=String(Number(player.elo_points)||200);
+   const elo=document.createElement('strong');elo.className='guest-ranking-elo';elo.textContent=String(Number.isFinite(Number(player.elo_points))?Number(player.elo_points):0);
    row.append(pos,name,country,elo);guestRankingList.appendChild(row);
   });
  }catch(e){console.error('Ranking público:',e);guestRankingList.innerHTML='<div class="ranking-loading ranking-error">No se pudo cargar la clasificación.</div>'}
