@@ -1,0 +1,32 @@
+name: Retirar insignias antiguas
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/remove-old-ranks.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Eliminar referencias antiguas y forzar JS nuevo
+        shell: python
+        run: |
+          import re
+          from pathlib import Path
+          p=Path('app-v5.js')
+          s=p.read_text(encoding='utf-8')
+          s=re.sub(r"\nconst RANK_SPRITE_PARTS=\[.*?\];\nlet rankSpritePromise=null;\n", "\n", s, count=1, flags=re.S)
+          p.write_text(s,encoding='utf-8')
+          h=Path('index.html')
+          x=h.read_text(encoding='utf-8')
+          x=re.sub(r'app-v5\.js\?v=[^"\']+', 'app-v5.js?v=20261006-rangos60-v2', x)
+          h.write_text(x,encoding='utf-8')
+      - name: Guardar cambios
+        run: |
+          git config user.name "Ranking8BP Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add app-v5.js index.html
+          git commit -m "Retirar insignias antiguas y activar solo rangos nuevos"
+          git push
