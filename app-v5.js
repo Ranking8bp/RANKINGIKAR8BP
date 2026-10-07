@@ -302,17 +302,6 @@ const RANKS=[
   {min:30000,name:'MÍTICO V',image:'rangos/MiticoV.png'}
 ];
 
-const RANK_SPRITE_PARTS=[
-  'assets/ranks/rank-sprite.part01.b64?v=2',
-  'assets/ranks/rank-sprite.part02.b64?v=2',
-  'assets/ranks/rank-sprite.part03a.b64?v=2',
-  'assets/ranks/rank-sprite.part03b.b64?v=2',
-  'assets/ranks/rank-sprite.part03c.b64?v=2',
-  'assets/ranks/rank-sprite.part04.b64?v=2',
-  'assets/ranks/rank-sprite.part05.b64?v=2',
-  'assets/ranks/rank-sprite.part06.b64?v=2'
-];
-let rankSpritePromise=null;
 
 function getRankByElo(value){
   const elo=Number.isFinite(Number(value))?Math.max(0,Number(value)):0;
